@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next build && next start",
     "typecheck": "tsc --noEmit",
     "db:seed": "tsx src/lib/db/seed.ts",
     "db:reset": "node -e \"require('fs').rmSync('data', { recursive: true, force: true })\"",

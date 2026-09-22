@@ -412,19 +412,33 @@ npm run dev
 Open **http://localhost:3000**.
 
 On first request the app **migrates and seeds itself** — there is no separate
-setup step. You'll land on a demo company already populated with agents, a
-partially-complete mission, memory, marketplace offers and a wallet.
+setup step, no login, and no API key needed. You'll land on a demo company
+already populated with agents, a completed mission, memory, marketplace offers
+and a funded wallet.
+
+If port 3000 is already taken by another process, pass your own:
+`npm run dev -- -p 3100`.
 
 ### Other commands
 
 ```bash
+npm run dev           # dev server on http://localhost:3000 (hot reload)
+npm run build         # production build into .next (also type-checks)
+npm start             # build, then serve production on http://localhost:3000
 npm run typecheck     # tsc --noEmit
-npm run build         # production build (also type-checks)
-npm start             # serve the production build
 npm run db:seed       # re-run the demo seed
 npm run db:reset      # delete the SQLite file (next request re-seeds)
 npm run screenshots   # regenerate docs/screenshots from a running server
 ```
+
+**Seeing it run.** `npm run dev` and open <http://localhost:3000> — the first
+request creates and seeds the database, so there is nothing to initialise first.
+There is no login and no key requirement.
+
+`npm start` builds before serving, so it works from a clean checkout without you
+having to remember to build. Note that it writes the same `.next` directory the
+dev server uses, so stop the dev server before running it (otherwise the build
+replaces the dev server's artifacts underneath it).
 
 > **Note on resetting the DB:** stop the dev server before `npm run db:reset`.
 > Deleting the SQLite file underneath a running process leaves the old handle
