@@ -64,6 +64,13 @@ verify → settle → memory) and confirm against the SQLite rows, not just the 
 - **The Home dashboard is intentionally dense and fills one viewport**: no hero
   band, `lg:h-[calc(100vh-86px)]`, wide `lg:gap-14` gutters, internal scrolling in
   the last card of each column. Match the reference's density, not a roomier layout.
+- **The sidebar is wide and labelled above `lg`**, collapsing to an icon rail
+  below it. Labels, brand block, New Company action and founder chip all live in
+  the single `<aside>` in `AppShell` — don't fork a second sidebar.
+- **`/onboarding` is full-bleed**: it renders inside the shell (so the sidebar
+  shows) but AppShell suppresses the top bar, footer and ambient layer for it.
+  Its landscape lives in `WelcomeScene` (`RobotMascot` and `WoodSign` are
+  separate exports so they can be positioned like the reference).
 
 ## Matching images without being able to see them
 - **Do not trust aggregate statistics** (colour histograms, light/dark ratios,

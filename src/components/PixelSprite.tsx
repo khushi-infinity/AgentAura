@@ -239,7 +239,30 @@ export const GLYPHS: Record<string, string[]> = {
     ".....##.",
     "........",
   ],
+  // Bullseye — used for "Real Expertise" on the welcome screen.
+  target: [
+    "...##...",
+    ".#....#.",
+    "#..##..#",
+    "#.#..#.#",
+    "#.#..#.#",
+    "#..##..#",
+    ".#....#.",
+    "...##...",
+  ],
 };
+
+// Pine tree with an agent head in the crown — the AgentAura brand mark.
+export const BRAND_MARK = [
+  "...##...",
+  "..####..",
+  ".#.##.#.",
+  ".######.",
+  "..####..",
+  ".######.",
+  ".#.##.#.",
+  "..####..",
+];
 
 // The brand mark / founder avatar — a small agent sprite.
 export const AGENT_MARK = [

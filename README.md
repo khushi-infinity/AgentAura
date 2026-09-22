@@ -365,9 +365,19 @@ identity, not an excuse to turn the product into a game (spec §6).
 | `plum` | `#7c5cad` | Restrained secondary accent |
 | `danger` | `#b23a30` | Failure / destructive only |
 
-**Composition** — a slim 64px icon rail, a 36px top status bar, and content as
-chunky cream cards with dark header bars on the dark teal-blue canvas. All of
-that chrome lives in `AppShell`, mounted once in `app/layout.tsx`.
+**Composition** — a wide, labelled navigation sidebar (brand mark + tagline,
+labelled nav with a cream active pill, a green **New Company** action and a
+founder chip), a 36px top status bar, and content as chunky cream cards with
+dark header bars on the dark teal-blue canvas. All of that chrome lives in
+`AppShell`, mounted once in `app/layout.tsx`. Below `lg` the sidebar collapses to
+a slim icon rail so small screens stay usable.
+
+The **welcome screen (`/onboarding`) runs full-bleed**: the sidebar stays, but the
+top status bar, footer and ambient layer are suppressed so a single pixel
+landscape owns the frame — sky and cumulus, snowy ranges, pine forest, a
+waterfall feeding a lake, a forested cliff, mossy ruins and wildflowers, with a
+robot mascot and a wooden signpost in the foreground and the goal card centred
+over it.
 
 From `lg` (1024px) the dashboard is a **three-column grid filling exactly one
 viewport** — no tall hero band and no page scroll, matching the reference, whose
@@ -400,9 +410,9 @@ Seven scenes share a layered system of sky gradient, sun, clouds, birds, distant
 ranges, treelines, water reflections, waterfall mist, stone ruins and wildflowers:
 
 | Page | Scene | | Page | Scene |
-|---|---|---|---|---|
+|---|---|---|---|
 | Home | lake (in-card strip) | | Marketplace | cliff |
-| Onboarding | mountain | | Memory | ruins (archives) |
+| Welcome / onboarding | **full-bleed landscape** (`WelcomeScene`) | | Memory | ruins (archives) |
 | Create · Analytics · Settings | meadow | | Wallet | waterfall (flows of value) |
 | Missions | mountain | | Agents | lake |
 | Mission detail | forest | | Success | mountain |

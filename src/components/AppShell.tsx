@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { PixelSprite, GLYPHS, AGENT_MARK } from "./PixelSprite";
+import { PixelSprite, GLYPHS, AGENT_MARK, BRAND_MARK } from "./PixelSprite";
 
 // Shared UI shell (spec §7), matched to the reference layout:
 //   - slim icon rail on the left (~61px in the reference), dark teal-blue
@@ -28,22 +28,34 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const bare = pathname === "/onboarding" || pathname === "/create";
-  if (bare) return <>{children}</>;
+  // /create is a bare focus flow. /onboarding renders inside the shell (the
+  // reference welcome screen shows the full sidebar) but full-bleed — no top
+  // status bar, no footer and no ambient layer, so the scenery owns the frame.
+  if (pathname === "/create") return <>{children}</>;
+  const fullBleed = pathname === "/onboarding";
 
   return (
     <div className="min-h-screen flex bg-forest">
-      {/* ── Slim navigation rail (icon-only, like the reference) ── */}
-      <aside className="w-16 shrink-0 bg-forest-2 border-r-2 border-[#01141c] flex flex-col sticky top-0 h-screen z-20">
+      {/* ── Navigation sidebar ──
+          The reference shows a WIDE, LABELLED sidebar (logo + tagline, nav
+          labels, New Company action, founder chip). Below `lg` it collapses to
+          the slim icon rail so small screens stay usable. */}
+      <aside className="w-16 lg:w-[236px] xl:w-[248px] shrink-0 bg-forest-2 border-r-2 border-[#01141c] flex flex-col sticky top-0 h-screen z-20">
         <Link
           href="/"
           title="AgentAura"
-          className="h-14 flex items-center justify-center border-b-2 border-[#01141c] text-leaf-bright hover:text-cream transition-colors"
+          className="lg:h-[68px] h-14 shrink-0 flex items-center justify-center lg:justify-start lg:gap-3 lg:px-4 border-b-2 border-[#01141c] transition-colors"
         >
-          <PixelSprite glyph={AGENT_MARK} size={26} />
+          <span className="text-leaf-bright">
+            <PixelSprite glyph={BRAND_MARK} size={26} />
+          </span>
+          <span className="hidden lg:block min-w-0">
+            <span className="block font-pixel text-cream text-[13px] leading-none">AgentAura</span>
+            <span className="block text-[10px] text-leaf-bright mt-1.5">Build. Delegate. Scale.</span>
+          </span>
         </Link>
 
-        <nav className="flex-1 py-1 overflow-y-auto pixel-scroll">
+        <nav className="flex-1 py-2 overflow-y-auto pixel-scroll">
           {NAV.map((n) => {
             const active = n.href === "/" ? pathname === "/" : pathname.startsWith(n.href);
             return (
@@ -53,9 +65,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                 title={n.label}
                 aria-label={n.label}
                 data-active={active}
-                className="rail-btn"
+                className="side-link"
               >
-                <PixelSprite glyph={GLYPHS[n.key]} size={20} />
+                <span className={active ? "text-leaf-deep shrink-0" : "text-leaf-bright shrink-0"}>
+                  <PixelSprite glyph={GLYPHS[n.key]} size={19} />
+                </span>
+                <span className="hidden lg:inline truncate">{n.label}</span>
               </Link>
             );
           })}
@@ -65,23 +80,39 @@ export function AppShell({ children }: { children: ReactNode }) {
           href="/create"
           title="New company"
           aria-label="New company"
-          className="h-14 flex items-center justify-center border-t-2 border-[#01141c] text-gold hover:text-cream transition-colors"
+          className="mx-2 lg:mx-3 mb-3 h-11 shrink-0 flex items-center justify-center gap-2 rounded-sm bg-leaf text-cream font-pixel text-[11px] border-2 border-[#01141c] shadow-[0_3px_0_0_#01141c] hover:bg-leaf-bright transition-colors"
         >
-          <span className="font-pixel text-base leading-none">+</span>
+          <span className="text-base leading-none">+</span>
+          <span className="hidden lg:inline">New Company</span>
         </Link>
+
+        <div className="hidden lg:flex items-center gap-2.5 mx-2 mb-3 px-2.5 py-2.5 rounded-sm border-t-2 border-[#01141c] pt-3">
+          <span className="w-9 h-9 shrink-0 grid place-items-center rounded-full bg-forest-3 border-2 border-leaf text-leaf-bright">
+            <PixelSprite glyph={AGENT_MARK} size={19} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-[12px] text-cream leading-tight truncate">Khushi</span>
+            <span className="block text-[10px] text-cream/50 mt-0.5">Founder</span>
+          </span>
+          <span className="text-cream/40 text-lg leading-none select-none" aria-hidden>
+            ⋮
+          </span>
+        </div>
       </aside>
 
       {/* ── Main column ── */}
       <div className="flex-1 flex flex-col min-w-0">
-        <TopStatusBar />
+        {fullBleed ? null : <TopStatusBar />}
         <main className="flex-1 min-w-0 relative">
           {/* Ambient environment behind the functional UI (spec §6). */}
-          <div className="pointer-events-none absolute inset-0 opacity-[0.22]" aria-hidden>
-            <AmbientScenery />
-          </div>
+          {fullBleed ? null : (
+            <div className="pointer-events-none absolute inset-0 opacity-[0.22]" aria-hidden>
+              <AmbientScenery />
+            </div>
+          )}
           <div className="relative">{children}</div>
         </main>
-        <StatusStrip />
+        {fullBleed ? null : <StatusStrip />}
       </div>
     </div>
   );

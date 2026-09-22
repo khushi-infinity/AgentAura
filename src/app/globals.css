@@ -118,17 +118,26 @@ body {
   padding: 5px 10px;
 }
 
-/* Slim navigation rail button (reference: ~61px icon rail) */
-.rail-btn {
-  @apply relative flex items-center justify-center w-full text-cream/70 transition-colors;
-  height: 44px;
+/* Sidebar nav item — labelled on desktop, icon-only when collapsed below lg */
+.side-link {
+  @apply flex items-center gap-3 mx-2 my-0.5 px-3 rounded-sm text-cream/70 transition-colors;
+  height: 42px;
+  font-size: 12.5px;
 }
-.rail-btn:hover {
+.side-link:hover {
   @apply text-cream bg-forest-3;
 }
-.rail-btn[data-active="true"] {
-  @apply text-cream bg-forest-3;
-  box-shadow: inset 3px 0 0 0 #007755;
+/* Active item: cream pill with dark text and a green icon (reference). */
+.side-link[data-active="true"] {
+  @apply bg-cream text-forest font-semibold;
+}
+
+/* Welcome-screen card (parchment on scenery, reference §8) */
+.welcome-card {
+  @apply rounded-xl;
+  background: #f5efdf;
+  border: 2px solid #ded2b6;
+  box-shadow: 0 10px 0 0 rgba(20, 40, 28, 0.18);
 }
 
 /* Dotted top accent used on section headers */

@@ -333,6 +333,68 @@ match, the composition did not, and the shell that the reference's whole look
 depends on was never mounted. §3.6 is left in place as the record of what was
 done and believed at the time; this section supersedes its conclusions.
 
+### 3.9 Welcome screen built to the reference — and the shell widened to match
+
+A third reference image was supplied with **"build this for welcome or
+onboarding page"**. Unlike the earlier ones this image was directly viewable, so
+the build could be composed against what the reference actually shows rather
+than inferred from metrics.
+
+#### What the reference contains (read off the image)
+
+| Region | Content |
+|---|---|
+| **Sidebar** | A **wide, labelled** sidebar — not the icon rail the previous build had: pixel brand mark + **AgentAura** + *"Build. Delegate. Scale."*, then **labelled** nav (Home, Missions, Agents, Marketplace, Company Memory, Analytics, Wallet, Settings) with a cream active pill, a green **+ New Company** button, and a founder chip (*Khushi · Founder*). Measured width **18%** of the frame |
+| **Scenery** | Full-bleed pixel landscape: bright sky with cumulus, distant **snowy** ranges, pine forest, a **waterfall** feeding a lake with an island, a dark forested cliff and a tall pine on the right, mossy **stone ruins** bottom-left, wildflowers |
+| **Foreground props** | A white **robot mascot** with a sprout antenna, cyan eyes and a brown **clipboard**, seated on the ruins (mid-left); a **wooden signpost** reading *"A BRIGHTER TOMORROW / BUILT BY AGENTS"* (mid-right) |
+| **Overlays** | A cream quote card top-right (*"Ideas are cheap. Execution compounds."*); centred **Welcome to AgentAura** (name in green) + subtitle; a cream card *What are you building?* with an input and a green **Let's Build →** button; a four-column cream value bar pinned to the bottom (AI Agents · Real Expertise · Autonomous Execution · Real Economic Value) |
+
+#### What was built
+
+| File | Change |
+|---|---|
+| `src/components/WelcomeScene.tsx` | New. Full-bleed landscape SVG (`viewBox 1600×900`, `slice`) plus `RobotMascot` and `WoodSign` as separate exports so the page positions them like the reference |
+| `src/components/AppShell.tsx` | Sidebar is now **wide and labelled** (`w-16 lg:w-[236px] xl:w-[248px]`, labels `hidden lg:inline`) with brand block, labelled nav, New Company button and founder chip; below `lg` it still collapses to the icon rail. Added `fullBleed` for `/onboarding`: no top status bar, no footer, no ambient layer |
+| `src/app/onboarding/page.tsx` | Rewritten to the reference composition |
+| `src/components/PixelSprite.tsx` | Added `target` (bullseye, for "Real Expertise") and `BRAND_MARK` (pine + agent crown) glyphs |
+| `src/app/globals.css` | `.side-link` (labelled nav item with cream active pill) replaces `.rail-btn`; added `.welcome-card` |
+
+**Onboarding now renders inside the shell** (the reference shows the sidebar on
+the welcome screen), so `/onboarding` was removed from the shell's bare-route
+list. `/create` remains bare.
+
+#### Composition correction found by the block map
+
+The first version put the landscape's horizon at ~62% of the frame; the
+reference puts the forest at ~36–40%. The block map made that obvious — the
+reference is green from row 10 of 28, mine from row 18. Fixed by drawing every
+layer below the sky inside one `translate(0,-190)` group (so the horizon rises)
+with the far range raised a further 40, plus an unshifted fill band below y=700
+so the land still reaches the bottom edge. Measured after: green from row 12–13.
+
+The same map also caught the wooden signpost sitting too high and the mascot too
+low; both were repositioned to the reference's measured band (sign ~46–75% down
+and 68–94% across, mascot ~53–79%).
+
+#### Measured comparison
+
+| | sidebar | sky/mountain band | land begins | signpost | value bar |
+|---|---|---|---|---|---|
+| reference | 18 cols | rows 0–9 | row 10 (~36%) | rows 13–21 | bottom |
+| this build | 18 cols | rows 0–11 | row 12–13 (~44%) | rows 14–21 | bottom |
+
+#### Deliberate deviations from the reference
+
+- **Founder avatar** — the reference shows a pixel-art human portrait. The spec
+  (§6) explicitly bans human imagery, so the chip uses the pixel agent sprite
+  instead.
+- **Sidebar colour** — the reference's sidebar is very dark **green**; this build
+  keeps the app-wide dark **teal-blue** chrome from the first reference so the
+  dashboard and welcome screen remain one system.
+- **Heading type** — the reference's heading is a bold sans, not the pixel font;
+  that is reproduced (`font-body font-extrabold`) rather than forced into Press
+  Start 2P, because at that size the pixel face would not match.
+
 ---
 
 ## 4. Verification log
@@ -348,6 +410,9 @@ done and believed at the time; this section supersedes its conclusions.
 | Console errors / failed requests (all 10 routes, 1111×748) | ✅ Zero of each |
 | Reference block-map comparison | ✅ Rail 64 / column 301 / gutter 56 / content fills viewport (reference: 61 / 308 / 60 / fills) |
 | README screenshots | ✅ All 11 regenerated against the fixed UI |
+| All 10 routes at 1440×828 (shell, errors, network) | ✅ `main` + 10 sidebar links each, zero console errors, zero failed requests |
+| `/onboarding` fills exactly one viewport | ✅ `scrollHeight` 828 = viewport 828 |
+| Sidebar collapsed below `lg` | ✅ icon rail retained; labels only from `lg` |
 | Screenshot capture of all 11 pages | ✅ Real rendered content (home 9 KB → 126 KB after fixes) |
 | Post-fix research-mission run | ✅ Hired `MarketMind Labs` (Research/A2A/$0.50), verified 100/100, settled, memory + reputation written |
 | DB ground truth for that run | ✅ Mission `COMPLETED` 100%, 4/4 tasks, `spend_cents = 50`, payment `SETTLED` |
