@@ -10,6 +10,14 @@ import type { Config } from "tailwindcss";
 //   primary emerald  #007755  (active / verified / primary action)
 //   sky blue         #88ccff → #aaddff (soft atmospheric secondary)
 //   muted slate      #2f6b7d / #446677
+//
+// Blue accent family sampled from the reference's FILLED bars (the element
+// type my first pass missed entirely — the reference is full of blue-filled
+// meters, pills and buttons, not empty cream):
+//   steel            #486078  (dominant blue, 1.28% of reference pixels)
+//   steel-deep       #304860  (pressed / track ends)
+//   steel-soft       #607890  (secondary blue fills)
+//   sky ramp         #60a8f0 → #78c0f0 → #90c0f0 → #a8d8f0
 //   wood signboard   #512c14
 //   financial gold   #d9a441  (important / financial state, spec §6)
 //   restrained plum  #7c5cad  (secondary accent, spec §6)
@@ -40,6 +48,14 @@ const config: Config = {
         "gold-deep": "#b58430",
         teal: "#2f6b7d", // muted teal secondary
         sky: "#88ccff", // soft sky blue
+        // Blue accent family — filled meters, pills, buttons (reference-matched)
+        steel: "#486078", // dominant blue fill
+        "steel-deep": "#304860",
+        "steel-soft": "#607890",
+        "sky-deep": "#60a8f0",
+        "sky-mid": "#78c0f0",
+        "sky-bright": "#90c0f0",
+        "sky-pale": "#a8d8f0",
         plum: "#7c5cad", // restrained secondary
         danger: "#b23a30", // failure / destructive only
       },

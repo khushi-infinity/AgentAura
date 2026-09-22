@@ -54,7 +54,7 @@ export function Badge({
   color = "leaf",
   children,
 }: {
-  color?: "leaf" | "gold" | "teal" | "plum" | "danger" | "sky" | "muted";
+  color?: "leaf" | "gold" | "teal" | "plum" | "danger" | "sky" | "muted" | "steel";
   children: ReactNode;
 }) {
   const map: Record<string, string> = {
@@ -64,6 +64,7 @@ export function Badge({
     plum: "bg-[#e6dff3] text-plum border-plum",
     danger: "bg-[#f4ded9] text-danger border-danger",
     sky: "bg-[#dceefc] text-[#2f6b7d] border-sky",
+    steel: "bg-[#d3dde8] text-[#304860] border-steel",
     muted: "bg-parchment2 text-ink-soft border-[#b6a684]",
   };
   return (
@@ -73,16 +74,60 @@ export function Badge({
   );
 }
 
-export function ProgressBar({ pct, color = "leaf" }: { pct: number; color?: "leaf" | "gold" }) {
+type BarColor = "leaf" | "gold" | "steel" | "sky";
+
+const BAR_FILL: Record<BarColor, string> = {
+  leaf: "bg-leaf",
+  gold: "bg-gold",
+  steel: "bg-steel",
+  sky: "bg-sky-bright",
+};
+
+export function ProgressBar({ pct, color = "leaf" }: { pct: number; color?: BarColor }) {
   const p = Math.max(0, Math.min(100, pct));
   return (
     <div className="h-3 w-full border-2 border-[#0f2b33] bg-parchment2 overflow-hidden rounded-sm">
       <div
-        className={`h-full ${color === "leaf" ? "bg-leaf" : "bg-gold"} transition-all duration-700`}
+        className={`h-full ${BAR_FILL[color]} transition-all duration-700`}
         style={{ width: `${p}%`, imageRendering: "pixelated" }}
       />
     </div>
   );
+}
+
+/**
+ * Labelled blue meter — the reference's signature element. The first pass had
+ * only near-empty cream cards with hairline dividers; the reference is full of
+ * these filled bars, which is most of why it read as "richer" than the build.
+ */
+export function MeterRow({
+  label,
+  value,
+  pct,
+  color = "steel",
+}: {
+  label: string;
+  value?: string;
+  pct: number;
+  color?: BarColor;
+}) {
+  const p = Math.max(0, Math.min(100, pct));
+  return (
+    <div className="py-2">
+      <div className="flex items-center justify-between gap-2 mb-1.5">
+        <span className="pixel-label text-ink-soft truncate">{label}</span>
+        {value ? <span className="pixel-label text-ink shrink-0">{value}</span> : null}
+      </div>
+      <div className="pixel-meter">
+        <span className={BAR_FILL[color]} style={{ width: `${p}%`, transition: "width 700ms" }} />
+      </div>
+    </div>
+  );
+}
+
+/** Dense hairline-separated row (reference uses these instead of big gaps). */
+export function Row({ className = "", children }: { className?: string; children: ReactNode }) {
+  return <div className={`pixel-row ${className}`}>{children}</div>;
 }
 
 export function Stat({

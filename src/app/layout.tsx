@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
+import { AppShell } from "@/components/AppShell";
 
 const pressStart = Press_Start_2P({
   weight: "400",
@@ -18,7 +19,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={pressStart.variable}>
-      <body>{children}</body>
+      <body>
+        {/* The navigation rail, top status bar, ambient scenery and bottom
+            status strip live in AppShell. It was defined but never mounted,
+            which is why every page rendered bare with no chrome. */}
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

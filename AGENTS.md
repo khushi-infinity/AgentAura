@@ -55,5 +55,24 @@ endpoints** against a live server (the full loop: create → execute → gap →
 verify → settle → memory) and confirm against the SQLite rows, not just the UI.
 
 ## Visual system
-- 16-bit pixel identity (Press Start 2P headings), cream/parchment surfaces, dark forest teal chrome, leaf/gold accents (spec §6).
+- 16-bit pixel identity (Press Start 2P headings), cream/parchment surfaces, dark teal-blue chrome, leaf/gold accents plus the **steel-blue fill family** (`steel #486078`) used for meters, pills and buttons (spec §6).
 - Interactive UI is real HTML/CSS; pixel scenery is CSS/SVG (`PixelScenery`). No pixel filter over the whole site.
+- **Chrome lives in `AppShell`, mounted once in `app/layout.tsx`.** If you add a
+  page, do not re-implement the rail/top bar/footer. An unmounted shell fails
+  silently — nothing imports it, so nothing errors, and the app just quietly
+  loses its navigation. Verify with `document.querySelectorAll('main').length`.
+- **The Home dashboard is intentionally dense and fills one viewport**: no hero
+  band, `lg:h-[calc(100vh-86px)]`, wide `lg:gap-14` gutters, internal scrolling in
+  the last card of each column. Match the reference's density, not a roomier layout.
+
+## Matching images without being able to see them
+- **Do not trust aggregate statistics** (colour histograms, light/dark ratios,
+  mean-abs-diff). They can match a reference perfectly while the composition is
+  completely wrong — that is exactly how the first UI pass went wrong.
+- **Use a coarse ASCII block map instead**: render the image and the live page at
+  the same viewport, downsample both to a 100×34 grid, classify each cell by hue
+  and luminance into one character (`" "`cream `.`light `:`mid `+`dark `#`black
+  `| G`green `B`blue `Y`gold `R`red), and print as text. It is readable as plain
+  text and shows *where* colours are and *what shape* they make.
+- Measure the live DOM too (`getBoundingClientRect` on the shell and grid) to
+  confirm offsets and column widths against the reference's measurements.

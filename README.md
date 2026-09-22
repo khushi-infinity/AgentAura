@@ -358,6 +358,7 @@ identity, not an excuse to turn the product into a game (spec §6).
 | `cream` / `parchment` | `#faf2e2` / `#f2e9d6` | Main content surfaces |
 | `leaf` | `#007755` | Primary action, active, verified |
 | `sky` | `#88ccff` | Soft atmospheric secondary |
+| **`steel`** | **`#486078`** | **Filled meters, pills and buttons** — the reference's dominant blue (1.28% of its pixels). `steel-deep #304860`, `steel-soft #607890`, and a `sky-deep…sky-pale` ramp (`#60a8f0` → `#a8d8f0`) |
 | `gold` | `#d9a441` | Important / financial state |
 | `teal` | `#2f6b7d` | Muted teal secondary |
 | `wood` | `#512c14` | Pixel signboard labels |
@@ -365,9 +366,26 @@ identity, not an excuse to turn the product into a game (spec §6).
 | `danger` | `#b23a30` | Failure / destructive only |
 
 **Composition** — a slim 64px icon rail, a 36px top status bar, and content as
-chunky cream cards with dark header bars on the dark teal-blue canvas. From
-`lg` (1024px) the dashboard is a three-column grid, matching the reference at its
-~1111px viewport width.
+chunky cream cards with dark header bars on the dark teal-blue canvas. All of
+that chrome lives in `AppShell`, mounted once in `app/layout.tsx`.
+
+From `lg` (1024px) the dashboard is a **three-column grid filling exactly one
+viewport** — no tall hero band and no page scroll, matching the reference, whose
+three cream columns run from the very top to the very bottom of the frame. The
+reference also leaves unusually **wide dark gutters (~60px)** between columns,
+reproduced here (56px); at 1111px the measured geometry is rail 64 / column 301 /
+gutter 56 against the reference's 61 / 308 / 60. Content is deliberately **dense**:
+hairline `.pixel-row`s and **blue-filled `.pixel-meter`s** carry most of the
+meaning, because the reference's cards are full of filled blue bars.
+
+> **How this was matched without being able to see images.** Summary statistics
+> (colour histograms, light/dark ratios) can agree on palette while missing the
+> composition entirely — which is exactly what happened on the first pass. The
+> reliable instrument turned out to be a **coarse ASCII block map**: downsample
+> both images to a 100×34 grid, classify each cell by hue and luminance into one
+> character, and print it as text. That is readable as plain text, and it is what
+> exposed the missing full-viewport composition and the missing chrome. See
+> `PROJECT_PROGRESS.md` §3.8.
 
 **Iconography** — no emoji and no humans. Every icon and every agent avatar is an
 8×8 **pixel sprite** drawn as crisp SVG rects (`src/components/PixelSprite.tsx`):
@@ -383,7 +401,7 @@ ranges, treelines, water reflections, waterfall mist, stone ruins and wildflower
 
 | Page | Scene | | Page | Scene |
 |---|---|---|---|---|
-| Home | forest | | Marketplace | cliff |
+| Home | lake (in-card strip) | | Marketplace | cliff |
 | Onboarding | mountain | | Memory | ruins (archives) |
 | Create · Analytics · Settings | meadow | | Wallet | waterfall (flows of value) |
 | Missions | mountain | | Agents | lake |

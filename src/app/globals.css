@@ -76,6 +76,48 @@ body {
   border: 2px solid #2c1709;
 }
 
+/* ── Reference-matched primitives ───────────────────────────────────────
+   The reference UI is DENSE: rows of content separated by hairlines, and
+   full of FILLED BLUE elements (meters, pills, buttons). Those two things
+   were the biggest visible gap in the first pass. */
+
+/* Dense content row — hairline separated, no wasted vertical space */
+.pixel-row {
+  @apply flex items-center gap-2;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(15, 43, 51, 0.14);
+}
+.pixel-row:last-child {
+  border-bottom: 0;
+}
+
+/* Blue meter — the reference's signature filled element */
+.pixel-meter {
+  @apply w-full rounded-sm overflow-hidden;
+  height: 10px;
+  background: #e7dcc3;
+  border: 1px solid #0f2b33;
+}
+.pixel-meter > span {
+  display: block;
+  height: 100%;
+  background: #486078;
+}
+
+/* Blue info panel (steel fill, cream text) */
+.pixel-panel-blue {
+  @apply rounded-sm text-cream;
+  background: #486078;
+  border: 2px solid #0f2b33;
+}
+
+/* Compact page headline — the reference has NO tall hero band; content
+   starts at the top and fills the viewport. */
+.pixel-headline {
+  @apply flex items-center gap-3 flex-wrap;
+  padding: 5px 10px;
+}
+
 /* Slim navigation rail button (reference: ~61px icon rail) */
 .rail-btn {
   @apply relative flex items-center justify-center w-full text-cream/70 transition-colors;

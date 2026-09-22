@@ -81,7 +81,14 @@ export function useLiveEvents(companyId: string) {
   return { events, connected };
 }
 
-export function LiveActivity({ companyId }: { companyId: string }) {
+export function LiveActivity({
+  companyId,
+  fill = false,
+}: {
+  companyId: string;
+  /** Stretch to the parent's height and scroll internally (dashboard columns). */
+  fill?: boolean;
+}) {
   const { events, connected } = useLiveEvents(companyId);
   const [pending, setPending] = useState<HireRequest[]>([]);
 
@@ -115,7 +122,7 @@ export function LiveActivity({ companyId }: { companyId: string }) {
   };
 
   return (
-    <div className="space-y-3">
+    <div className={fill ? "h-full min-h-0 flex flex-col gap-3" : "space-y-3"}>
       {pending.map((h) => (
         <Card key={h.id} className="p-3 border-gold" >
           <div className="flex items-center gap-2 mb-2">
@@ -141,13 +148,17 @@ export function LiveActivity({ companyId }: { companyId: string }) {
         </Card>
       ))}
 
-      <Card className="p-0 overflow-hidden">
-        <div className="pixel-card-head">
+      <Card className={`p-0 overflow-hidden ${fill ? "flex-1 min-h-0 flex flex-col" : ""}`}>
+        <div className="pixel-card-head shrink-0">
           <span className={`w-2 h-2 ${connected ? "bg-leaf-bright animate-pulse-soft" : "bg-danger"}`} />
           <span>Live Activity</span>
           <span className="ml-auto normal-case opacity-80">{events.length} events</span>
         </div>
-        <div className="max-h-[560px] overflow-y-auto pixel-scroll divide-y divide-[#0f2b3322]">
+        <div
+          className={`overflow-y-auto pixel-scroll divide-y divide-[#0f2b3322] ${
+            fill ? "flex-1 min-h-0" : "max-h-[560px]"
+          }`}
+        >
           {events.length === 0 ? (
             <div className="p-4 text-sm text-ink-soft">No activity yet — launch a mission to see agents work.</div>
           ) : (

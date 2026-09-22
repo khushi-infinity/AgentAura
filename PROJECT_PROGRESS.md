@@ -231,6 +231,108 @@ fills its canvas with cards. Tightening the grid moved dark 44% → 41% before
 diminishing returns; further tuning would be guessing without being able to see
 the image.
 
+### 3.8 The "it doesn't look like the reference at all" fix — a methodology correction
+
+The user reported that the result **did not look like the reference**. That was
+correct, and the reason matters more than the fix.
+
+#### The methodology flaw
+
+Everything in §3.6 was verified with **aggregate statistics** — colour
+histograms, brightness-band percentages, mean-abs-diff over rows/columns. Those
+metrics **matched almost perfectly** (`#ffffee` exactly the reference's #1
+colour, `#002233` exactly its #2) while the page looked nothing like it. An
+aggregate can agree on palette and light/dark ratio while the *composition* is
+completely different. Matching by summary statistics was the wrong instrument.
+
+#### What replaced it: a coarse ASCII block map
+
+Both images are rendered in headless Chrome, downsampled to a **100×34 grid**,
+and each cell classified by hue/luminance into a single character, printed as
+text:
+
+```
+legend: " "cream .light :mid +dark #black | G green B blue Y gold/amber R red/violet
+```
+
+That is readable without any vision capability, and it exposed four differences
+that no histogram had shown:
+
+| # | What the block map revealed | Why the stats missed it |
+|---|---|---|
+| 1 | The reference's dark top bar is **one thin row** (~3% of height); its three cream columns run from row 1 to row 33, edge to edge | Same palette, same light/dark ratio |
+| 2 | My build had a **full-width scenic hero band** across the top ~24% of the viewport | The band's own pixels are sky/foliage — it *added* the same colours the reference has |
+| 3 | My cards were **near-empty cream** (` ` interiors with hairline dividers); the reference is full of **filled blue bars** (long `BBBBBBBB` runs at rows 1, 10, 19–20, 28) | Blue was counted wherever it appeared, including scenery and chrome |
+| 4 | My content **stopped ~15% short of the viewport bottom**; the reference fills every row | The dark canvas it left behind is the *correct* colour |
+
+A histogram says *how much* of each colour exists. It cannot say **where** it is
+or **what shape** it makes. The block map can, at roughly zero cost.
+
+#### Critical bug found while doing this: the app had no chrome at all
+
+`AppShell` — the icon rail, top status bar, bottom status strip and ambient
+scenery — was **defined but never rendered anywhere**. It was not imported by
+`layout.tsx`, no page wrapped itself in it, and it is not exported through any
+other module. Every route rendered **bare**: no navigation rail, no top bar, no
+footer, no ambient art.
+
+That is the single largest reason the build didn't look like the reference,
+whose most obvious features are exactly those chrome elements. Typechecking
+does not catch an unmounted component — nothing references it, so nothing fails.
+
+**Fix:** `src/app/layout.tsx` now wraps `{children}` in `<AppShell>`.
+
+**Verification:** `document.querySelectorAll('main').length` went **0 → 1**, and
+the measured content box became `x=64, y=36` — i.e. correctly offset by the 64px
+rail and 36px top bar. All 10 in-app routes now report 10 rail links each.
+
+#### The missing visual language: filled blue
+
+Histogramming only the reference's **saturated blue** pixels gave its real blue
+accent family, which the build used nowhere as a UI element:
+
+| Token | Value | Reference share |
+|---|---|---|
+| `steel` | `#486078` | **1.28%** — the dominant blue, used for filled meters/pills |
+| `steel-deep` | `#304860` | 0.34% |
+| `steel-soft` | `#607890` | 0.30% |
+| `sky-deep` / `sky-mid` / `sky-bright` / `sky-pale` | `#60a8f0` → `#a8d8f0` | sky ramp |
+
+New primitives built from them: `.pixel-meter` (blue track fill), `.pixel-row`
+(hairline dense row), `.pixel-panel-blue`, plus `MeterRow` and `Row` in
+`ui.tsx`. `ProgressBar` and `Badge` gained `steel`/`sky` variants.
+
+#### Home rebuilt as a dense dashboard
+
+| Change | Detail |
+|---|---|
+| **Hero band removed** | The tall full-width scenic strip is gone; the reference has none |
+| **Slim headline strip** | Company name, mission, autonomy policy, status, simulated tag — replaces the hero |
+| **Full-height columns** | Root is `lg:h-[calc(100vh-86px)]` with `overflow-hidden`; each column is a flex stack and the last card scrolls internally, so the dashboard fills exactly one viewport with no page scroll |
+| **Reference gutters** | The reference leaves ~**60px** dark gutters between columns (vs the ~12px a normal grid uses). Set to `lg:gap-14` (56px) |
+| **Blue meters throughout** | Treasury spend, mission spend, external allocation, agents, ASPs, missions completed, roster readiness, per-agent success rate |
+| **Denser content** | Added a Recent Missions block; 3 stacked blocks per column |
+| **Scenery relocated** | Environmental art now sits as an **in-card strip** (Treasury) instead of a full-width band — the spec's environmental identity without the composition the reference lacks |
+
+#### Measured result (both at 1111×748 CSS px)
+
+| | rail | column | gutter | top bar | content rows |
+|---|---|---|---|---|---|
+| reference | 61px | 308px | 60px | ~22px | 1–33 (full) |
+| this build | 64px | 301px | 56px | 36px | 1–33 (full) |
+
+Rendered block maps are now structurally similar: a thin chrome row, then three
+cream columns with wide dark gutters, blue-filled elements inside each column,
+and content reaching the bottom edge.
+
+#### Honest correction to §3.6
+
+§3.6 claimed the redesign had "matched" the reference on the strength of the
+palette and column-count metrics. **That claim was overstated** — the palette did
+match, the composition did not, and the shell that the reference's whole look
+depends on was never mounted. §3.6 is left in place as the record of what was
+done and believed at the time; this section supersedes its conclusions.
+
 ---
 
 ## 4. Verification log
@@ -242,6 +344,10 @@ the image.
 | End-to-end smoke test (real HTTP against a live server) | ✅ Passed |
 | LLM planning live (OpenRouter free model) | ✅ Real, mission-specific objectives |
 | LLM failover under a `503` | ✅ Failed over automatically, mission completed |
+| Shell mounted on every route | ✅ `main` present + 10 rail links on all 10 in-app routes |
+| Console errors / failed requests (all 10 routes, 1111×748) | ✅ Zero of each |
+| Reference block-map comparison | ✅ Rail 64 / column 301 / gutter 56 / content fills viewport (reference: 61 / 308 / 60 / fills) |
+| README screenshots | ✅ All 11 regenerated against the fixed UI |
 | Screenshot capture of all 11 pages | ✅ Real rendered content (home 9 KB → 126 KB after fixes) |
 | Post-fix research-mission run | ✅ Hired `MarketMind Labs` (Research/A2A/$0.50), verified 100/100, settled, memory + reputation written |
 | DB ground truth for that run | ✅ Mission `COMPLETED` 100%, 4/4 tasks, `spend_cents = 50`, payment `SETTLED` |
