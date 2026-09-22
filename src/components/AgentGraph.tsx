@@ -73,29 +73,31 @@ export function AgentGraph({ companyId }: { companyId: string }) {
     );
   }
 
-  // Layout: CEO center, internal agents in a ring, external providers outside.
-  const W = 560;
-  const H = 320;
-  const cx = W / 2;
-  const cy = H / 2;
+  // Layout: CEO center, internal agents in a ring, external ASPs in a
+  // right-hand column (a ring clipped past the viewBox once).
+  const W = 620;
+  const H = 380;
+  const cx = 300;
+  const cy = 190;
   const internal = data.nodes.filter((n) => n.type === "INTERNAL");
   const external = data.nodes.filter((n) => n.type === "EXTERNAL");
 
   const pos = new Map<string, { x: number; y: number }>();
   internal.forEach((n, i) => {
     if (n.role === "CEO") {
-      pos.set(n.id, { x: cx, y: cy });
+      pos.set(n.id, { x: cx - 40, y: cy });
     } else {
       const others = internal.filter((x) => x.role !== "CEO").length;
       const idx = internal.filter((x) => x.role !== "CEO").findIndex((x) => x.id === n.id);
       const angle = (idx / Math.max(1, others)) * Math.PI * 2 - Math.PI / 2;
-      pos.set(n.id, { x: cx + Math.cos(angle) * 130, y: cy + Math.sin(angle) * 95 });
+      pos.set(n.id, { x: cx - 40 + Math.cos(angle) * 130, y: cy + Math.sin(angle) * 100 });
     }
   });
-  external.forEach((n, i) => {
-    const angle = (i / Math.max(1, external.length)) * Math.PI * 2 - Math.PI / 2 + 0.4;
-    pos.set(n.id, { x: cx + Math.cos(angle) * 240, y: cy + Math.sin(angle) * 135 });
-  });
+  {
+    const gapY = Math.min(150, (H - 150) / Math.max(1, external.length - 1 || 1));
+    const startY = cy - ((external.length - 1) * gapY) / 2;
+    external.forEach((n, i) => pos.set(n.id, { x: cx + 240, y: startY + i * gapY }));
+  }
 
   return (
     <Card className="p-3">
@@ -118,7 +120,13 @@ export function AgentGraph({ companyId }: { companyId: string }) {
                 opacity={0.7}
               />
               {hired ? (
-                <text x={(a.x + b.x) / 2} y={(a.y + b.y) / 2 - 4} fontSize="9" fill="#b58430" textAnchor="middle" className="font-pixel">
+                <text
+                  x={a.x + (b.x - a.x) * 0.62}
+                  y={a.y + (b.y - a.y) * 0.62 - 10}
+                  fontSize="9"
+                  fill="#b58430"
+                  textAnchor="middle"
+                >
                   hire
                 </text>
               ) : null}
@@ -131,16 +139,16 @@ export function AgentGraph({ companyId }: { companyId: string }) {
           const color = ROLE_COLOR[n.role] ?? "#51625a";
           return (
             <g key={n.id} transform={`translate(${p.x},${p.y})`}>
-              <rect x={-46} y={-20} width={92} height={40} rx={3} fill="#f7f1e3" stroke="#143329" strokeWidth={2} />
-              <rect x={-46} y={-20} width={6} height={40} fill={color} />
-              <text x={-36} y={4} fontSize="14">
+              <rect x={-58} y={-21} width={116} height={42} rx={3} fill="#f7f1e3" stroke="#143329" strokeWidth={2} />
+              <rect x={-58} y={-21} width={6} height={42} fill={color} />
+              <text x={-46} y={4} fontSize="14">
                 {n.avatar}
               </text>
-              <text x={-18} y={-2} fontSize="9.5" fontWeight="600" fill="#1d2b26">
-                {n.label.length > 13 ? n.label.slice(0, 12) + "…" : n.label}
+              <text x={-28} y={-2} fontSize="9.5" fontWeight="600" fill="#1d2b26">
+                {n.label.length > 17 ? n.label.slice(0, 16) + "…" : n.label}
               </text>
-              <text x={-18} y={10} fontSize="7.5" fill="#51625a">
-                {n.type === "EXTERNAL" ? "external ASP" : n.role.toLowerCase()}
+              <text x={-28} y={10} fontSize="7.5" fill="#51625a">
+                {n.type === "EXTERNAL" ? "external ASP · hired" : n.role.toLowerCase()}
               </text>
             </g>
           );

@@ -4,13 +4,25 @@ import { missions, agents } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { runMission } from "@/lib/engine/orchestrator";
 import { bootstrap } from "../../../../bootstrap";
+import { rateLimit, clientKey, tooMany, checkAndSetIdempotency } from "@/lib/security";
+import { z } from "zod";
 
 // POST /api/companies/:id/goals/execute (spec §15) — kicks off the CEO
 // orchestration loop in the background; the UI follows via SSE.
 export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+  if (!rateLimit(clientKey(req, "execute"), 10)) return tooMany();
   await bootstrap();
   const { id } = await ctx.params;
-  const body = (await req.json().catch(() => ({}))) as { missionId?: string; objective?: string };
+  const parsed = z
+    .object({ missionId: z.string().max(64).optional(), objective: z.string().max(240).optional() })
+    .safeParse(await req.json().catch(() => ({})));
+  if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  const body = parsed.data;
+
+  // Idempotency (spec §19): a double-click must not double-run the loop.
+  if (!checkAndSetIdempotency(`execute:${id}:${body.missionId ?? "new"}`)) {
+    return NextResponse.json({ error: "duplicate_request" }, { status: 409 });
+  }
 
   const company = db.select().from(missions).where(eq(missions.companyId, id)).get();
   let missionId = body.missionId;

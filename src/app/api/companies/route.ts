@@ -1,28 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { companies, missions, agents } from "@/lib/db/schema";
+import { companies, missions, agents, tasks } from "@/lib/db/schema";
 import { newId, emitEvent } from "@/lib/events/service";
 import { eq } from "drizzle-orm";
 import { bootstrap } from "../bootstrap";
+import { rateLimit, clientKey, tooMany } from "@/lib/security";
+import { z } from "zod";
 
 // POST /api/companies (spec §15) — Create Company (spec §8)
+const createSchema = z.object({
+  name: z.string().max(80).optional(),
+  description: z.string().max(300).optional(),
+  primaryGoal: z.string().max(240).optional(),
+  budgetUsd: z.number().min(1).max(1000).optional(),
+  autonomyPolicy: z.enum(["ASK_BEFORE_HIRING", "AUTO_HIRE_BELOW_BUDGET", "FULLY_AUTONOMOUS"]).optional(),
+});
+
 export async function POST(req: NextRequest) {
+  if (!rateLimit(clientKey(req, "companies"), 10)) return tooMany();
   await bootstrap();
-  const body = (await req.json()) as {
-    name?: string;
-    description?: string;
-    primaryGoal?: string;
-    budgetUsd?: number;
-    autonomyPolicy?: string;
-  };
+  const parsed = createSchema.safeParse(await req.json().catch(() => ({})));
+  if (!parsed.success) {
+    return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  }
+  const body = parsed.data;
 
   const name = (body.name ?? "").trim() || "My Company";
   const goal = (body.primaryGoal ?? "").trim() || "Launch our product and get first 100 users";
-  const policy = ["ASK_BEFORE_HIRING", "AUTO_HIRE_BELOW_BUDGET", "FULLY_AUTONOMOUS"].includes(
-    body.autonomyPolicy ?? ""
-  )
-    ? body.autonomyPolicy!
-    : "ASK_BEFORE_HIRING";
+  const policy = body.autonomyPolicy ?? "ASK_BEFORE_HIRING";
   const budget = Math.max(10, Math.round((body.budgetUsd ?? 10) * 100));
 
   const companyId = newId("co");
@@ -90,6 +95,15 @@ export async function POST(req: NextRequest) {
     .values({ id: missionId, companyId, objective: goal, status: "DRAFT", priority: "HIGH" })
     .run();
 
+  emitEvent({
+    companyId,
+    missionId,
+    type: "TASK_CREATED",
+    actorName: "Founder",
+    title: `Company "${name}" created`,
+    detail: `Mission drafted: ${goal}`,
+  });
+
   return NextResponse.json({ companyId, missionId });
 }
 
@@ -101,10 +115,16 @@ export async function GET() {
   const newest = rows[rows.length - 1];
   const missionRows = db.select().from(missions).where(eq(missions.companyId, newest.id)).all();
   const agentRows = db.select().from(agents).where(eq(agents.companyId, newest.id)).all();
+  // External "agents" are ASPs the company actually hired — derived from
+  // outsourced task rows, not from a counter we'd have to remember to bump.
+  const taskRows = db.select().from(tasks).where(eq(tasks.companyId, newest.id)).all();
+  const hiredProviders = new Set(
+    taskRows.filter((t) => t.isOutsourced && t.externalProviderId).map((t) => t.externalProviderId as string),
+  );
   return NextResponse.json({
     company: newest,
     missions: missionRows,
     agentCount: agentRows.filter((a) => a.type === "INTERNAL").length,
-    externalCount: agentRows.filter((a) => a.type === "EXTERNAL").length,
+    externalCount: hiredProviders.size,
   });
 }

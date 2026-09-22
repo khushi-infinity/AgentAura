@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { agents, tasks, missions } from "@/lib/db/schema";
+import { agents, tasks, missions, payments } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { bootstrap } from "../../../bootstrap";
 
@@ -23,15 +23,24 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
     avatar: a.avatar,
   }));
 
-  // External provider nodes for outsourced tasks.
+  // External provider nodes for outsourced tasks. Names come from real
+  // settlement rows; the raw provider id is only a last-resort fallback.
+  const paidNames = new Map<string, string>();
+  for (const p of db.select().from(payments).where(eq(payments.companyId, id)).all()) {
+    if (p.providerId && p.providerName) paidNames.set(p.providerId, p.providerName);
+  }
+
   const extSeen = new Map<string, { id: string; name: string }>();
   for (const t of recentTasks) {
     if (t.isOutsourced && t.externalProviderId && !extSeen.has(t.externalProviderId)) {
-      extSeen.set(t.externalProviderId, { id: t.externalProviderId, name: t.externalProviderId });
+      const name =
+        paidNames.get(t.externalProviderId) ??
+        t.externalProviderId.replace(/^prov_/, "").replace(/[-_]/g, " ");
+      extSeen.set(t.externalProviderId, { id: t.externalProviderId, name });
     }
   }
   for (const [pid, p] of extSeen) {
-    nodes.push({ id: pid, label: p.name.replace("prov_", "ASP: "), role: "EXTERNAL", type: "EXTERNAL", status: "IDLE", avatar: "🌐" });
+    nodes.push({ id: pid, label: p.name, role: "EXTERNAL", type: "EXTERNAL", status: "IDLE", avatar: "🌐" });
   }
 
   type Edge = { from: string; to: string; kind: string; taskId?: string };

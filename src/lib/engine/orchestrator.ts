@@ -20,6 +20,7 @@ import type { ProviderOffer } from "@/lib/types";
 import type { TaskStatus } from "@/lib/db/schema";
 import { detectGap } from "@/lib/agents/gap";
 import { generateJson } from "@/lib/llm/provider";
+import { scrubExternalContent, envelopeExternal } from "@/lib/injection";
 
 // ─────────────────────────────────────────────────────────────────────
 // Agent engine (spec §9/§10/§14/§20).
@@ -749,12 +750,18 @@ function writeMemory(
   ctx: Ctx,
   taskId: string,
   provider: ProviderOffer,
-  content: string,
+  rawContent: string,
   verification: { passed: boolean; score: number } | null,
   isDemo: boolean
 ) {
   const memId = newId("mem");
   const task = db.select().from(tasks).where(eq(tasks.id, taskId)).get();
+  // External output is untrusted (spec §19): scrub instruction-like text
+  // and store inside a data-only envelope before it can feed prompts.
+  const { text, flagged } = scrubExternalContent(rawContent);
+  const content = envelopeExternal(
+    `${provider.providerName} · ${task?.objective.slice(0, 80) ?? ""}`, text
+  );
   db.insert(memoryItems)
     .values({
       id: memId,
@@ -767,7 +774,7 @@ function writeMemory(
       sourceAgentName: actorName(task?.role ?? "RESEARCH"),
       sourceTaskId: taskId,
       externalProviderId: provider.providerId,
-      confidence: verification?.passed ? Math.max(60, verification.score) : 45,
+      confidence: flagged ? Math.min(verification?.passed ? 60 : 45, 55) : verification?.passed ? Math.max(60, verification.score) : 45,
       verificationStatus: verification?.passed ? "VERIFIED" : "UNVERIFIED",
       tags: JSON.stringify(["external", provider.category.toLowerCase(), provider.serviceType.toLowerCase()]),
     })

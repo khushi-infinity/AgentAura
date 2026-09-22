@@ -8,9 +8,13 @@ interface Rule {
   gap: Omit<CapabilityGap, "description">;
 }
 
+// NOTE: every pattern is word-bounded. Unanchored fragments silently
+// misfire (e.g. /ui/ matches "acq-ui-sition", which once routed a research
+// task to a UI vendor). Keep \b wrappers on every alternation.
 const RULES: Rule[] = [
   {
-    keywords: /competitor|market research|market analysis|market siz|competitive/i,
+    keywords:
+      /\b(?:competitor|competitive|market research|market analysis|market siz|user research|user interview|user studies|survey|interview|research|validate messaging)\b/i,
     gap: {
       requiredCapability: "deep competitor & market research",
       keywords: ["research", "competitors", "analysis", "market"],
@@ -18,7 +22,7 @@ const RULES: Rule[] = [
     },
   },
   {
-    keywords: /content|blog|copy|newsletter|social post|thread/i,
+    keywords: /\b(?:content|blog|copy|copywriting|newsletter|social post|thread|launch assets)\b/i,
     gap: {
       requiredCapability: "launch content production",
       keywords: ["content", "writing", "marketing", "social"],
@@ -26,7 +30,7 @@ const RULES: Rule[] = [
     },
   },
   {
-    keywords: /landing page|website|frontend|ui|design/i,
+    keywords: /\b(?:landing page|website|web app|front[- ]end|ui|ux|design)\b/i,
     gap: {
       requiredCapability: "landing page design & build",
       keywords: ["development", "design", "landing-page", "frontend"],
@@ -34,7 +38,7 @@ const RULES: Rule[] = [
     },
   },
   {
-    keywords: /video|demo reel|motion/i,
+    keywords: /\b(?:video|demo reel|motion|storyboard)\b/i,
     gap: {
       requiredCapability: "product demo video production",
       keywords: ["design", "video", "demo"],
@@ -42,7 +46,7 @@ const RULES: Rule[] = [
     },
   },
   {
-    keywords: /translation|localiz|localis/i,
+    keywords: /\b(?:translation|translate|localiz|localis)\b/i,
     gap: {
       requiredCapability: "translation & localization",
       keywords: ["operations", "translation", "localization"],
@@ -50,7 +54,7 @@ const RULES: Rule[] = [
     },
   },
   {
-    keywords: /onchain|on-chain|smart money|x layer|token analytics/i,
+    keywords: /\b(?:onchain|on-chain|smart money|x layer|token analytics)\b/i,
     gap: {
       requiredCapability: "on-chain analytics on X Layer",
       keywords: ["research", "onchain", "xlayer", "analytics"],
@@ -58,7 +62,7 @@ const RULES: Rule[] = [
     },
   },
   {
-    keywords: /campaign|go-to-market|gtm|positioning|growth/i,
+    keywords: /\b(?:campaign|go-to-market|gtm|positioning|growth)\b/i,
     gap: {
       requiredCapability: "go-to-market campaign planning",
       keywords: ["marketing", "growth", "campaigns", "gtm"],
@@ -66,7 +70,7 @@ const RULES: Rule[] = [
     },
   },
   {
-    keywords: /funnel|metrics|analytics dashboard|reporting/i,
+    keywords: /\b(?:funnel|metrics|analytics|dashboard|reporting)\b/i,
     gap: {
       requiredCapability: "metrics & funnel analysis",
       keywords: ["operations", "analytics", "funnel", "reporting"],

@@ -24,11 +24,14 @@ interface Mission {
 interface CompanyData {
   company: { id: string; name: string; mission: string | null; autonomyPolicy: string };
   missions: Mission[];
+  agentCount?: number;
+  externalCount?: number;
 }
 
 function HomeInner() {
   const params = useSearchParams();
   const [company, setCompany] = useState<CompanyData | null>(null);
+  const [balanceCents, setBalanceCents] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +40,14 @@ function HomeInner() {
         // Single-company demo: use seeded company unless a newer one exists.
         const res = await fetch("/api/companies");
         if (res.ok) {
-          setCompany((await res.json()) as CompanyData);
+          const data = (await res.json()) as CompanyData;
+          setCompany(data);
+          // Wallet balance is read live too — never hardcode money.
+          const w = await fetch(`/api/wallet?companyId=${data.company.id}`);
+          if (w.ok) {
+            const wj = (await w.json()) as { wallet?: { availableCents?: number } };
+            setBalanceCents(wj.wallet?.availableCents ?? null);
+          }
           return;
         }
         // Fall back to seeding a browse-friendly state via onboarding.
@@ -47,6 +57,22 @@ function HomeInner() {
     };
     load();
   }, []);
+
+  // Re-read the wallet while a mission is running so the card stays honest.
+  useEffect(() => {
+    if (!company) return;
+    const id = setInterval(async () => {
+      try {
+        const w = await fetch(`/api/wallet?companyId=${company.company.id}`);
+        if (!w.ok) return;
+        const wj = (await w.json()) as { wallet?: { availableCents?: number } };
+        setBalanceCents(wj.wallet?.availableCents ?? null);
+      } catch {
+        /* noop */
+      }
+    }, 5000);
+    return () => clearInterval(id);
+  }, [company]);
 
   if (loading) {
     return <div className="p-10 text-cream/60 text-sm">Loading your company…</div>;
@@ -122,7 +148,9 @@ function HomeInner() {
             </PixelLink>
             <PixelLink href="/wallet" variant="ghost" className="!justify-start !px-3 !py-3">
               💰 Wallet
-              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">4.33 USD₮0</span>
+              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">
+                {balanceCents === null ? "—" : `${(balanceCents / 100).toFixed(2)} USD₮0`}
+              </span>
             </PixelLink>
             <PixelLink href="/analytics" variant="ghost" className="!justify-start !px-3 !py-3">
               📊 Analytics
@@ -134,8 +162,13 @@ function HomeInner() {
         {/* Right column */}
         <div className="space-y-4 min-w-0">
           <div className="grid grid-cols-2 gap-3">
-            <Stat icon="🤖" value={String(5)} label="Active Agents" />
-            <Stat icon="🌐" value={String(2)} label="External Agents" accent="text-gold-deep" />
+            <Stat icon="🤖" value={String(company.agentCount ?? 0)} label="Active Agents" />
+            <Stat
+              icon="🌐"
+              value={String(company.externalCount ?? 0)}
+              label="External Agents"
+              accent="text-gold-deep"
+            />
           </div>
           <LiveActivity companyId={company.company.id} />
         </div>
