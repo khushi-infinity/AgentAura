@@ -62,7 +62,12 @@ function CreateInner() {
           <span className="text-3xl" aria-hidden><PixelSprite glyph={AGENT_MARK} size={32} /></span>
           <div className="font-pixel text-cream text-lg">Create Your Company</div>
         </div>
-        <p className="text-cream/70 text-sm mb-6">Set up your autonomous AI workforce.</p>
+        <p className="text-cream/70 text-sm mb-5">Set up your autonomous AI workforce.</p>
+
+        {/* Page hero: environmental pixel-art strip (spec §7). */}
+        <div className="relative overflow-hidden border-2 border-[#01141c] mb-6 h-28">
+          <PixelScenery variant="meadow" />
+        </div>
 
         <div className="grid md:grid-cols-[1.2fr_1fr] gap-6">
           {/* Form */}

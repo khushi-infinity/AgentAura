@@ -375,11 +375,26 @@ robots for agents, shields for verification, magnifiers for research, globes for
 external ASPs. Agent sprites are chosen by *role*, so an agent always looks the
 same everywhere it appears.
 
-**Environment** — pure CSS/SVG pixel scenery (`PixelScenery`): sky gradients,
-clouds, mountains, treelines, lakes and flowers, per the spec's natural-scenery
-brief (forests, mountains, lakes, cliffs, distant scenery — serene and calm, no
-neon, no floating islands). Interactive UI stays real HTML/CSS; no pixel filter
-is applied to the site.
+**Environment** — pure SVG pixel scenery, on the spec's natural-scenery brief
+(forests, mountains, lakes, cliffs, waterfalls, flowers, ruins, distant scenery —
+serene and calm; no neon, no floating islands, no medieval village, no humans).
+Seven scenes share a layered system of sky gradient, sun, clouds, birds, distant
+ranges, treelines, water reflections, waterfall mist, stone ruins and wildflowers:
+
+| Page | Scene | | Page | Scene |
+|---|---|---|---|---|
+| Home | forest | | Marketplace | cliff |
+| Onboarding | mountain | | Memory | ruins (archives) |
+| Create · Analytics · Settings | meadow | | Wallet | waterfall (flows of value) |
+| Missions | mountain | | Agents | lake |
+| Mission detail | forest | | Success | mountain |
+
+Scenes are chosen semantically rather than decoratively — Memory is *ruins*, the
+Wallet is a *waterfall*. An `AmbientScenery` layer (transparent-sky distant range
+and treeline) also sits behind all page content at 22% opacity, so the environment
+is felt in the canvas itself. That implements the spec's split: **70–80%
+functional UI, 20–30% environmental identity**. Interactive UI stays real HTML/CSS;
+no pixel filter is applied to the site.
 
 ## 9. Getting started
 

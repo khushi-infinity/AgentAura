@@ -23,7 +23,7 @@ export default function OnboardingPage() {
       {/* Environmental hero */}
       <div className="relative flex-1 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0" aria-hidden>
-          <PixelScenery variant="forest" />
+          <PixelScenery variant="mountain" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-forest/40 via-forest/20 to-forest" aria-hidden />
 

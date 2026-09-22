@@ -74,7 +74,7 @@ export default function MissionDetailPage() {
       <Hero
         title="Mission"
         subtitle={m.objective}
-        art={<PixelScenery variant="mountain" />}
+        art={<PixelScenery variant="forest" />}
       />
       <div className="p-6 grid xl:grid-cols-[1.7fr_1fr] gap-5 items-start">
         <div className="space-y-5 min-w-0">

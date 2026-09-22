@@ -34,7 +34,7 @@ export default function SettingsPage() {
       <Hero
         title="Settings"
         subtitle="Customize your experience and integrations"
-        art={<PixelScenery variant="forest" />}
+        art={<PixelScenery variant="meadow" />}
       />
       <div className="p-6 grid xl:grid-cols-2 gap-5 items-start">
         {/* Profile */}

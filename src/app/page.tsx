@@ -105,7 +105,9 @@ function HomeInner() {
 
       {/* 3 equal columns from lg (1024px): the reference shows three cream
           cards side by side at ~1111px viewport width. */}
-      <div className="p-6 grid gap-8 lg:grid-cols-3 items-start">
+      {/* Content fills most of the frame so the functional UI dominates and
+          the dark canvas only frames it (spec §6). */}
+      <div className="p-3 grid gap-3 lg:grid-cols-3 items-start">
         {/* ── Column 1: mission + treasury ── */}
         <div className="space-y-5 min-w-0">
           <Card className="overflow-hidden">

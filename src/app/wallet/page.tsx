@@ -77,7 +77,7 @@ export default function WalletPage() {
       <Hero
         title="Wallet"
         subtitle="Manage your funds, spending and agent transactions"
-        art={<PixelScenery variant="lake" />}
+        art={<PixelScenery variant="waterfall" />}
       />
       <div className="p-6 space-y-5">
         {loading ? (

@@ -54,7 +54,7 @@ export default function AnalyticsPage() {
       <Hero
         title="Analytics"
         subtitle="Insights that turn effort into impact"
-        art={<PixelScenery variant="mountain" />}
+        art={<PixelScenery variant="meadow" />}
       />
       <div className="p-6 space-y-5">
         <div className="flex items-center gap-2">

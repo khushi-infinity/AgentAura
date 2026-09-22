@@ -25,6 +25,7 @@
 | API surface (15 routes) | ✅ Done |
 | Pixel UI system + all 12 pages | ✅ Done |
 | UI matched to the supplied reference (palette + shell + 3-col grid) | ✅ Done, metric-verified |
+| Environmental art: 7 scenes + ambient layer, assigned per page | ✅ Done |
 | Hardening (validation, rate limit, idempotency, injection scrub, error boundary) | ✅ Done |
 | Free-tier LLM (live, with failover) | ✅ Done & verified |
 | README (detailed, judge-facing) | ✅ Done |
@@ -191,6 +192,44 @@ column. Moved to `lg` (1024px).
 **Still not matched:** the reference contains noticeably more mid-tone
 atmospheric imagery (~38% mid-tones vs my ~13%), and I cannot verify card
 interiors, labels or hierarchy without being able to see the image.
+
+### 3.7 Environmental art layer
+
+The spec's §6 scenery brief was under-built: each page had one thin hero strip.
+Now there is a real environment system.
+
+- **Seven scenes**, all pure SVG on a crisp pixel grid, covering exactly the
+  spec's natural subjects: **forest, mountain, lake, cliff, waterfall, ruins,
+  meadow** — with layered sky gradient, sun, clouds, birds, distant ranges,
+  treelines, reflections, mist, stone ruins and wildflowers. No neon, no floating
+  islands, no medieval village, no humans.
+- **Assigned semantically**, not decoratively: Memory is *ruins* (archives),
+  Wallet is *waterfall* (flows of value), Marketplace is *cliff*, Agents is
+  *lake*, Onboarding is *mountain*, Analytics/Settings/Create are *meadow*.
+- **AmbientScenery** — a transparent-sky distant range and treeline rendered
+  behind all page content at 22% opacity, so the environment is felt in the
+  canvas without crowding the UI. This implements the spec's 70–80% functional /
+  20–30% environmental split.
+- Caught while doing this: the **Create page was rendering no scenery at all** —
+  it imports `PixelScenery` but never used it, and being a bare route (outside the
+  shell) it had neither hero nor ambient art. Now has a hero strip.
+
+**Honest state of the reference match.** Re-measured against the reference at the
+same 1111×748 viewport, splitting pixels into light / dark / mid:
+
+| | light | dark | mid |
+|---|---|---|---|
+| reference | 55% | 28% | 17% |
+| this build | 50% | 41% | 9% |
+| delta | **5** | 13 | 8 |
+
+The palette still matches exactly (`#ffffee` cream, `#002233` dark teal-blue) and
+the light share is within 5 points. The build is **darker** than the reference:
+part of that is fixed chrome (rail, top bar, footer, card headers, which the spec
+requires to be dark), and part is that I cannot know how densely the reference
+fills its canvas with cards. Tightening the grid moved dark 44% → 41% before
+diminishing returns; further tuning would be guessing without being able to see
+the image.
 
 ---
 

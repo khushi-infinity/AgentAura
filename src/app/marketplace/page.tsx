@@ -69,7 +69,7 @@ export default function MarketplacePage() {
       <Hero
         title="Agent Marketplace"
         subtitle="Discover and hire specialized agents"
-        art={<PixelScenery variant="mountain" />}
+        art={<PixelScenery variant="cliff" />}
       />
       <div className="p-6">
         <div className="flex items-center gap-3 mb-4 flex-wrap">

@@ -64,7 +64,7 @@ export default function MemoryPage() {
       <Hero
         title="Company Memory"
         subtitle="All learnings, context and knowledge in one place"
-        art={<PixelScenery variant="lake" />}
+        art={<PixelScenery variant="ruins" />}
       />
       <div className="p-6">
         {/* Stats */}
