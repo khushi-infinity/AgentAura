@@ -109,7 +109,11 @@ async function planMission(missionObjective: string): Promise<PlanStepSpec[]> {
       .map((s) => ({
         objective: s.objective,
         role: s.role,
-        budgetCents: Number.isFinite(s.budgetCents) ? Math.max(0, Math.round(s.budgetCents)) : 0,
+        // Server-side budget clamp (spec §19): free models routinely
+        // hallucinate oversized budgets — never trust them past $1/step.
+        budgetCents: Number.isFinite(s.budgetCents)
+          ? Math.max(0, Math.min(100, Math.round(s.budgetCents)))
+          : 0,
       }));
     if (clean.length >= 3) return clean.slice(0, 5);
   }

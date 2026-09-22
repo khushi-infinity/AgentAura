@@ -29,12 +29,48 @@ interface JsonOptions {
 
 /** Ask the LLM for a JSON object; returns null on any failure.
  *
- * Free-model friendly: does NOT request response_format (many free tiers
- * ignore or reject it) and tolerates markdown fences / surrounding prose
- * in the reply. Callers must treat null as "use deterministic fallback".
+ * Free-model friendly:
+ *  - No response_format requirement (many free tiers ignore/reject it)
+ *  - Tolerates markdown fences / surrounding prose in the reply
+ *  - Retries and fails over across free models when a provider is
+ *    overloaded (free tiers return 503 intermittently)
+ * Callers must treat null as "use deterministic fallback".
  */
+
+// Known-good free fallbacks on OpenRouter (verified 2026-09-22; free
+// tier rotates, so keep this list current). The env-configured model is
+// always tried first.
+const FALLBACK_MODELS = [
+  "thinkingmachines/inkling-small:free",
+  "qwen/qwen3.8-27b:free",
+  "nex-agi/nex-n2.5-pro:free",
+  "nvidia/nemotron-3.5-lightning:free",
+];
+
+let preferredModel: string | null = null; // sticky winner within this process
+
 export async function generateJson<T>(opts: JsonOptions): Promise<T | null> {
   if (!process.env.OPENAI_API_KEY) return null;
+
+  const candidates = [preferredModel, llmStatus().model, ...FALLBACK_MODELS].filter(
+    (m, i, arr): m is string => Boolean(m) && arr.indexOf(m) === i
+  );
+
+  for (const model of candidates) {
+    // Two attempts per model: free providers flap under load.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const result = await attemptJson<T>(model, opts);
+      if (result !== null) {
+        preferredModel = model;
+        return result;
+      }
+      await new Promise((r) => setTimeout(r, 700));
+    }
+  }
+  return null;
+}
+
+async function attemptJson<T>(model: string, opts: JsonOptions): Promise<T | null> {
   try {
     const res = await fetch(`${llmStatus().baseUrl}/chat/completions`, {
       method: "POST",
@@ -43,7 +79,7 @@ export async function generateJson<T>(opts: JsonOptions): Promise<T | null> {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: llmStatus().model,
+        model,
         messages: [
           { role: "system", content: opts.system },
           { role: "user", content: opts.user },
@@ -51,7 +87,7 @@ export async function generateJson<T>(opts: JsonOptions): Promise<T | null> {
         max_tokens: opts.maxTokens ?? 700,
         temperature: opts.temperature ?? 0.4,
       }),
-      signal: AbortSignal.timeout(30_000),
+      signal: AbortSignal.timeout(20_000),
     });
     if (!res.ok) return null;
     const data = (await res.json()) as {
