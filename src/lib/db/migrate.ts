@@ -20,7 +20,7 @@ const STATEMENTS = [
     name TEXT NOT NULL,
     role TEXT NOT NULL,
     type TEXT NOT NULL DEFAULT 'INTERNAL',
-    avatar TEXT NOT NULL DEFAULT '🤖',
+    avatar TEXT NOT NULL DEFAULT 'agents',
     description TEXT NOT NULL DEFAULT '',
     capabilities TEXT NOT NULL DEFAULT '[]',
     status TEXT NOT NULL DEFAULT 'IDLE',

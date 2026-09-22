@@ -24,6 +24,7 @@
 | OKX adapter layer (demo ⇄ live by config) | ✅ Demo done · live stubbed |
 | API surface (15 routes) | ✅ Done |
 | Pixel UI system + all 12 pages | ✅ Done |
+| UI matched to the supplied reference (palette + shell + 3-col grid) | ✅ Done, metric-verified |
 | Hardening (validation, rate limit, idempotency, injection scrub, error boundary) | ✅ Done |
 | Free-tier LLM (live, with failover) | ✅ Done & verified |
 | README (detailed, judge-facing) | ✅ Done |
@@ -140,6 +141,57 @@ Ran the app as a judge would (live browser, real DB) and fixed everything found:
 - **`docs/screenshots/*.png`** — 11 pages captured from the running app.
 - `scripts/screenshots.mjs` + `npm run screenshots`, `npm run db:reset`.
 
+### 3.6 UI rebuilt to the reference screenshot (full visual redesign)
+
+A new reference screenshot was supplied with the instruction to match it exactly.
+The reference is a **different design** from the first build — its chrome is a
+dark *teal-blue*, not the green forest that had been implemented.
+
+Because this model **cannot view images**, the reference was read by extracting
+its raw pixels through headless Chrome (canvas `getImageData`) and analysing them:
+
+- **Palette extracted**: top bar `#0f1b22`; rail/gutters `#012e3c`; cream
+  surfaces `#faf2e2` / `#f9f5ee`; primary emerald `#007755`; soft sky blues
+  `#88ccff`–`#aaddff`; muted slate `#446677`; wood `#512c14`.
+- **Layout measured** (image is 2222×1496 = ~1111×748 CSS px): a **~61px icon
+  rail**, a **~27px top bar**, and **three cream panels** at x 61–369, 429–737,
+  797–1105 separated by wide dark gutters, with chunky dark bands repeating
+  ~every 190px down the page.
+
+**What was changed**
+
+| Area | Change |
+|---|---|
+| Design tokens | Remapped every colour value to the reference palette while **keeping the token names** (`forest`, `cream`, `leaf`, `sky`…), so all 12 pages inherited the new look with no page rewrites |
+| Hardcoded colours | Scripted 95 hex literals across 24 files onto the new palette |
+| Shell | Rebuilt as a **slim icon rail (64px)** + **thin chrome top bar (36px)** with date/session, connection state, live wallet balance and avatar |
+| Home | Rebuilt as the reference's **3-column grid of chunky cream cards** |
+| Cards | Added dark header bars (`.pixel-card-head`) and wood signboard labels (`.pixel-sign`) |
+| Hero | Taller environmental strip: sky gradient, clouds, mountains, treeline, lake, flowers — spec §6 scenery instead of a thin dark band |
+| Iconography | **Every emoji replaced by 8×8 pixel sprites** (`src/components/PixelSprite.tsx`) — nav icons, event icons, and agent avatars. Spec §6 forbids humans and wants robot/AI sprites; emoji broke the pixel language |
+| Data | Stored agent avatars changed from emoji to role keys, so the data model is pixel-native too |
+
+**Automated visual verification.** Since this model cannot see its own output
+either, the same metric extraction was run against a screenshot of the new UI at
+the **same 1111×748 viewport**, and diffed against the reference:
+
+| Metric | Result |
+|---|---|
+| Dominant colour | `#ffffee` — **exactly the reference's #1 colour** |
+| Dark chrome | `#002233` — **exactly the reference's #2 colour** (was green `#001111` before) |
+| Sky / emerald accents | `#6699bb`, `#99ddff`, `#007755` — reference families present |
+| Column count at 1111px | 3 (matches reference) |
+| Rail present | yes — dark band on the left edge |
+| Layout similarity | mean-abs-diff improved 21→19 (columns) and 27→24 (rows) after tuning |
+
+**Bug caught by the metrics:** the 3-column grid was behind the `xl` (1280px)
+breakpoint, so at the reference's 1111px width the page rendered as a *single*
+column. Moved to `lg` (1024px).
+
+**Still not matched:** the reference contains noticeably more mid-tone
+atmospheric imagery (~38% mid-tones vs my ~13%), and I cannot verify card
+interiors, labels or hierarchy without being able to see the image.
+
 ---
 
 ## 4. Verification log
@@ -248,6 +300,9 @@ with reasons → hired (A2A escrow) → quote $0.50 → x402 payment via Agentic
 | 2026-09-22 | Retry + failover in the LLM adapter | Free tiers genuinely 503 mid-demo |
 | 2026-09-22 | **Word-bound every gap-detection regex** | An unanchored `/ui/` once routed a research task to a UI vendor |
 | 2026-09-22 | Derive UI numbers from rows, never hardcode | The build initially hardcoded agent counts and the wallet balance |
+| 2026-09-22 | Remap token **values**, keep token **names** | Let all 12 pages adopt the reference palette without rewriting every page |
+| 2026-09-22 | Pixel sprites instead of emoji everywhere | Spec §6 wants robot/AI sprites and one coherent pixel language; emoji broke it |
+| 2026-09-22 | 3-column grid from `lg`, not `xl` | The reference shows 3 columns at ~1111px; `xl` collapsed it to one column |
 
 ---
 

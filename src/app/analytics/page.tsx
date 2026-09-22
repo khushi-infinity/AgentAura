@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite } from "@/components/PixelSprite";
+
 import { useEffect, useState } from "react";
 import { Card, Badge, EmptyState } from "@/components/ui";
 import { Hero, PixelScenery } from "@/components/AppShell";
@@ -62,14 +64,14 @@ export default function AnalyticsPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { icon: "🎯", v: String(missions.length), l: "Missions", d: `${completed} completed` },
-            { icon: "🤖", v: String(agentCount), l: "Internal Agents", d: `${externalCount} external` },
-            { icon: "📋", v: `${doneTasks}/${totalTasks}`, l: "Tasks Done", d: totalTasks ? `${Math.round((doneTasks / totalTasks) * 100)}% rate` : "—" },
-            { icon: "🧠", v: String(memCount), l: "Memories", d: "company knowledge" },
-            { icon: "💰", v: (totalSpend / 100).toFixed(2), l: "Spend (USD₮0)", d: "agent economy" },
+            { icon: "missions", v: String(missions.length), l: "Missions", d: `${completed} completed` },
+            { icon: "agents", v: String(agentCount), l: "Internal Agents", d: `${externalCount} external` },
+            { icon: "check", v: `${doneTasks}/${totalTasks}`, l: "Tasks Done", d: totalTasks ? `${Math.round((doneTasks / totalTasks) * 100)}% rate` : "—" },
+            { icon: "memory", v: String(memCount), l: "Memories", d: "company knowledge" },
+            { icon: "wallet", v: (totalSpend / 100).toFixed(2), l: "Spend (USD₮0)", d: "agent economy" },
           ].map((k) => (
             <Card key={k.l} className="p-4">
-              <div className="text-xl mb-2" aria-hidden>{k.icon}</div>
+              <div className="text-xl mb-2" aria-hidden><PixelSprite name={k.icon} size={24} /></div>
               <div className="font-pixel text-sm">{k.v}</div>
               <div className="pixel-label text-ink-soft mt-1.5">{k.l}</div>
               <div className="text-[10px] text-ink-soft mt-1 opacity-75">{k.d}</div>
@@ -80,13 +82,13 @@ export default function AnalyticsPage() {
         <Card className="p-4">
           <div className="font-pixel text-[10px] mb-4">Mission Activity</div>
           {missions.length === 0 ? (
-            <EmptyState icon="📊" title="No missions yet" />
+            <EmptyState icon="analytics" title="No missions yet" />
           ) : (
             <div className="space-y-3">
               {missions.map((m) => (
                 <div key={m.id} className="flex items-center gap-3">
                   <span className="text-xs w-40 truncate" title={m.id}>{new Date(m.createdAt).toLocaleDateString()}</span>
-                  <div className="flex-1 h-5 bg-parchment2 border border-[#14332933] rounded-sm overflow-hidden">
+                  <div className="flex-1 h-5 bg-parchment2 border border-[#0f2b3333] rounded-sm overflow-hidden">
                     <div className="h-full bg-leaf/80 transition-all" style={{ width: `${Math.max(2, m.progress)}%` }} />
                   </div>
                   <Badge color={m.status === "COMPLETED" ? "leaf" : m.status === "ACTIVE" ? "gold" : "muted"}>
@@ -113,7 +115,7 @@ export default function AnalyticsPage() {
               ].map((r) => (
                 <div key={r.label} className="flex items-center gap-2">
                   <span className="w-24 text-ink-soft">{r.label}</span>
-                  <div className="flex-1 h-4 bg-parchment2 border border-[#14332933] rounded-sm overflow-hidden">
+                  <div className="flex-1 h-4 bg-parchment2 border border-[#0f2b3333] rounded-sm overflow-hidden">
                     <div className={`h-full ${r.color}`} style={{ width: `${r.pct * 4}%` }} />
                   </div>
                   <span className="w-10 text-right text-ink-soft">{r.pct}%</span>

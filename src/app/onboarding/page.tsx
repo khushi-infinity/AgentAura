@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite, AGENT_MARK } from "@/components/PixelSprite";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PixelButton, PixelLink } from "@/components/ui";
@@ -27,7 +29,7 @@ export default function OnboardingPage() {
 
         <div className="relative z-10 w-full max-w-xl px-6">
           <div className="flex items-center gap-3 mb-8 justify-center">
-            <span className="text-4xl animate-float-y" aria-hidden>🤖</span>
+            <span className="text-4xl animate-float-y" aria-hidden><PixelSprite glyph={AGENT_MARK} size={40} /></span>
             <div className="font-pixel text-cream text-xl leading-relaxed drop-shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
               Welcome to AgentAura
             </div>
@@ -46,10 +48,10 @@ export default function OnboardingPage() {
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
               placeholder="e.g. Launch my product and get first 100 users"
-              className="w-full border-2 border-[#143329] bg-parchment rounded-sm p-3 text-sm focus:outline-none focus:border-leaf"
+              className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm p-3 text-sm focus:outline-none focus:border-leaf"
             />
             <div className="flex items-center justify-between mt-4">
-              <span className="pixel-label text-ink-soft hidden sm:block">✨ Ideas are cheap. Execution compounds.</span>
+              <span className="pixel-label text-ink-soft hidden sm:block">Ideas are cheap. Execution compounds.</span>
               <PixelButton onClick={go}>Let&apos;s Build →</PixelButton>
             </div>
           </div>
@@ -57,16 +59,16 @@ export default function OnboardingPage() {
       </div>
 
       {/* Value props strip */}
-      <div className="bg-forest-2 border-t-2 border-[#0a1613]">
+      <div className="bg-forest-2 border-t-2 border-[#01141c]">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 px-6 py-6">
           {[
-            { icon: "🤝", title: "AI Agents", desc: "A coordinated team from day one" },
-            { icon: "🌐", title: "Real Expertise", desc: "Hire specialists from OKX.AI" },
-            { icon: "⚡", title: "Autonomous Execution", desc: "Agents work while you sleep" },
-            { icon: "💎", title: "Real Economic Value", desc: "Verified work, settled onchain" },
+            { icon: "agents", title: "AI Agents", desc: "A coordinated team from day one" },
+            { icon: "EXTERNAL", title: "Real Expertise", desc: "Hire specialists from OKX.AI" },
+            { icon: "send", title: "Autonomous Execution", desc: "Agents work while you sleep" },
+            { icon: "star", title: "Real Economic Value", desc: "Verified work, settled onchain" },
           ].map((v) => (
             <div key={v.title} className="text-center px-2">
-              <div className="text-2xl mb-2" aria-hidden>{v.icon}</div>
+              <div className="text-2xl mb-2" aria-hidden><PixelSprite name={v.icon} size={24} /></div>
               <div className="font-pixel text-[9px] text-leaf-bright">{v.title}</div>
               <div className="text-cream/60 text-xs mt-1.5">{v.desc}</div>
             </div>

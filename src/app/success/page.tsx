@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite } from "@/components/PixelSprite";
+
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, Badge, PixelLink, PixelButton, DemoTag } from "@/components/ui";
@@ -52,8 +54,8 @@ export default function SuccessPage() {
 
         <div className="relative z-10 w-full max-w-2xl">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-3 bg-cream border-2 border-[#143329] rounded-md px-6 py-4 shadow-pixel hero-float">
-              <span className="text-3xl animate-float-y" aria-hidden>🏆</span>
+            <div className="inline-flex items-center gap-3 bg-cream border-2 border-[#0f2b33] rounded-md px-6 py-4 shadow-pixel hero-float">
+              <span className="text-3xl animate-float-y" aria-hidden><PixelSprite name="flag" size={36} /></span>
               <div className="text-left">
                 <div className="font-pixel text-sm">MISSION COMPLETE!</div>
                 <div className="text-xs text-ink-soft mt-1">{data?.mission.objective ?? "Your mission wrapped up."}</div>
@@ -67,13 +69,13 @@ export default function SuccessPage() {
             <Card className="p-5">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { icon: "✅", v: `${data?.mission.completedTasks ?? 0}/${data?.mission.totalTasks ?? 0}`, l: "Tasks Completed" },
-                  { icon: "🤖", v: "5", l: "Agents Involved" },
-                  { icon: "🌐", v: String(outsourced), l: "External Hires" },
-                  { icon: "💰", v: ((data?.mission.spendCents ?? 0) / 100).toFixed(2), l: "Spend (USD₮0)" },
+                  { icon: "check", v: `${data?.mission.completedTasks ?? 0}/${data?.mission.totalTasks ?? 0}`, l: "Tasks Completed" },
+                  { icon: "agents", v: "5", l: "Agents Involved" },
+                  { icon: "EXTERNAL", v: String(outsourced), l: "External Hires" },
+                  { icon: "wallet", v: ((data?.mission.spendCents ?? 0) / 100).toFixed(2), l: "Spend (USD₮0)" },
                 ].map((s) => (
-                  <div key={s.l} className="text-center bg-parchment border-2 border-[#14332933] rounded-sm py-3">
-                    <div className="text-xl mb-1" aria-hidden>{s.icon}</div>
+                  <div key={s.l} className="text-center bg-parchment border-2 border-[#0f2b3333] rounded-sm py-3">
+                    <div className="text-xl mb-1" aria-hidden><PixelSprite name={s.icon} size={20} /></div>
                     <div className="font-pixel text-xs">{s.v}</div>
                     <div className="pixel-label text-ink-soft mt-1.5">{s.l}</div>
                   </div>
@@ -99,7 +101,7 @@ export default function SuccessPage() {
             </Card>
           )}
 
-          <p className="text-center text-cream/60 text-xs mt-6">From idea to impact. Together. 🌲</p>
+          <p className="text-center text-cream/60 text-xs mt-6">From idea to impact. Together.</p>
         </div>
       </div>
     </div>

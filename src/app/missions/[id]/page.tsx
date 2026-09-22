@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite, AgentSprite } from "@/components/PixelSprite";
+
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, Badge, ProgressBar, PixelButton, PixelLink, EmptyState, DemoTag } from "@/components/ui";
@@ -96,7 +98,7 @@ export default function MissionDetailPage() {
           <div className="space-y-3">
             <div className="font-pixel text-[10px] text-cream">Task Breakdown</div>
             {data.tasks.length === 0 ? (
-              <EmptyState icon="📋" title="No tasks yet" hint="Launch the mission from Home to let the CEO plan it." />
+              <EmptyState icon="missions" title="No tasks yet" hint="Launch the mission from Home to let the CEO plan it." />
             ) : (
               data.tasks.map((t) => {
                 const tm = ROLE_META[t.role as AgentRole];
@@ -105,7 +107,7 @@ export default function MissionDetailPage() {
                   <button key={t.id} onClick={() => setSelectedTask(t.id)} className="block w-full text-left">
                     <Card className={`p-3.5 transition-shadow ${active ? "ring-2 ring-leaf" : "hover:shadow-pixel"}`}>
                       <div className="flex items-center gap-3">
-                        <span className="text-xl" aria-hidden>{tm?.avatar ?? "🤖"}</span>
+                        <span className="text-xl" aria-hidden><AgentSprite role={t.role} size={22} /></span>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium truncate">{t.objective}</div>
                           <div className="text-xs text-ink-soft mt-0.5">
@@ -134,19 +136,19 @@ export default function MissionDetailPage() {
                 <span className="ml-auto text-[10px] text-ink-soft">{task.id}</span>
               </div>
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl" aria-hidden>{meta?.avatar}</span>
+                <span className="text-2xl" aria-hidden><AgentSprite role={task.role} size={26} /></span>
                 <div>
                   <div className="text-sm font-semibold">{meta?.name ?? task.role}</div>
                   <div className="text-xs text-ink-soft">{task.objective}</div>
                 </div>
               </div>
-              <ol className="relative ml-3 border-l-2 border-[#14332955] space-y-3">
+              <ol className="relative ml-3 border-l-2 border-[#0f2b3355] space-y-3">
                 {TASK_STATE_STEPS.map((s) => {
                   const reached = TASK_STATE_STEPS.indexOf(task.status) >= TASK_STATE_STEPS.indexOf(s);
                   return (
                     <li key={s} className="ml-5 flex items-center gap-2.5">
                       <span
-                        className={`absolute -left-[7px] w-3 h-3 rounded-sm border-2 border-[#143329] ${
+                        className={`absolute -left-[7px] w-3 h-3 rounded-sm border-2 border-[#0f2b33] ${
                           reached ? "bg-leaf" : "bg-parchment2"
                         }`}
                       />
@@ -160,7 +162,7 @@ export default function MissionDetailPage() {
               </ol>
               {task.isOutsourced && task.externalProviderId ? (
                 <div className="mt-4 text-xs text-ink-soft flex items-center gap-2">
-                  <span aria-hidden>🌐</span> External provider: <code className="bg-parchment px-1.5 py-0.5 rounded-sm border border-[#14332933]">{task.externalProviderId.replace("prov_", "")}</code>
+                  <span aria-hidden className="text-leaf-deep"><PixelSprite name="EXTERNAL" size={16} /></span> External provider: <code className="bg-parchment px-1.5 py-0.5 rounded-sm border border-[#0f2b3333]">{task.externalProviderId.replace("prov_", "")}</code>
                 </div>
               ) : null}
             </Card>

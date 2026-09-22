@@ -344,6 +344,43 @@ Drizzle schema is portable — swapping the driver is a one-file change.
 a plain HTTP response, so it needs no extra server, works through the Next route
 handler, and degrades to "no live updates" rather than a broken page.
 
+### 8.1 Visual design system
+
+Classic 16-bit pixel art applied to a functional web UI: the pixel layer is the
+identity, not an excuse to turn the product into a game (spec §6).
+
+**Palette** — sampled directly from the supplied reference screenshot:
+
+| Token | Hex | Role |
+|---|---|---|
+| `chrome` | `#0f1b22` | Thin top status bar |
+| `forest` / `forest-2` | `#012e3c` / `#01222e` | Navigation rail, canvas, panels |
+| `cream` / `parchment` | `#faf2e2` / `#f2e9d6` | Main content surfaces |
+| `leaf` | `#007755` | Primary action, active, verified |
+| `sky` | `#88ccff` | Soft atmospheric secondary |
+| `gold` | `#d9a441` | Important / financial state |
+| `teal` | `#2f6b7d` | Muted teal secondary |
+| `wood` | `#512c14` | Pixel signboard labels |
+| `plum` | `#7c5cad` | Restrained secondary accent |
+| `danger` | `#b23a30` | Failure / destructive only |
+
+**Composition** — a slim 64px icon rail, a 36px top status bar, and content as
+chunky cream cards with dark header bars on the dark teal-blue canvas. From
+`lg` (1024px) the dashboard is a three-column grid, matching the reference at its
+~1111px viewport width.
+
+**Iconography** — no emoji and no humans. Every icon and every agent avatar is an
+8×8 **pixel sprite** drawn as crisp SVG rects (`src/components/PixelSprite.tsx`):
+robots for agents, shields for verification, magnifiers for research, globes for
+external ASPs. Agent sprites are chosen by *role*, so an agent always looks the
+same everywhere it appears.
+
+**Environment** — pure CSS/SVG pixel scenery (`PixelScenery`): sky gradients,
+clouds, mountains, treelines, lakes and flowers, per the spec's natural-scenery
+brief (forests, mountains, lakes, cliffs, distant scenery — serene and calm, no
+neon, no floating islands). Interactive UI stays real HTML/CSS; no pixel filter
+is applied to the site.
+
 ## 9. Getting started
 
 **Requirements:** Node 20+ and npm. That's it — no Docker, no database server,

@@ -66,7 +66,7 @@ export default function MissionsPage() {
         {loading ? (
           <div className="text-ink-soft text-sm">Loading missions…</div>
         ) : shown.length === 0 ? (
-          <EmptyState icon="🎯" title={`No ${tab.toLowerCase()} missions`} hint="Create a company goal to get started." />
+          <EmptyState icon="missions" title={`No ${tab.toLowerCase()} missions`} hint="Create a company goal to get started." />
         ) : (
           <div className="grid md:grid-cols-2 gap-4">
             {shown.map((m) => (

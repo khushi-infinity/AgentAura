@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, Badge, DemoTag, PixelButton } from "./ui";
+import { PixelSprite } from "./PixelSprite";
 
 // Live Activity (spec §8 Home) — driven entirely by the SSE event stream
 // from /api/companies/:id/events, plus pending hire approvals.
@@ -25,26 +26,35 @@ interface HireRequest {
   reasons: string;
 }
 
+// Event type → pixel glyph (no emoji; sprite language is consistent).
 const ICONS: Record<string, string> = {
-  TASK_CREATED: "📋",
-  TASK_ASSIGNED: "🧩",
-  TASK_STARTED: "⚙️",
-  CAPABILITY_GAP_DETECTED: "🚨",
-  SERVICE_DISCOVERY_STARTED: "🔎",
-  SERVICE_DISCOVERY_COMPLETED: "🛒",
-  PROVIDER_SELECTED: "✅",
-  EXTERNAL_TASK_CREATED: "🤝",
-  PAYMENT_QUOTED: "🧾",
-  PAYMENT_STARTED: "💳",
-  EXTERNAL_TASK_DELIVERED: "📦",
-  VERIFICATION_STARTED: "🛡️",
-  VERIFICATION_PASSED: "✔️",
-  VERIFICATION_FAILED: "✖️",
-  PAYMENT_SETTLED: "💰",
-  MEMORY_CREATED: "🧠",
-  REPUTATION_UPDATED: "⭐",
-  MISSION_COMPLETED: "🏆",
+  TASK_CREATED: "missions",
+  TASK_ASSIGNED: "agents",
+  TASK_STARTED: "settings",
+  CAPABILITY_GAP_DETECTED: "alert",
+  SERVICE_DISCOVERY_STARTED: "RESEARCH",
+  SERVICE_DISCOVERY_COMPLETED: "marketplace",
+  PROVIDER_SELECTED: "check",
+  EXTERNAL_TASK_CREATED: "send",
+  PAYMENT_QUOTED: "receipt",
+  PAYMENT_STARTED: "wallet",
+  EXTERNAL_TASK_DELIVERED: "marketplace",
+  VERIFICATION_STARTED: "VERIFICATION",
+  VERIFICATION_PASSED: "check",
+  VERIFICATION_FAILED: "cross",
+  PAYMENT_SETTLED: "wallet",
+  MEMORY_CREATED: "memory",
+  REPUTATION_UPDATED: "star",
+  MISSION_COMPLETED: "flag",
 };
+
+// Tone: failure red, money gold, everything else verified-green.
+function toneFor(type: string): string {
+  if (type.includes("FAILED")) return "text-danger";
+  if (type.startsWith("PAYMENT")) return "text-gold-deep";
+  if (type === "CAPABILITY_GAP_DETECTED") return "text-gold-deep";
+  return "text-leaf-deep";
+}
 
 export function useLiveEvents(companyId: string) {
   const [events, setEvents] = useState<LiveEvent[]>([]);
@@ -132,19 +142,19 @@ export function LiveActivity({ companyId }: { companyId: string }) {
       ))}
 
       <Card className="p-0 overflow-hidden">
-        <div className="flex items-center gap-2 px-3 py-2 border-b-2 border-[#14332933] bg-parchment">
-          <span className={`w-2 h-2 rounded-sm ${connected ? "bg-leaf animate-pulse-soft" : "bg-danger"}`} />
-          <span className="pixel-label">Live Activity</span>
-          <span className="ml-auto text-[10px] text-ink-soft">{events.length} events</span>
+        <div className="pixel-card-head">
+          <span className={`w-2 h-2 ${connected ? "bg-leaf-bright animate-pulse-soft" : "bg-danger"}`} />
+          <span>Live Activity</span>
+          <span className="ml-auto normal-case opacity-80">{events.length} events</span>
         </div>
-        <div className="max-h-[420px] overflow-y-auto pixel-scroll divide-y divide-[#14332922]">
+        <div className="max-h-[560px] overflow-y-auto pixel-scroll divide-y divide-[#0f2b3322]">
           {events.length === 0 ? (
             <div className="p-4 text-sm text-ink-soft">No activity yet — launch a mission to see agents work.</div>
           ) : (
             [...events].reverse().map((e) => (
               <div key={e.id} className="flex gap-2.5 px-3 py-2.5 items-start">
-                <span className="text-base leading-none mt-0.5" aria-hidden>
-                  {ICONS[e.type] ?? "•"}
+                <span className={`shrink-0 mt-0.5 ${toneFor(e.type)}`} aria-hidden>
+                  <PixelSprite name={ICONS[e.type] ?? "analytics"} size={16} />
                 </span>
                 <div className="min-w-0">
                   <div className="text-[13px] font-medium leading-snug">{e.title}</div>

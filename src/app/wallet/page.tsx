@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite } from "@/components/PixelSprite";
+
 import { useEffect, useState } from "react";
 import { Card, Badge, DemoTag, EmptyState } from "@/components/ui";
 import { Hero, PixelScenery } from "@/components/AppShell";
@@ -44,10 +46,10 @@ interface Payment {
 }
 
 const KIND_ICON: Record<string, string> = {
-  EXTERNAL_PAYMENT: "🌐",
-  AGENT_PAYMENT: "🤖",
-  MISSION_FUNDING: "🏦",
-  TASK_REWARD: "🏅",
+  EXTERNAL_PAYMENT: "EXTERNAL",
+  AGENT_PAYMENT: "agents",
+  MISSION_FUNDING: "wallet",
+  TASK_REWARD: "star",
 };
 
 export default function WalletPage() {
@@ -81,18 +83,18 @@ export default function WalletPage() {
         {loading ? (
           <div className="text-ink-soft text-sm">Loading wallet…</div>
         ) : !wallet ? (
-          <EmptyState icon="💰" title="No wallet yet" hint="Create a company to get a treasury wallet." />
+          <EmptyState icon="wallet" title="No wallet yet" hint="Create a company to get a treasury wallet." />
         ) : (
           <>
             {/* Balance cards */}
             <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-              <Card className="p-4 bg-gradient-to-br from-[#2e7d4f] to-[#256741] !border-[#143329]">
+              <Card className="p-4 bg-gradient-to-br from-[#007755] to-[#015c44] !border-[#0f2b33]">
                 <div className="pixel-label text-cream/80">Total Balance</div>
                 <div className="font-pixel text-lg text-cream mt-2">{fmt(wallet.totalCents)} USD₮0</div>
                 <div className="text-cream/70 text-xs mt-1">≈ ${(wallet.totalCents / 100).toFixed(2)}</div>
                 <div className="mt-2 flex items-center gap-2">
-                  <span className="pixel-label bg-[#14332955] text-cream px-1.5 py-1 rounded-sm">x Layer</span>
-                  {wallet.isDemo ? <DemoTag className="!bg-[#14332955] !text-cream !border-cream/40" /> : null}
+                  <span className="pixel-label bg-[#0f2b3355] text-cream px-1.5 py-1 rounded-sm">x Layer</span>
+                  {wallet.isDemo ? <DemoTag className="!bg-[#0f2b3355] !text-cream !border-cream/40" /> : null}
                 </div>
               </Card>
               <Card className="p-4">
@@ -115,17 +117,17 @@ export default function WalletPage() {
             <div className="grid xl:grid-cols-[1.3fr_1fr] gap-5 items-start">
               {/* Transactions */}
               <Card className="p-0 overflow-hidden">
-                <div className="px-4 py-3 border-b-2 border-[#14332933] bg-parchment flex items-center gap-2">
+                <div className="px-4 py-3 border-b-2 border-[#0f2b3333] bg-parchment flex items-center gap-2">
                   <span className="font-pixel text-[10px]">Recent Agent Transactions</span>
                   <DemoTag />
                 </div>
-                <div className="divide-y divide-[#14332922]">
+                <div className="divide-y divide-[#0f2b3322]">
                   {txs.length === 0 ? (
                     <div className="p-4 text-sm text-ink-soft">No transactions yet — launch a mission.</div>
                   ) : (
                     txs.map((t) => (
                       <div key={t.id} className="flex items-center gap-3 px-4 py-3">
-                        <span className="text-lg" aria-hidden>{KIND_ICON[t.kind] ?? "💸"}</span>
+                        <span className="text-lg" aria-hidden><PixelSprite name={KIND_ICON[t.kind] ?? "wallet"} size={18} /></span>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-medium truncate">
                             {t.direction === "OUT" ? "Payment to" : "Received from"} {t.counterparty}
@@ -155,7 +157,7 @@ export default function WalletPage() {
                     {txs.slice(0, 10).map((t) => (
                       <div key={t.id} className="flex items-center gap-2">
                         <span className={`w-1.5 h-6 ${t.direction === "OUT" ? "bg-danger" : "bg-leaf"}`} />
-                        <div className="flex-1 h-6 bg-parchment2 border border-[#14332933] rounded-sm overflow-hidden">
+                        <div className="flex-1 h-6 bg-parchment2 border border-[#0f2b3333] rounded-sm overflow-hidden">
                           <div
                             className={`h-full ${t.direction === "OUT" ? "bg-danger/70" : "bg-leaf/70"}`}
                             style={{ width: `${Math.max(6, (Math.abs(t.amountCents) / maxBar) * 100)}%` }}

@@ -1,5 +1,7 @@
 "use client";
 
+import { AgentSprite } from "@/components/PixelSprite";
+
 import { useEffect, useState } from "react";
 import { Card, Badge, PixelLink, EmptyState } from "@/components/ui";
 import { Hero, PixelScenery } from "@/components/AppShell";
@@ -81,7 +83,7 @@ export default function AgentsPage() {
           <div className="text-ink-soft text-sm">Loading agents…</div>
         ) : shown.length === 0 ? (
           <EmptyState
-            icon={tab === "EXTERNAL" ? "🌐" : "🤖"}
+            icon={tab === "EXTERNAL" ? "EXTERNAL" : "agents"}
             title={tab === "EXTERNAL" ? "No external agents yet" : "No agents yet"}
             hint={tab === "EXTERNAL" ? "External specialists appear here after an agent hires them." : "Create a company to assemble your team."}
           />
@@ -92,8 +94,8 @@ export default function AgentsPage() {
               return (
                 <Card key={a.id} className="p-4">
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl w-11 h-11 flex items-center justify-center bg-parchment border-2 border-[#143329] rounded-sm" aria-hidden>
-                      {a.avatar || meta?.avatar || "🤖"}
+                    <span className="text-2xl w-11 h-11 flex items-center justify-center bg-parchment border-2 border-[#0f2b33] rounded-sm" aria-hidden>
+                      <AgentSprite role={a.role} size={22} />
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">

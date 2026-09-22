@@ -20,7 +20,7 @@ export const agents = sqliteTable("agents", {
   name: text("name").notNull(),
   role: text("role").notNull(), // CEO | STRATEGY | RESEARCH | MARKETING | PRODUCT | VERIFICATION
   type: text("type").notNull().default("INTERNAL"), // INTERNAL | EXTERNAL
-  avatar: text("avatar").notNull().default("🤖"),
+  avatar: text("avatar").notNull().default("agents"),
   description: text("description").notNull().default(""),
   capabilities: text("capabilities").notNull().default("[]"), // JSON string[]
   status: text("status").notNull().default("IDLE"), // IDLE | WORKING | OFFLINE

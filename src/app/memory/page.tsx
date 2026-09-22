@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite } from "@/components/PixelSprite";
+
 import { useEffect, useMemo, useState } from "react";
 import { Card, Badge, EmptyState } from "@/components/ui";
 import { Hero, PixelScenery } from "@/components/AppShell";
@@ -24,11 +26,11 @@ interface MemoryRow {
 
 const FOLDERS = ["all", "research", "marketing", "product", "operations", "decisions"];
 const TYPE_ICON: Record<string, string> = {
-  RESEARCH: "🔬",
-  INSIGHT: "💡",
-  DECISION: "📌",
-  LEARNING: "🧠",
-  DOCUMENT: "📄",
+  RESEARCH: "RESEARCH",
+  INSIGHT: "star",
+  DECISION: "flag",
+  LEARNING: "memory",
+  DOCUMENT: "receipt",
 };
 
 export default function MemoryPage() {
@@ -68,13 +70,13 @@ export default function MemoryPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
           {[
-            { icon: "🧠", v: items.length, l: "Memories" },
-            { icon: "🔬", v: items.filter((i) => i.type === "RESEARCH").length, l: "Research" },
-            { icon: "💡", v: items.filter((i) => i.type === "INSIGHT" || i.type === "LEARNING").length, l: "Insights" },
-            { icon: "✔️", v: items.filter((i) => i.verificationStatus === "VERIFIED").length, l: "Verified" },
+            { icon: "memory", v: items.length, l: "Memories" },
+            { icon: "RESEARCH", v: items.filter((i) => i.type === "RESEARCH").length, l: "Research" },
+            { icon: "star", v: items.filter((i) => i.type === "INSIGHT" || i.type === "LEARNING").length, l: "Insights" },
+            { icon: "check", v: items.filter((i) => i.verificationStatus === "VERIFIED").length, l: "Verified" },
           ].map((s) => (
             <Card key={s.l} className="p-3 flex items-center gap-3">
-              <span className="text-xl" aria-hidden>{s.icon}</span>
+              <span className="text-xl" aria-hidden><PixelSprite name={s.icon} size={22} /></span>
               <div>
                 <div className="font-pixel text-sm">{s.v}</div>
                 <div className="pixel-label text-ink-soft mt-0.5">{s.l}</div>
@@ -97,7 +99,7 @@ export default function MemoryPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search memory…"
-            className="ml-auto border-2 border-[#143329] bg-cream rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-leaf min-w-[180px]"
+            className="ml-auto border-2 border-[#0f2b33] bg-cream rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-leaf min-w-[180px]"
           />
         </div>
 
@@ -106,13 +108,13 @@ export default function MemoryPage() {
             {loading ? (
               <div className="text-ink-soft text-sm">Loading memory…</div>
             ) : filtered.length === 0 ? (
-              <EmptyState icon="🧠" title="No memories found" hint="Agents write verified insights here automatically." />
+              <EmptyState icon="memory" title="No memories found" hint="Agents write verified insights here automatically." />
             ) : (
               filtered.map((m) => (
                 <button key={m.id} className="block w-full text-left" onClick={() => setSel(m)}>
                   <Card className={`p-3.5 transition-shadow hover:shadow-pixel ${sel?.id === m.id ? "ring-2 ring-leaf" : ""}`}>
                     <div className="flex items-start gap-3">
-                      <span className="text-lg" aria-hidden>{TYPE_ICON[m.type] ?? "📄"}</span>
+                      <span className="text-lg" aria-hidden><PixelSprite name={TYPE_ICON[m.type] ?? "receipt"} size={18} /></span>
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-medium">{m.title}</div>
                         <div className="text-xs text-ink-soft mt-0.5 line-clamp-2">{m.content}</div>
@@ -133,7 +135,7 @@ export default function MemoryPage() {
           {sel ? (
             <Card className="p-4 xl:sticky xl:top-4">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-lg" aria-hidden>{TYPE_ICON[sel.type] ?? "📄"}</span>
+                <span className="text-lg" aria-hidden><PixelSprite name={TYPE_ICON[sel.type] ?? "receipt"} size={18} /></span>
                 <Badge color="teal">{sel.type.toLowerCase()}</Badge>
                 {sel.externalProviderId ? <Badge color="gold">external source</Badge> : null}
               </div>

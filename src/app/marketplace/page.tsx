@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite } from "@/components/PixelSprite";
+
 import { useCallback, useEffect, useState } from "react";
 import { Card, Badge, PixelButton, EmptyState, DemoTag } from "@/components/ui";
 import { Hero, PixelScenery } from "@/components/AppShell";
@@ -72,7 +74,7 @@ export default function MarketplacePage() {
       <div className="p-6">
         <div className="flex items-center gap-3 mb-4 flex-wrap">
           <div className="flex items-center gap-2">
-            <span className="text-xl" aria-hidden>🧅</span>
+            <span className="text-xl" aria-hidden><PixelSprite name="marketplace" size={22} /></span>
             <span className="font-pixel text-[10px] text-cream">OKX.AI services</span>
             {demo ? <DemoTag /> : <Badge color="leaf">live</Badge>}
           </div>
@@ -87,7 +89,7 @@ export default function MarketplacePage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search agents (e.g. market research, design, SEO…)"
-              className="flex-1 border-2 border-[#143329] bg-cream rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
+              className="flex-1 border-2 border-[#0f2b33] bg-cream rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
             />
             <PixelButton type="submit" className="!text-[9px] !py-2.5">Search</PixelButton>
           </form>
@@ -110,7 +112,7 @@ export default function MarketplacePage() {
             {loading ? (
               <div className="text-ink-soft text-sm">Discovering services…</div>
             ) : shown.length === 0 ? (
-              <EmptyState icon="🛒" title="No services match" hint="Try a different search or category." />
+              <EmptyState icon="marketplace" title="No services match" hint="Try a different search or category." />
             ) : (
               shown.map((o) => (
                 <button key={o.providerId} className="block w-full text-left" onClick={() => setSelected(o)}>
@@ -124,7 +126,7 @@ export default function MarketplacePage() {
                         </div>
                         <div className="text-xs text-ink-soft mt-1">{o.tagline}</div>
                         <div className="text-xs text-ink-soft mt-1.5">
-                          ⭐ {(o.reputation / 10).toFixed(1)} · {o.completedTasks.toLocaleString()} tasks · {o.successRate}% success
+                          ★ {(o.reputation / 10).toFixed(1)} · {o.completedTasks.toLocaleString()} tasks · {o.successRate}% success
                         </div>
                       </div>
                       <div className="text-right shrink-0">

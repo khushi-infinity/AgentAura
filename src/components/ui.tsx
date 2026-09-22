@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { PixelSprite } from "./PixelSprite";
 
 // Pixel UI primitives (spec §6/§7). Hard edges, cream surfaces, bevels.
 
@@ -44,6 +45,11 @@ export function Card({ className = "", children }: { className?: string; childre
   return <div className={`pixel-card ${className}`}>{children}</div>;
 }
 
+/** Dark header bar for a chunky card (reference: cream cards, dark headers). */
+export function CardHead({ className = "", children }: { className?: string; children: ReactNode }) {
+  return <div className={`pixel-card-head ${className}`}>{children}</div>;
+}
+
 export function Badge({
   color = "leaf",
   children,
@@ -52,13 +58,13 @@ export function Badge({
   children: ReactNode;
 }) {
   const map: Record<string, string> = {
-    leaf: "bg-[#ddefe2] text-leaf-deep border-leaf",
+    leaf: "bg-[#d8efe4] text-leaf-deep border-leaf",
     gold: "bg-[#f7ecd2] text-gold-deep border-gold",
-    teal: "bg-[#dceeee] text-teal border-teal",
-    plum: "bg-[#e9e2f4] text-plum border-plum",
-    danger: "bg-[#f6dfdc] text-danger border-danger",
-    sky: "bg-[#dfeef5] text-[#417a94] border-sky",
-    muted: "bg-parchment2 text-ink-soft border-[#b3a888]",
+    teal: "bg-[#d8ebef] text-teal border-teal",
+    plum: "bg-[#e6dff3] text-plum border-plum",
+    danger: "bg-[#f4ded9] text-danger border-danger",
+    sky: "bg-[#dceefc] text-[#2f6b7d] border-sky",
+    muted: "bg-parchment2 text-ink-soft border-[#b6a684]",
   };
   return (
     <span className={`pixel-label inline-flex items-center gap-1 border px-1.5 py-1 rounded-sm ${map[color]}`}>
@@ -70,7 +76,7 @@ export function Badge({
 export function ProgressBar({ pct, color = "leaf" }: { pct: number; color?: "leaf" | "gold" }) {
   const p = Math.max(0, Math.min(100, pct));
   return (
-    <div className="h-3 w-full border-2 border-[#143329] bg-parchment2 overflow-hidden rounded-sm">
+    <div className="h-3 w-full border-2 border-[#0f2b33] bg-parchment2 overflow-hidden rounded-sm">
       <div
         className={`h-full ${color === "leaf" ? "bg-leaf" : "bg-gold"} transition-all duration-700`}
         style={{ width: `${p}%`, imageRendering: "pixelated" }}
@@ -85,6 +91,7 @@ export function Stat({
   label,
   accent = "text-leaf-deep",
 }: {
+  /** Glyph name from PixelSprite (e.g. "agents", "wallet"). */
   icon: string;
   value: string;
   label: string;
@@ -92,10 +99,13 @@ export function Stat({
 }) {
   return (
     <Card className="flex items-center gap-3 p-3">
-      <span className="text-2xl" aria-hidden>
-        {icon}
+      <span
+        className="w-9 h-9 shrink-0 flex items-center justify-center bg-parchment border-2 border-[#0f2b33] text-leaf-deep"
+        aria-hidden
+      >
+        <PixelSprite name={icon} size={20} />
       </span>
-      <div>
+      <div className="min-w-0">
         <div className={`font-pixel text-sm ${accent}`}>{value}</div>
         <div className="pixel-label text-ink-soft mt-1">{label}</div>
       </div>
@@ -112,11 +122,20 @@ export function SectionTitle({ title, quote }: { title: string; quote?: string }
   );
 }
 
-export function EmptyState({ icon, title, hint }: { icon: string; title: string; hint?: string }) {
+export function EmptyState({
+  icon,
+  title,
+  hint,
+}: {
+  /** Glyph name from PixelSprite. */
+  icon: string;
+  title: string;
+  hint?: string;
+}) {
   return (
     <Card className="p-8 text-center">
-      <div className="text-4xl mb-3" aria-hidden>
-        {icon}
+      <div className="mb-3 flex justify-center text-leaf-deep" aria-hidden>
+        <PixelSprite name={icon} size={40} />
       </div>
       <div className="font-pixel text-xs text-ink">{title}</div>
       {hint ? <div className="text-ink-soft text-sm mt-2">{hint}</div> : null}

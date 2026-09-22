@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite, AGENT_MARK } from "@/components/PixelSprite";
+
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PixelButton } from "@/components/ui";
@@ -9,11 +11,11 @@ import { PixelScenery } from "@/components/AppShell";
 // policy + preview of agents that will be assembled.
 
 const AGENTS_PREVIEW = [
-  { icon: "👑", name: "CEO Agent", desc: "Oversees strategy and decision making" },
-  { icon: "🧭", name: "Strategy Agent", desc: "Planning and market positioning" },
-  { icon: "🔬", name: "Research Agent", desc: "Market, users and competitors" },
-  { icon: "📣", name: "Marketing Agent", desc: "Content, growth and community" },
-  { icon: "🛡️", name: "Verification Agent", desc: "Quality check and validation" },
+  { icon: "CEO", name: "CEO Agent", desc: "Oversees strategy and decision making" },
+  { icon: "STRATEGY", name: "Strategy Agent", desc: "Planning and market positioning" },
+  { icon: "RESEARCH", name: "Research Agent", desc: "Market, users and competitors" },
+  { icon: "MARKETING", name: "Marketing Agent", desc: "Content, growth and community" },
+  { icon: "VERIFICATION", name: "Verification Agent", desc: "Quality check and validation" },
 ];
 
 function CreateInner() {
@@ -57,7 +59,7 @@ function CreateInner() {
     <div className="min-h-screen bg-forest flex items-start justify-center px-4 py-10">
       <div className="w-full max-w-4xl">
         <div className="flex items-center gap-3 mb-6">
-          <span className="text-3xl" aria-hidden>🌲</span>
+          <span className="text-3xl" aria-hidden><PixelSprite glyph={AGENT_MARK} size={32} /></span>
           <div className="font-pixel text-cream text-lg">Create Your Company</div>
         </div>
         <p className="text-cream/70 text-sm mb-6">Set up your autonomous AI workforce.</p>
@@ -71,7 +73,7 @@ function CreateInner() {
                 id="cname"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border-2 border-[#143329] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
+                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
               />
             </div>
             <div>
@@ -80,7 +82,7 @@ function CreateInner() {
                 id="cdesc"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full border-2 border-[#143329] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
+                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
               />
             </div>
             <div>
@@ -89,7 +91,7 @@ function CreateInner() {
                 id="cgoal"
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
-                className="w-full border-2 border-[#143329] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
+                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
               />
             </div>
             <div>
@@ -100,7 +102,7 @@ function CreateInner() {
                 min={1}
                 value={budget}
                 onChange={(e) => setBudget(Number(e.target.value))}
-                className="w-full border-2 border-[#143329] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
+                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
               />
             </div>
             <div>
@@ -114,7 +116,7 @@ function CreateInner() {
                   <label
                     key={opt.id}
                     className={`flex items-center gap-3 border-2 rounded-sm px-3 py-2.5 cursor-pointer transition-colors ${
-                      policy === opt.id ? "border-leaf bg-[#e7f2ea]" : "border-[#14332955] bg-parchment hover:border-leaf/50"
+                      policy === opt.id ? "border-leaf bg-[#ddf0e6]" : "border-[#0f2b3355] bg-parchment hover:border-leaf/50"
                     }`}
                   >
                     <input
@@ -122,7 +124,7 @@ function CreateInner() {
                       name="policy"
                       checked={policy === opt.id}
                       onChange={() => setPolicy(opt.id)}
-                      className="accent-[#2e7d4f]"
+                      className="accent-[#007755]"
                     />
                     <span>
                       <span className="text-sm font-medium block">{opt.label}</span>
@@ -143,8 +145,8 @@ function CreateInner() {
             <div className="space-y-3">
               {AGENTS_PREVIEW.map((a) => (
                 <div key={a.name} className="flex items-center gap-3">
-                  <span className="text-xl w-9 h-9 flex items-center justify-center bg-parchment border-2 border-[#143329] rounded-sm" aria-hidden>
-                    {a.icon}
+                  <span className="text-xl w-9 h-9 flex items-center justify-center bg-parchment border-2 border-[#0f2b33] rounded-sm" aria-hidden>
+                    <PixelSprite name={a.icon} size={20} />
                   </span>
                   <div>
                     <div className="text-sm font-semibold">{a.name}</div>

@@ -2,14 +2,16 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Card, Badge, ProgressBar, Stat, PixelLink, DemoTag } from "@/components/ui";
+import { Card, CardHead, Badge, ProgressBar, Stat, PixelLink } from "@/components/ui";
 import { Hero, PixelScenery } from "@/components/AppShell";
 import { AgentGraph } from "@/components/AgentGraph";
 import { LiveActivity } from "@/components/LiveActivity";
 
-// Home / Command Center (spec §8): current mission + progress, living
-// agent workspace (graph from real state), right rail Live Activity,
-// bottom quick cards.
+// Home / Command Center (spec §8): current mission + progress, living agent
+// workspace (graph from real state), Live Activity, quick cards.
+//
+// Layout matches the reference: three equal columns of chunky cream cards
+// with dark header bars, on the dark teal-blue canvas.
 
 interface Mission {
   id: string;
@@ -37,12 +39,10 @@ function HomeInner() {
   useEffect(() => {
     const load = async () => {
       try {
-        // Single-company demo: use seeded company unless a newer one exists.
         const res = await fetch("/api/companies");
         if (res.ok) {
           const data = (await res.json()) as CompanyData;
           setCompany(data);
-          // Wallet balance is read live too — never hardcode money.
           const w = await fetch(`/api/wallet?companyId=${data.company.id}`);
           if (w.ok) {
             const wj = (await w.json()) as { wallet?: { availableCents?: number } };
@@ -58,7 +58,7 @@ function HomeInner() {
     load();
   }, []);
 
-  // Re-read the wallet while a mission is running so the card stays honest.
+  // Re-read the wallet while a mission runs so the card stays honest.
   useEffect(() => {
     if (!company) return;
     const id = setInterval(async () => {
@@ -81,7 +81,6 @@ function HomeInner() {
   if (!company) {
     return (
       <div className="p-10 max-w-xl mx-auto text-center">
-        <div className="text-5xl mb-4" aria-hidden>🌲</div>
         <div className="font-pixel text-cream text-sm mb-3">No company yet</div>
         <p className="text-cream/60 text-sm mb-6">
           Create your AI company and give it a mission. Agents take it from there.
@@ -99,77 +98,103 @@ function HomeInner() {
   return (
     <div>
       <Hero
-        title={`Good evening, Khushi`}
-        subtitle={`Your AI company is up and running.`}
+        title="Good evening, Khushi"
+        subtitle="Your AI company is up and running."
         art={<PixelScenery variant="forest" />}
       />
 
-      <div className="p-6 grid xl:grid-cols-[1.6fr_1fr] gap-5 items-start">
-        {/* Left column */}
+      {/* 3 equal columns from lg (1024px): the reference shows three cream
+          cards side by side at ~1111px viewport width. */}
+      <div className="p-6 grid gap-8 lg:grid-cols-3 items-start">
+        {/* ── Column 1: mission + treasury ── */}
         <div className="space-y-5 min-w-0">
-          <Card className="p-4">
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <div>
-                <div className="font-pixel text-xs mb-1.5">{company.company.name}</div>
-                <div className="text-sm text-ink-soft">{activeMission?.objective ?? company.company.mission}</div>
+          <Card className="overflow-hidden">
+            <CardHead>
+              <span>Current mission</span>
+              {activeMission ? (
+                <span className="ml-auto normal-case">
+                  <Badge color="leaf">● {activeMission.status.toLowerCase()}</Badge>
+                </span>
+              ) : null}
+            </CardHead>
+            <div className="p-4">
+              <div className="font-pixel text-xs mb-2">{company.company.name}</div>
+              <div className="text-sm text-ink-soft">
+                {activeMission?.objective ?? company.company.mission}
               </div>
-              <div className="flex items-center gap-2">
-                {activeMission ? <Badge color="leaf">● {activeMission.status.toLowerCase()}</Badge> : null}
-              </div>
-            </div>
-            {activeMission ? (
-              <div className="mt-4">
-                <div className="flex justify-between text-xs text-ink-soft mb-1.5">
-                  <span>
-                    {activeMission.completedTasks}/{activeMission.totalTasks} tasks
-                  </span>
-                  <span>{activeMission.progress}%</span>
+              {activeMission ? (
+                <div className="mt-4">
+                  <div className="flex justify-between text-xs text-ink-soft mb-1.5">
+                    <span>
+                      {activeMission.completedTasks}/{activeMission.totalTasks} tasks
+                    </span>
+                    <span>{activeMission.progress}%</span>
+                  </div>
+                  <ProgressBar pct={activeMission.progress} />
+                  <div className="flex justify-between text-[10px] text-ink-soft mt-2">
+                    <span>Spend</span>
+                    <span>{(activeMission.spendCents / 100).toFixed(2)} USD₮0</span>
+                  </div>
                 </div>
-                <ProgressBar pct={activeMission.progress} />
-              </div>
-            ) : null}
-            {params.get("fresh") ? (
-              <div className="mt-4 flex items-center gap-2">
-                <Badge color="gold">Mission started — watch Live Activity →</Badge>
-              </div>
-            ) : null}
+              ) : null}
+              {params.get("fresh") ? (
+                <div className="mt-4">
+                  <Badge color="gold">Mission started — watch Live Activity →</Badge>
+                </div>
+              ) : null}
+            </div>
           </Card>
 
+          <div className="grid grid-cols-1 gap-3">
+            <Stat icon="agents" value={String(company.agentCount ?? 0)} label="Active agents" />
+            <Stat
+              icon="marketplace"
+              value={String(company.externalCount ?? 0)}
+              label="External agents hired"
+              accent="text-gold-deep"
+            />
+            <Stat
+              icon="wallet"
+              value={balanceCents === null ? "—" : `${(balanceCents / 100).toFixed(2)} USD₮0`}
+              label="Treasury available"
+            />
+          </div>
+        </div>
+
+        {/* ── Column 2: living agent workspace ── */}
+        <div className="space-y-5 min-w-0">
           <AgentGraph companyId={company.company.id} />
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <PixelLink href="/memory" variant="ghost" className="!justify-start !px-3 !py-3">
-              🧠 Memory
-              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">Company knowledge</span>
-            </PixelLink>
+          <div className="grid grid-cols-2 gap-3">
             <PixelLink href="/marketplace" variant="ghost" className="!justify-start !px-3 !py-3">
-              🛒 Marketplace
-              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">Hire specialists</span>
+              Marketplace
+              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">
+                Hire specialists
+              </span>
+            </PixelLink>
+            <PixelLink href="/memory" variant="ghost" className="!justify-start !px-3 !py-3">
+              Memory
+              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">
+                Company knowledge
+              </span>
             </PixelLink>
             <PixelLink href="/wallet" variant="ghost" className="!justify-start !px-3 !py-3">
-              💰 Wallet
+              Wallet
               <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">
-                {balanceCents === null ? "—" : `${(balanceCents / 100).toFixed(2)} USD₮0`}
+                Agent economy
               </span>
             </PixelLink>
             <PixelLink href="/analytics" variant="ghost" className="!justify-start !px-3 !py-3">
-              📊 Analytics
-              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">Company metrics</span>
+              Analytics
+              <span className="block font-body normal-case text-[10px] text-ink-soft mt-1">
+                Company metrics
+              </span>
             </PixelLink>
           </div>
         </div>
 
-        {/* Right column */}
-        <div className="space-y-4 min-w-0">
-          <div className="grid grid-cols-2 gap-3">
-            <Stat icon="🤖" value={String(company.agentCount ?? 0)} label="Active Agents" />
-            <Stat
-              icon="🌐"
-              value={String(company.externalCount ?? 0)}
-              label="External Agents"
-              accent="text-gold-deep"
-            />
-          </div>
+        {/* ── Column 3: live activity ── */}
+        <div className="space-y-5 min-w-0">
           <LiveActivity companyId={company.company.id} />
         </div>
       </div>

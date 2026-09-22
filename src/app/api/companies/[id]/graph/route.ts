@@ -40,7 +40,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
     }
   }
   for (const [pid, p] of extSeen) {
-    nodes.push({ id: pid, label: p.name, role: "EXTERNAL", type: "EXTERNAL", status: "IDLE", avatar: "🌐" });
+    nodes.push({ id: pid, label: p.name, role: "EXTERNAL", type: "EXTERNAL", status: "IDLE", avatar: "EXTERNAL" });
   }
 
   type Edge = { from: string; to: string; kind: string; taskId?: string };

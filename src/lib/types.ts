@@ -84,37 +84,37 @@ export const ROLE_META: Record<
 > = {
   CEO: {
     name: "CEO Agent",
-    avatar: "👑",
+    avatar: "CEO",
     description: "Orchestrates missions, delegates work, detects capability gaps",
     color: "plum",
   },
   STRATEGY: {
     name: "Strategy Agent",
-    avatar: "🧭",
+    avatar: "STRATEGY",
     description: "Planning and positioning",
     color: "teal",
   },
   RESEARCH: {
     name: "Research Agent",
-    avatar: "🔬",
+    avatar: "RESEARCH",
     description: "Research and analysis",
     color: "leaf",
   },
   MARKETING: {
     name: "Marketing Agent",
-    avatar: "📣",
+    avatar: "MARKETING",
     description: "Content and growth",
     color: "gold",
   },
   PRODUCT: {
     name: "Product Agent",
-    avatar: "🛠️",
+    avatar: "PRODUCT",
     description: "Build and launch execution",
     color: "sky",
   },
   VERIFICATION: {
     name: "Verification Agent",
-    avatar: "🛡️",
+    avatar: "VERIFICATION",
     description: "Quality check and validation",
     color: "leaf-deep",
   },

@@ -44,11 +44,11 @@ export async function POST(req: NextRequest) {
 
   // Founding agent team (spec §8 preview).
   const roster = [
-    { role: "CEO", name: "CEO Agent", avatar: "👑", desc: "Orchestration and decision making" },
-    { role: "STRATEGY", name: "Strategy Agent", avatar: "🧭", desc: "Planning and market positioning" },
-    { role: "RESEARCH", name: "Research Agent", avatar: "🔬", desc: "Market, users and competitors" },
-    { role: "MARKETING", name: "Marketing Agent", avatar: "📣", desc: "Content, growth and community" },
-    { role: "VERIFICATION", name: "Verification Agent", avatar: "🛡️", desc: "Quality check and validation" },
+    { role: "CEO", name: "CEO Agent", avatar: "CEO", desc: "Orchestration and decision making" },
+    { role: "STRATEGY", name: "Strategy Agent", avatar: "STRATEGY", desc: "Planning and market positioning" },
+    { role: "RESEARCH", name: "Research Agent", avatar: "RESEARCH", desc: "Market, users and competitors" },
+    { role: "MARKETING", name: "Marketing Agent", avatar: "MARKETING", desc: "Content, growth and community" },
+    { role: "VERIFICATION", name: "Verification Agent", avatar: "VERIFICATION", desc: "Quality check and validation" },
   ];
   for (const r of roster) {
     const agentId = newId("agent");

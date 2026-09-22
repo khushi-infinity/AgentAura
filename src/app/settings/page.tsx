@@ -1,5 +1,7 @@
 "use client";
 
+import { PixelSprite, AGENT_MARK } from "@/components/PixelSprite";
+
 import { useEffect, useState } from "react";
 import { Card, Badge, PixelButton, DemoTag } from "@/components/ui";
 import { Hero, PixelScenery } from "@/components/AppShell";
@@ -39,8 +41,8 @@ export default function SettingsPage() {
         <Card className="p-4">
           <div className="font-pixel text-[10px] mb-3">Profile</div>
           <div className="flex items-center gap-3">
-            <span className="w-12 h-12 bg-parchment border-2 border-[#143329] rounded-sm flex items-center justify-center text-2xl" aria-hidden>
-              👤
+            <span className="w-12 h-12 bg-parchment border-2 border-[#0f2b33] rounded-sm flex items-center justify-center text-2xl" aria-hidden>
+              <PixelSprite glyph={AGENT_MARK} size={26} />
             </span>
             <div>
               <div className="text-sm font-semibold">Khushi Sarawagi</div>
@@ -53,12 +55,12 @@ export default function SettingsPage() {
               <span className="pixel-label block mb-1.5">Display name</span>
               <input
                 defaultValue="Khushi Sarawagi"
-                className="w-full border-2 border-[#143329] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
+                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
               />
             </label>
             <label className="block">
               <span className="pixel-label block mb-1.5">Default network</span>
-              <select className="w-full border-2 border-[#143329] bg-parchment rounded-sm px-3 py-2.5 text-sm" defaultValue="xlayer-testnet">
+              <select className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm" defaultValue="xlayer-testnet">
                 <option value="xlayer-testnet">X Layer Testnet (free, for demos)</option>
                 <option value="xlayer-mainnet" disabled>X Layer Mainnet (requires funds)</option>
               </select>
@@ -72,7 +74,7 @@ export default function SettingsPage() {
               setTimeout(() => setSaved(false), 1800);
             }}
           >
-            {saved ? "Saved ✓" : "Save Changes"}
+            {saved ? "Saved" : "Save Changes"}
           </PixelButton>
         </Card>
 
@@ -91,10 +93,10 @@ export default function SettingsPage() {
               <label
                 key={o.id}
                 className={`flex items-center gap-3 border-2 rounded-sm px-3 py-2.5 cursor-pointer ${
-                  policy === o.id ? "border-leaf bg-[#e7f2ea]" : "border-[#14332955] bg-parchment"
+                  policy === o.id ? "border-leaf bg-[#ddf0e6]" : "border-[#0f2b3355] bg-parchment"
                 }`}
               >
-                <input type="radio" name="policy" checked={policy === o.id} onChange={() => setPolicy(o.id)} className="accent-[#2e7d4f]" />
+                <input type="radio" name="policy" checked={policy === o.id} onChange={() => setPolicy(o.id)} className="accent-[#007755]" />
                 <span>
                   <span className="text-sm font-medium block">{o.label}</span>
                   <span className="text-xs text-ink-soft">{o.hint}</span>

@@ -78,12 +78,12 @@ export function seed() {
 
   // ── Agents ──────────────────────────────────────────────────────────
   const roster = [
-    { role: "CEO", name: "CEO Agent", avatar: "👑", desc: "Orchestrates missions and delegates work", tasks: 12 },
-    { role: "STRATEGY", name: "Strategy Agent", avatar: "🧭", desc: "Planning and positioning", tasks: 8 },
-    { role: "RESEARCH", name: "Research Agent", avatar: "🔬", desc: "Research and analysis", tasks: 9 },
-    { role: "MARKETING", name: "Marketing Agent", avatar: "📣", desc: "Content and growth", tasks: 7 },
-    { role: "PRODUCT", name: "Product Agent", avatar: "🛠️", desc: "Build and launch execution", tasks: 5 },
-    { role: "VERIFICATION", name: "Verification Agent", avatar: "🛡️", desc: "Quality check and validation", tasks: 11 },
+    { role: "CEO", name: "CEO Agent", avatar: "CEO", desc: "Orchestrates missions and delegates work", tasks: 12 },
+    { role: "STRATEGY", name: "Strategy Agent", avatar: "STRATEGY", desc: "Planning and positioning", tasks: 8 },
+    { role: "RESEARCH", name: "Research Agent", avatar: "RESEARCH", desc: "Research and analysis", tasks: 9 },
+    { role: "MARKETING", name: "Marketing Agent", avatar: "MARKETING", desc: "Content and growth", tasks: 7 },
+    { role: "PRODUCT", name: "Product Agent", avatar: "PRODUCT", desc: "Build and launch execution", tasks: 5 },
+    { role: "VERIFICATION", name: "Verification Agent", avatar: "VERIFICATION", desc: "Quality check and validation", tasks: 11 },
   ];
   for (const r of roster) {
     db.insert(agents)

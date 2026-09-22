@@ -20,12 +20,12 @@ body {
   @apply inline-flex items-center justify-center gap-2 font-pixel text-[11px] uppercase tracking-wide select-none px-4 py-3 rounded-sm transition-transform;
   border-style: solid;
   border-width: 2px;
-  border-color: #143329;
-  box-shadow: 0 3px 0 0 #143329;
+  border-color: #0f2b33;
+  box-shadow: 0 3px 0 0 #0f2b33;
 }
 .pixel-btn:active:not(:disabled) {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 0 #143329;
+  box-shadow: 0 1px 0 0 #0f2b33;
 }
 .pixel-btn:disabled {
   opacity: 0.55;
@@ -53,13 +53,45 @@ body {
 /* Hard-edged pixel card on cream surface */
 .pixel-card {
   @apply bg-cream rounded-md relative;
-  border: 2px solid #143329;
+  border: 2px solid #0f2b33;
   box-shadow: 3px 3px 0 0 rgba(20, 51, 41, 0.35);
+}
+
+/* Chunky dark card header bar (reference: cream cards with dark headers) */
+.pixel-card-head {
+  @apply flex items-center gap-2 bg-forest text-cream font-pixel uppercase;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  padding: 8px 12px;
+  border-bottom: 2px solid #0f2b33;
+}
+
+/* Wood signboard label (spec §6: small labels on wood) */
+.pixel-sign {
+  @apply font-pixel uppercase text-cream inline-flex items-center;
+  background: #512c14;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 4px 8px;
+  border: 2px solid #2c1709;
+}
+
+/* Slim navigation rail button (reference: ~61px icon rail) */
+.rail-btn {
+  @apply relative flex items-center justify-center w-full text-cream/70 transition-colors;
+  height: 44px;
+}
+.rail-btn:hover {
+  @apply text-cream bg-forest-3;
+}
+.rail-btn[data-active="true"] {
+  @apply text-cream bg-forest-3;
+  box-shadow: inset 3px 0 0 0 #007755;
 }
 
 /* Dotted top accent used on section headers */
 .pixel-rule {
-  background-image: linear-gradient(90deg, #2e7d4f 33%, transparent 0);
+  background-image: linear-gradient(90deg, #007755 33%, transparent 0);
   background-size: 8px 2px;
   background-repeat: repeat-x;
   height: 2px;
@@ -81,7 +113,7 @@ body {
   background: rgba(20, 51, 41, 0.08);
 }
 .pixel-scroll::-webkit-scrollbar-thumb {
-  background: #2e7d4f;
+  background: #007755;
   border-radius: 0;
 }
 
