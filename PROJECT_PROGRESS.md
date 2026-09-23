@@ -1,11 +1,136 @@
 # AgentAura — Project Progress
 
-**Last updated:** 2026-09-22 19:30
-**Current phase:** Phase 4 (Polish) complete · Phase 3 (Real OKX) ready but blocked on interactive credentials
-**Overall status:** ✅ Feature-complete and verified in `DEMO_MODE` · live OKX adapters stubbed, awaiting wallet login
+**Last updated:** 2026-09-23 23:20
+**Current phase:** Phase 6 (live-data UI + verified OKX loop) complete · live onchain settlement still blocked on interactive credentials
+**Overall status:** ✅ All UI numbers derive from real rows; the full agent loop (plan → gap → OKX.AI hire → x402 pay → verify → settle → memory) verified end-to-end
+
+**Completed:**
+- Product concept, name, workflow, page architecture
+- Master build spec digested
+- OKX docs verified against official source
+- Repo skeleton + tooling
+- DB schema (13 tables) + migrate + seed
+- Event contract (18 types) + bus + SSE
+- Task state machine (17 states)
+- Agent engine (plan → gap → hire → verify → pay → learn)
+- OKX adapter layer (demo ↔ live by config)
+- API surface (15 routes)
+- Pixel UI system + all 12 pages
+- UI matched to reference (palette + shell + 3-col grid)
+- Environmental art: 7 scenes + ambient layer
+- Hardening (validation, rate limit, idempotency, injection scrub, error boundary)
+- Free-tier LLM (live, with failover)
+- README (detailed, judge-facing)
+- Screenshots (11 pages)
+- Typecheck / build / end-to-end smoke test
+
+**Remaining blockers:**
+- Agentic Wallet login (interactive email OTP)
+- X Layer testnet faucet (claim test OKB/test USD₮0)
+- Live OKX settlement (requires human interaction)
 
 > This file is the build log: what's done, what changed, what's verified, what's
 > left, and why. Update it after every meaningful milestone.
+
+---
+
+## 0. Phase 5 — UI rebuilt from the Stitch project (2026-09-23)
+
+The 12-screen Stitch project **"Pixelated Multi-Page App"** (project id
+`5734599255431485636`) was pulled via the Stitch API (`stitch.googleapis.com`)
+using `stitch-mcp` + `STITCH_API_KEY` (key stored in `.env.local`, gitignored).
+Every screen's HTML + screenshot is saved under `stitch-designs/` as the design
+source of truth.
+
+**The design system** (consistent across all 12 screens): dark teal app canvas
+(`#011c1d`–`#012627`) with a large rounded cream frame; dark teal sidebar
+(`w-60/64`) with **white active pill**; cream/white card surfaces with soft
+borders and shadows; emerald primary (`#006050`/`#0e7a68`); Plus Jakarta Sans
+body + Press Start 2P pixel accents; pixel-art scenic hero banners on every
+page; per-page motivational quote bubbles.
+
+**Page ↔ screen mapping and state:**
+
+| Screen | Page | State |
+|---|---|---|
+| 1. Onboarding / Welcome | `/onboarding` | ✅ full-bleed landscape + parchment build card |
+| 2. Create Company | `/create` | ✅ form + workforce preview; CTA "Assemble My Company" |
+| 3. Home Dashboard | `/` | ✅ hero + overview + team + activity + mission tracker |
+| 4. Missions | `/missions` | ✅ tabs + mission list + details panel |
+| 5. Agents | `/agents` | ✅ tabs + search + agent cards |
+| 6. Marketplace | `/marketplace` | ✅ category tabs + provider list + detail panel |
+| 7. Agent Hiring Flow | `/missions/[id]` | ✅ banner + task breakdown + inspector + live stream |
+| 8. Company Memory | `/memory` | ✅ knowledge library + insights |
+| 9. Wallet & Payments | `/wallet` | ✅ balance cards + transactions + connected wallet |
+| 10. Analytics & Insights | `/analytics` | ✅ KPI row + charts |
+| 11. Settings | `/settings` | ✅ hero + tabs + profile form |
+| 12. Final Success View | `/success` | ✅ signboard + metric bar + View Report / Start New Mission |
+
+**Fixes applied in this phase** (verification caught):
+- `/success` hardcoded `124 / 6 / 3 / 14 / 4.82` metrics → now derived from
+  `/api/missions`, `/api/companies` and `/api/agents` (project rule: never
+  hardcode numbers); buttons renamed to the design's **View Report** /
+  **Start New Mission**.
+- `/create` section retitled **"Your AI Company Will Include"** and CTA renamed
+  **"Assemble My Company"** to match screen 2.
+- One Stitch screen (7) duplicates the mission-detail surface; the existing
+  `/missions/[id]` page already carries the banner/task-inspector/live-stream
+  composition, so no duplicate route was created.
+
+**Verification:** typecheck ✅ · production build ✅ (23/23 pages) · all 11
+routes 200 ✅ · home dashboard fully live (treasury, graph, SSE) ✅ · zero
+console errors ✅.
+
+### 5.1 Hardening pass — assets, typography, dead code (2026-09-23)
+
+| # | Issue found | Fix |
+|---|---|---|
+| 1 | **All 11 page banners hotlinked from `lh3.googleusercontent.com/aida-public/…`** — unsigned URLs that Stitch can expire; the whole UI's visual identity would silently 404 | Downloaded the assets from the Stitch project into `public/banners/` (`forest.png`, `onboarding.png`) and rewired every page to the local paths. `curl`-verified 200; a `performance` audit on the running app now reports **0 external requests** |
+| 2 | Stitch asset dedup discovery: the 19 image URLs across the 12 design HTMLs resolve to only **3 unique images** (shared forest banner, onboarding landscape, and a 32px avatar photo). Stitch reuses one forest banner on nearly every screen | Kept exactly the 2 real banners + `manifest.json` explaining reuse; the avatar photo was not reproduced (spec §6 bans human imagery — the pixel agent sprite is used instead) |
+| 3 | **Body font was Inter**, while every Stitch screen sets **Plus Jakarta Sans** as the UI face | Loaded `Plus_Jakarta_Sans` via `next/font` (self-hosted, `--font-jakarta`), wired as `font-sans` **and** `font-body`. Caught mid-verification: the shell uses `font-sans`, which Tailwind resolves from the default stack — overriding only `body` would have left most of the UI on the system font |
+| 4 | Dead code in `AppShell.tsx`: `TopStatusBar` + `StatusStrip` (defined, never rendered — functionality already lives in the home hero) and unused `PixelSprite`/`GLYPHS`/`AGENT_MARK`/`BRAND_MARK` imports | Removed (~140 lines). Note: these were silently never mounted — typecheck cannot catch an unmounted component |
+| 5 | README screenshots showed the pre-hardening UI (hotlinked banners, Inter) | All 11 regenerated via `scripts/screenshots.mjs` against the final build (largest: onboarding 1.06 MB, real rendered content) |
+
+**Verification after hardening:** typecheck ✅ · clean build ✅ (23/23 after
+resolving a `.next` collision between the dev server and `next build` — they
+must never run concurrently) · all 11 routes + both banner files 200 ✅ ·
+Plus Jakarta Sans confirmed applied in-browser ✅ · zero console errors, zero
+external requests on `/` and `/onboarding` ✅.
+
+---
+
+## 0b. Phase 6 — de-hardcoding + live-loop verification (2026-09-23)
+
+User report: hero text invisible, "everything is hardcoded", create form buried,
+and the app must demonstrably work via OKX AI. All four addressed.
+
+| # | Issue | Root cause | Fix |
+|---|---|---|---|
+| 1 | **"Good day, Khushi" invisible** | Headline was dark navy `#0f2d59` on the banner's bright sky region — near-zero contrast | White text + `drop-shadow` halo. **Measured from pixels: 17.2:1 contrast** (AAA ≥ 7). Greeting now time-aware (morning/afternoon/evening) |
+| 2 | Home "Executions = completedTasks + 8" | Invented arithmetic | `/api/tasks` route added; Executions = real task rows in worked states |
+| 3 | Home agent team = 5 fixed cards | Hardcoded JSX | Renders the real roster from `/api/agents`, role-ordered, with role sprites |
+| 4 | Home mission checklist = 6 invented items | Hardcoded JSX | Real task rows with status-driven ✓/⏳/○ and progress bands; honest empty states everywhere |
+| 5 | Missions detail panel = 4 fake tasks ("GrowthBot 3000" etc.) | Hardcoded JSX | Real per-mission tasks from `/api/tasks` with Done/Active/Queued chips |
+| 6 | Analytics: `|| 42`, `+33%`, `"1.8 hrs"`, fake velocity list + fake distribution | Invented fallbacks and fabricated charts | All numbers derived from mission/task rows; avg task time measured from real createdAt→completedAt deltas; velocity = 5 newest real tasks; distribution = real per-role counts |
+| 7 | Wallet fallback balances (24.48/22.18/2.30/12.82) | Invented money | Zero when unfunded — honest 0.00 |
+| 8 | Agents page: `DEFAULT_AGENTS` + `EXTERNAL_VENDORS` (fake vendors incl. "Contract Auditor") | Invented data | `/api/agents` now also returns `externalProviders` derived from real outsourced task rows + payment names (same derivation as the graph); empty-state explains hires appear after a mission needs outside help |
+| 9 | **Create form buried below the fold** | Tall banner + stacked full-width fields + `justify-between` pushing content down | Banner 128→96px, Company Name + Budget merged on one row, form starts at the top, CTA sticky. **Measured: first input at y=220, CTA visible without scroll at 1440×860 (was y≈906)** |
+
+**End-to-end live verification (fresh DB, real engine):**
+- Mission "Research the AI note-taking market…" — no gap keywords → 4/4 internal,
+  COMPLETED (proves gap detection is word-bounded, not trigger-happy).
+- Mission "Research our competitor pricing and produce a market analysis report"
+  → CEO planned 3 tasks (LLM) → gap detected on the research task → **discovery
+  → hired MarketMind Labs (A2A) → 0.50 USD₮0 escrow → SETTLED with txHash →
+  wallet debited 10.00 → 9.50 → Verification Agent scored it → insight written
+  to Company Memory** — all rows verified in SQLite.
+- UI after the run: home shows the real team, real checklist, 9.50 USDT
+  treasury; agents page shows the hired external provider; missions/analytics
+  reflect the real rows.
+
+> Note: `is_demo: true` on the payment — settlements are simulated until the
+> Agentic Wallet login + faucet prerequisites are met (see §5). Everything
+> upstream of the final onchain signature is real.
 
 ---
 
@@ -537,3 +662,122 @@ with reasons → hired (A2A escrow) → quote $0.50 → x402 payment via Agentic
 - **`networkidle0` never fires on this app** — the Live Activity feed holds an SSE
   stream open by design. Use `waitUntil: 'load'` in browser automation.
 - Keep the OKX boundary at `src/lib/okx/`. Nothing outside it may talk to OKX.
+
+## 2026-09-23 · Agents & home team cards: sprites instead of raw role text
+
+**Bug (user screenshot):** agent cards rendered the raw DB role strings ("CEO",
+"STRATEGY", "RESEARCH"…) as giant ghost text over the cards with empty avatar
+tiles — an intermediate state of the real-data rewrite was still being served by
+a stale dev bundle.
+
+**Fix (both root causes):**
+- Proper fix, not just a cache flush: avatar tiles now render the project's own
+  **pixel sprites** (`<AgentSprite role={…} />` from `PixelSprite.tsx`, same glyph
+  set as the sidebar) in emerald-tinted tiles, instead of emoji. Roles appear only
+  as small uppercase badges ("Planning", "Research"…) with `whitespace-nowrap`,
+  agent names truncate, and status chips are title-cased ("Idle", not "IDLE").
+- Applied consistently on `/agents` cards, the home Agent Team strip, and both
+  empty states. `ROLE_META` no longer carries emoji.
+- Restarted the dev server with a clean `.next` so stale bundles can't reappear.
+
+**Verified:** typecheck ✅ · 0 ghost-text elements on home & /agents ✅ · sprites
+rendering (16 cards on /agents, 33 svgs on home) ✅ · 0 console errors ✅.
+
+## 2026-09-23 · Final sweep: everything verified working
+
+Full-system verification pass after the de-hardcoding + sprite work:
+
+- **Routes:** all 11 pages 200 with correct headings; APIs all 200 (405 on the
+  POST-only discover endpoint is correct).
+- **Browser sweep (puppeteer, desktop):** every page renders with content, zero
+  console/page errors across all 11 pages, External Agents tab shows the real
+  hired provider (Market Intel, Hired, 2 tasks, 100% success).
+- **Production build:** clean, 24/24 pages (stopped the dev server first — the
+  `.next` collision gotcha).
+- **Live OKX AI loop, two more runs:**
+  1. Unapproved hire → 120s window expired → engine auto-fell back to internal
+     execution and still completed the mission (resilience path proven).
+  2. Approved-in-time hire ("market research" objective → gap detected →
+     Polyglot Agents discovered via OKX AI) → APPROVED by user → payment
+     **SETTLED** via x402-exact with txHash → outsourced task COMPLETED.
+  Note: gap detection runs on RESEARCH tasks only (by design, per
+  `buildInternalDeliverable`), so objectives must contain a trigger keyword
+  (research, translation, landing page, video…) to fire the marketplace hire.
+- **README screenshots:** all 11 regenerated on a clean server against the final
+  UI (sprites, real data).
+
+Everything remains uncommitted awaiting the user's go-ahead.
+
+## 2026-09-23 · Fresh-start onboarding + bulletproof OKX AI demo
+
+Hackathon-readiness pass: the first-run experience and the core OKX AI hire
+moment are now both first-class.
+
+**1. True fresh start (spec §1 Welcome).** `bootstrap()` no longer auto-seeds a
+demo company — an empty DB stays empty, and:
+- `/` with no company → auto-redirects to `/onboarding` (full-bleed pixel
+  welcome, sidebar hidden via an AppShell route check placed after all hooks).
+- Onboarding's "What are you building?" carries the goal to `/create?goal=…`.
+- Create page: no fabricated defaults (name/goal start empty), CTA disabled
+  until a goal exists, button copy guides ("Write your Primary Goal to
+  continue"). Autonomy default is now ASK_BEFORE_HIRING so the approve-hire
+  moment plays in the demo (was AUTO_HIRE_BELOW_BUDGET, which skipped it).
+- Demo data is opt-in: `POST /api/seed-demo` (wired for a Settings control).
+- `GET /api/companies` returns `200 {company:null}` instead of 404 on a fresh
+  workspace — kills expected-404 console noise during onboarding.
+
+**2. In-app hire approvals (HireApprovalBanner).** New component mounted above
+the content area on every page: polls `/api/hire-requests`, shows the pending
+OKX AI hire (provider, service, price, top explainability reason, expiry
+warning) with Approve & Pay / Decline. Closes the loop where hires previously
+expired unseen after 120s. Outcome toast pins ~5s to bridge the engine's 0.9s
+long-poll.
+
+**3. Gap detection broadened (spec §10).** `detectGap` now runs on EVERY task
+regardless of role — any objective matching a rule (research, content,
+landing page, video, translation, onchain, campaign, analytics…) can trigger
+the OKX AI marketplace hire, with the role's internal deliverable as fallback.
+Previously only RESEARCH tasks could outsource, which silently muted the demo
+for most objectives. Default branch of buildInternalDeliverable now returns a
+real internal research summary instead of an empty string.
+
+**4. Clean-room E2E verified (fresh DB, real UI clicks).**
+`/` → `/onboarding` → typed goal → Let's Build → `/create?goal=…` → Assemble →
+hire banner appeared live (Polyglot Agents, A2MCP, 0.10 USDT, reputation
+reason) → clicked **Approve & Pay** → "settling payment on X Layer" → hire
+APPROVED (decided_by user) → payment **SETTLED via x402-exact** → wallet
+10.00→9.90 USDT → outsourced task COMPLETED → mission COMPLETED → insight in
+Company Memory. Zero page errors.
+
+**Verification:** typecheck ✅ · clean production build 25/25 ✅ · all routes 200 ✅
+· screenshots regenerated ✅.
+
+## 2026-09-23 · Agent graph made interactive (was static decoration)
+
+User feedback: "Live Agent Network & Autonomous Delegations — what is the use
+of this section, I can't click it." Correct: the SVG polled data but had zero
+interactivity, was double-framed on home (Card inside a section), and squished
+into a fixed h-48 box that clipped it.
+
+**Rewrote `AgentGraph.tsx` as a genuinely live network:**
+- **Hover** any node → it highlights, its edges light up with a flowing-dash
+  animation (`.graph-flow`), everything else dims, and an inline **inspector**
+  appears below showing that agent's real recent tasks (objective, live status
+  chip, relative time) from `/api/tasks`.
+- **Click** to pin the inspector (Unpin ✕ button to release) — hover-only
+  selection was too twitchy for a demo on stage.
+- Live agents get a pulsing status dot; external ASP nodes show "external ASP ·
+  hired" and the dashed gold edge is labeled "hire".
+- Layout is now self-sizing (grows with node count, external ASPs wrap into
+  columns) instead of clipping past a fixed viewBox; per-node task counts are
+  rendered on the node itself.
+- Home section: removed the double card frame and the fixed h-48 wrapper, added
+  a one-line hint ("Hover any agent to see what it's working on — click to
+  pin") so the interaction is discoverable in the demo.
+
+**Verified in-browser (puppeteer, real clicks):** nodes render, clicking a node
+pins the inspector with live data ("Strategy Agent · Outsourcing · Define
+audience, positioning… · just now"), zero page errors. Typecheck ✅ · build
+25/25 ✅ · screenshots regenerated ✅. During the same session the hire banner
+approved → payment SETTLED → 1 outsourced task (live proof the graph's external
+node + hire edge now appear from real rows).

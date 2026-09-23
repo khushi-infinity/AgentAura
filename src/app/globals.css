@@ -176,3 +176,12 @@ body {
 .hero-float {
   animation: heroShift 5s ease-in-out infinite;
 }
+
+/* Live agent graph: flowing dashes on the selected delegation edge */
+@keyframes graphFlow {
+  to { stroke-dashoffset: -14; }
+}
+.graph-flow {
+  stroke-dasharray: 5 3;
+  animation: graphFlow 0.8s linear infinite;
+}

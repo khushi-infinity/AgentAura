@@ -205,14 +205,13 @@ async function executeTask(taskId: string, ctx: Ctx, opts: RunOptions) {
   await step(taskId, "ASSIGNED");
   await step(taskId, "EXECUTING", 600);
 
-  // Internal-only steps complete directly.
   const internalDeliverable = buildInternalDeliverable(task.role, task.objective);
-  if (!internalDeliverable.outsource) {
-    finalizeDelivered(ctx, taskId, task.objective, internalDeliverable.content, null, null, 0);
-    return;
-  }
 
   // Capability-gap detection (spec §10) — the hackathon's core moment.
+  // Runs on EVERY task regardless of role: any objective that matches a gap
+  // rule goes to the OKX AI marketplace, exactly as a real company would
+  // outsource specialized work outside its own org chart. Without a gap the
+  // task completes with the role's internal work product.
   const gap = detectGap(task.objective);
   if (!gap) {
     finalizeDelivered(ctx, taskId, task.objective, internalDeliverable.content, null, null, 0);
@@ -258,7 +257,12 @@ function buildInternalDeliverable(role: string, objective: string): InternalResu
         content: `Onboarding funnel checklist prepared: sign-up → activation → retention touchpoints, with instrumentation notes for each step.`,
       };
     default:
-      return { outsource: true, content: "" };
+      // RESEARCH and any other role: internal best-effort summary used when
+      // no capability gap matches. With a gap, the task is outsourced instead.
+      return {
+        outsource: false,
+        content: `Research summary for "${objective}": key findings collected from available knowledge, open questions and risks listed, recommendations drafted for the CEO.`,
+      };
   }
 }
 

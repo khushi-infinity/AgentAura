@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentAura - Agents</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sidebar: '#002B2B',
+            sidebarHover: '#003B3B',
+            canvasBg: '#F8F9FA',
+            emeraldCustom: '#00875A',
+            emeraldLight: '#E3FCEF',
+            emeraldText: '#006644',
+            darkTeal: '#004747',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography">
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b1f24;
+    }
+    .pixelated {
+      image-rendering: pixelated;
+    }
+  </style>
+<style data-purpose="custom-decorations">
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="p-3 md:p-6 min-h-screen flex flex-col justify-start items-center">
+<!-- BEGIN: ScreenHeaderTag -->
+<!-- Top badge showing current screen number -->
+<div class="w-full max-w-[1720px] mb-3 flex items-center justify-start">
+<div class="px-5 py-1.5 rounded-lg bg-[#11313c]/90 border border-[#235363] text-white font-bold text-lg tracking-wide shadow-sm flex items-center gap-2">
+<span>5. Agents</span>
+</div>
+</div>
+<!-- END: ScreenHeaderTag -->
+<!-- BEGIN: MainApplicationWindow -->
+<div class="w-full max-w-[1720px] bg-[#02282e] p-2.5 rounded-3xl shadow-2xl border border-[#0d414a] flex flex-col lg:flex-row gap-2.5 min-h-[960px]">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-full lg:w-[250px] shrink-0 bg-[#00282b] rounded-2xl flex flex-col justify-between p-4 border border-[#043c42]" data-purpose="main-navigation">
+<div>
+<!-- Brand Logo & Slogan -->
+<div class="flex items-center gap-3 px-2 py-3 mb-6">
+<div class="w-10 h-10 rounded-xl bg-[#004144] flex items-center justify-center shrink-0 border border-[#006064] shadow-inner text-xl">
+<!-- Pixel Tree / Pine Icon -->
+<svg class="w-7 h-7 text-emerald-400" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2L8 7h2.5L7 12h2.5L6 17h12l-3.5-5H17l-3.5-5H16L12 2zM11 18h2v4h-2v-4z"></path>
+</svg>
+</div>
+<div class="leading-tight">
+<h1 class="text-white font-bold text-xl tracking-tight">AgentAura</h1>
+<p class="text-xs text-teal-300 font-medium">Build. Delegate. Scale.</p>
+</div>
+</div>
+<!-- Navigation Menu -->
+<nav class="space-y-1.5 text-sm font-semibold">
+<!-- Home -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 text-teal-100 hover:text-white hover:bg-[#00383d] rounded-xl transition-all" href="#">
+<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Home</span>
+</a>
+<!-- Missions -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 text-teal-100 hover:text-white hover:bg-[#00383d] rounded-xl transition-all" href="#">
+<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Missions</span>
+</a>
+<!-- Agents (Active) -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 bg-white text-slate-900 rounded-xl font-bold shadow-md" href="#">
+<!-- Retro Pixel Robot Icon -->
+<svg class="w-5 h-5 text-slate-800" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2a1 1 0 011 1v1h2a3 3 0 013 3v2h1a2 2 0 012 2v2a2 2 0 01-2 2h-1v2a3 3 0 01-3 3h-2v1a1 1 0 11-2 0v-1H9a3 3 0 01-3-3v-2H5a2 2 0 01-2-2v-2a2 2 0 012-2h1V7a3 3 0 013-3h2V3a1 1 0 011-1zm-3 8a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6 0a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"></path>
+</svg>
+<span>Agents</span>
+</a>
+<!-- Marketplace -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 text-teal-100 hover:text-white hover:bg-[#00383d] rounded-xl transition-all" href="#">
+<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Marketplace</span>
+</a>
+<!-- Company Memory -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 text-teal-100 hover:text-white hover:bg-[#00383d] rounded-xl transition-all" href="#">
+<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Company Memory</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 text-teal-100 hover:text-white hover:bg-[#00383d] rounded-xl transition-all" href="#">
+<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Analytics</span>
+</a>
+<!-- Wallet -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 text-teal-100 hover:text-white hover:bg-[#00383d] rounded-xl transition-all" href="#">
+<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Wallet</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 text-teal-100 hover:text-white hover:bg-[#00383d] rounded-xl transition-all" href="#">
+<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Bottom: New Company & Profile -->
+<div class="pt-4 border-t border-[#043c42] space-y-4">
+<!-- New Company Button -->
+<button class="w-full py-2.5 px-3 rounded-xl border border-emerald-500/50 hover:border-emerald-400 text-teal-100 hover:text-white font-medium text-sm flex items-center justify-center gap-2 hover:bg-[#00383d] transition-all">
+<span class="text-emerald-400 font-bold text-lg leading-none">+</span>
+<span>New Company</span>
+</button>
+<!-- User Profile Card -->
+<div class="flex items-center justify-between p-2 rounded-xl bg-[#001f22] border border-[#043237]">
+<div class="flex items-center gap-2.5">
+<!-- Pixel Avatar -->
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-amber-200 border border-emerald-600/60 flex items-center justify-center">
+<svg class="w-10 h-10" fill="none" viewbox="0 0 32 32">
+<rect fill="#E6A15C" height="32" width="32"></rect>
+<!-- Hair -->
+<path d="M6 8h20v6H6z" fill="#5A3214"></path>
+<path d="M4 10h24v4H4z" fill="#5A3214"></path>
+<path d="M6 6h12v4H6z" fill="#42220B"></path>
+<!-- Face -->
+<path d="M8 12h16v12H8z" fill="#FFCC99"></path>
+<!-- Eyes -->
+<rect fill="#331A00" height="3" width="3" x="10" y="15"></rect>
+<rect fill="#331A00" height="3" width="3" x="19" y="15"></rect>
+<!-- Mouth -->
+<rect fill="#C66" height="1" width="4" x="14" y="21"></rect>
+<!-- Shirt -->
+<path d="M4 24h24v8H4z" fill="#2E7D32"></path>
+<path d="M12 24h8v8h-8z" fill="#FFEB3B"></path>
+</svg>
+</div>
+<div>
+<div class="text-white text-sm font-bold leading-tight">Khushi</div>
+<div class="text-xs text-teal-400 font-medium">Founder</div>
+</div>
+</div>
+<!-- Dots menu -->
+<button class="text-teal-400 hover:text-white p-1">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20">
+<path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+</svg>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContentArea -->
+<main class="flex-1 bg-[#F9FAFB] rounded-2xl p-4 md:p-5 flex flex-col gap-4 overflow-y-auto custom-scrollbar" data-purpose="main-dashboard-canvas">
+<!-- BEGIN: TopPixelHeroBanner -->
+<section class="relative w-full h-[145px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm shrink-0" data-purpose="hero-banner">
+<!-- Background Pixel Panorama Image -->
+<img alt="Pixel Forest Landscape" class="w-full h-full object-cover object-center pixelated select-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZc3mYZXB7auoyzMWFGWG-QujQubYCY_LhZEyYsnMIrq6bgmYu5lco_dVMY9vSdPXQ4fGkUoiP0mBRandzA0kiffVTbaBqht9LMyLqfbgLYwtmQVSAWABOZOJk9LMmkFrADqR-3f-co6DptZZL6JQ6VJRl1vDG4RkOcB8dIOhUdkW-VCcC8RkPekBK5r-OC-_-epqSxm_YwT4GdvYMZaO_1USW1GOzxpeRy6NfPsPGwqRlafj8AVl3gT8Bt6P4MrTkQA"/>
+<!-- Overlay Floating Elements -->
+<div class="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-transparent flex items-center justify-between px-6">
+<div class="flex items-center gap-5">
+<!-- Primary Mascot Robot -->
+<div class="w-16 h-16 rounded-xl bg-white/90 backdrop-blur-sm border border-emerald-300 p-1 flex items-center justify-center shadow-lg">
+<svg class="w-12 h-12" fill="none" viewbox="0 0 40 40">
+<!-- Leaf sprout on head -->
+<path d="M20 4c-3 1-5 4-4 8 4 0 7-3 7-7-1-1-2-1-3-1z" fill="#48BB78"></path>
+<path d="M20 7c2 2 3 5 2 7" stroke="#2F855A" stroke-width="1.5"></path>
+<!-- Robot Head -->
+<rect fill="#F7FAFC" height="20" rx="6" stroke="#4A5568" stroke-width="2" width="24" x="8" y="12"></rect>
+<!-- Screen face -->
+<rect fill="#2D3748" height="12" rx="3" width="16" x="12" y="16"></rect>
+<!-- Cyan eyes -->
+<circle cx="16" cy="22" fill="#00E5FF" r="2"></circle>
+<circle cx="24" cy="22" fill="#00E5FF" r="2"></circle>
+<!-- Smile -->
+<path d="M18 25q2 1.5 4 0" stroke="#00E5FF" stroke-linecap="round" stroke-width="1.5"></path>
+</svg>
+</div>
+<div>
+<h2 class="text-3xl font-extrabold text-slate-900 tracking-tight leading-none mb-1.5">Agents</h2>
+<p class="text-sm font-semibold text-slate-700">Build the dream team of AI agents.</p>
+</div>
+</div>
+<!-- Motivational Speech Bubble -->
+<div class="hidden md:flex items-center gap-2 bg-white/95 backdrop-blur-md px-5 py-2.5 rounded-2xl shadow-lg border border-slate-200">
+<svg class="w-4 h-4 text-cyan-600" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"></path>
+</svg>
+<span class="text-xs md:text-sm font-bold text-slate-800 tracking-wide">"Specialized agents. Extraordinary results."</span>
+</div>
+</div>
+</section>
+<!-- END: TopPixelHeroBanner -->
+<!-- BEGIN: FilterAndActionToolbar -->
+<section class="flex flex-wrap items-center justify-between gap-3" data-purpose="toolbar">
+<!-- Tab Switcher -->
+<div class="flex items-center gap-2">
+<!-- Active Tab: Company Agents -->
+<button class="px-4 py-2 bg-white rounded-xl border-2 border-slate-800 text-xs md:text-sm font-bold text-slate-900 shadow-sm">
+            Company Agents <span class="text-slate-600 font-medium">(5)</span>
+</button>
+<!-- Inactive Tab: External Agents -->
+<button class="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs md:text-sm font-semibold text-slate-600 border border-slate-200 transition-colors">
+            External Agents <span class="text-slate-500 font-normal">(12)</span>
+</button>
+</div>
+<!-- Search Bar and Action Buttons -->
+<div class="flex items-center gap-2.5 flex-1 max-w-2xl justify-end">
+<!-- Search Input -->
+<div class="relative w-full max-w-md">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<input class="w-full pl-9 pr-4 py-2 text-xs md:text-sm bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400 shadow-sm" placeholder="Search agents, skills, or use cases..." type="text"/>
+</div>
+<!-- Filter Button -->
+<button class="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs md:text-sm font-semibold text-slate-700 flex items-center gap-1.5 shadow-sm transition-colors">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Filter</span>
+</button>
+<!-- Add Agent Button -->
+<button class="px-4 py-2 bg-[#006644] hover:bg-[#005237] text-white text-xs md:text-sm font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition-all">
+<span class="text-base font-extrabold leading-none">+</span>
+<span>Add Agent</span>
+</button>
+</div>
+</section>
+<!-- END: FilterAndActionToolbar -->
+<!-- BEGIN: ContentTwoColumnLayout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4 flex-1">
+<!-- Left Main Column: Agent Cards & Insights (8 cols) -->
+<div class="xl:col-span-8 flex flex-col gap-4">
+<!-- 3x2 Grid of Agents -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+<!-- Card 1: CEO Agent -->
+<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow" data-purpose="agent-card">
+<div>
+<div class="flex items-start justify-between">
+<!-- Pixel Icon: Crowned Robot -->
+<div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1 relative shadow-inner">
+<svg class="w-10 h-10 pixelated" fill="none" viewbox="0 0 24 24">
+<!-- Crown -->
+<path d="M5 5l3 3 4-4 4 4 3-3v4H5V5z" fill="#EAB308"></path>
+<!-- Robot head -->
+<rect fill="#2563EB" height="11" rx="2" width="12" x="6" y="9"></rect>
+<rect fill="#1E293B" height="6" width="8" x="8" y="11"></rect>
+<circle cx="10" cy="14" fill="#38BDF8" r="1"></circle>
+<circle cx="14" cy="14" fill="#38BDF8" r="1"></circle>
+<path d="M10 16h4" stroke="#38BDF8" stroke-width="0.8"></path>
+</svg>
+</div>
+<button class="text-slate-400 hover:text-slate-600">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+</button>
+</div>
+<h3 class="font-bold text-slate-900 mt-2 text-sm leading-snug">CEO Agent</h3>
+<p class="text-xs text-slate-500 font-medium">Strategic decisions and coordination</p>
+<!-- Status Badge -->
+<div class="mt-2.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E3FCEF] text-[#006644]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#006644]"></span>
+                    Active
+                  </span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-medium">
+<div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>24 tasks</span>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="text-slate-400">↻</span>
+<span>92%</span>
+</div>
+</div>
+<button class="px-3 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 shadow-xs">View</button>
+</div>
+</div>
+<!-- Card 2: Strategy Agent -->
+<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow" data-purpose="agent-card">
+<div>
+<div class="flex items-start justify-between">
+<!-- Pixel Icon: Chart Growth -->
+<div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1 relative shadow-inner">
+<svg class="w-9 h-9" fill="none" viewbox="0 0 24 24">
+<rect fill="#10B981" height="7" rx="0.5" width="3" x="4" y="14"></rect>
+<rect fill="#059669" height="11" rx="0.5" width="3" x="9" y="10"></rect>
+<rect fill="#047857" height="15" rx="0.5" width="3" x="14" y="6"></rect>
+<path d="M4 12l5-5 4 4 6-6" stroke="#D97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<path d="M16 5h3v3" stroke="#D97706" stroke-linecap="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<button class="text-slate-400 hover:text-slate-600">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+</button>
+</div>
+<h3 class="font-bold text-slate-900 mt-2 text-sm leading-snug">Strategy Agent</h3>
+<p class="text-xs text-slate-500 font-medium">Planning and positioning</p>
+<div class="mt-2.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E3FCEF] text-[#006644]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#006644]"></span>
+                    Active
+                  </span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-medium">
+<div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>18 tasks</span>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="text-slate-400">↻</span>
+<span>76%</span>
+</div>
+</div>
+<button class="px-3 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">View</button>
+</div>
+</div>
+<!-- Card 3: Research Agent -->
+<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow" data-purpose="agent-card">
+<div>
+<div class="flex items-start justify-between">
+<!-- Pixel Icon: Magnifying Glass -->
+<div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1 relative shadow-inner">
+<svg class="w-9 h-9" fill="none" viewbox="0 0 24 24">
+<circle cx="10" cy="10" fill="#E0F2FE" r="6" stroke="#0284C7" stroke-width="2.5"></circle>
+<path d="M14.5 14.5l5 5" stroke="#78350F" stroke-linecap="round" stroke-width="3.5"></path>
+<circle cx="8" cy="8" fill="#BAE6FD" r="1.5"></circle>
+</svg>
+</div>
+<button class="text-slate-400 hover:text-slate-600">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+</button>
+</div>
+<h3 class="font-bold text-slate-900 mt-2 text-sm leading-snug">Research Agent</h3>
+<p class="text-xs text-slate-500 font-medium">Research and analysis</p>
+<div class="mt-2.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E3FCEF] text-[#006644]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#006644]"></span>
+                    Active
+                  </span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-medium">
+<div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>32 tasks</span>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="text-slate-400">↻</span>
+<span>88%</span>
+</div>
+</div>
+<button class="px-3 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">View</button>
+</div>
+</div>
+<!-- Card 4: Marketing Agent -->
+<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow" data-purpose="agent-card">
+<div>
+<div class="flex items-start justify-between">
+<!-- Pixel Icon: Megaphone -->
+<div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1 relative shadow-inner">
+<svg class="w-9 h-9" fill="none" viewbox="0 0 24 24">
+<path d="M4 11v4h4l6 4V7L8 11H4z" fill="#DC2626" stroke="#991B1B" stroke-width="1.5"></path>
+<path d="M8 15l2 4h2l-2-4" fill="#B91C1C"></path>
+<path d="M17 9c1.5 1 1.5 5 0 6" stroke="#F59E0B" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<button class="text-slate-400 hover:text-slate-600">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+</button>
+</div>
+<h3 class="font-bold text-slate-900 mt-2 text-sm leading-snug">Marketing Agent</h3>
+<p class="text-xs text-slate-500 font-medium">Content and growth</p>
+<div class="mt-2.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E3FCEF] text-[#006644]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#006644]"></span>
+                    Active
+                  </span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-medium">
+<div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>16 tasks</span>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="text-slate-400">↻</span>
+<span>68%</span>
+</div>
+</div>
+<button class="px-3 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">View</button>
+</div>
+</div>
+<!-- Card 5: Verification Agent -->
+<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow" data-purpose="agent-card">
+<div>
+<div class="flex items-start justify-between">
+<!-- Pixel Icon: Gear / Shield -->
+<div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1 relative shadow-inner">
+<svg class="w-9 h-9" fill="none" viewbox="0 0 24 24">
+<path d="M12 2l2.4 2.8 3.7-.8 1 3.5 3.3 1.8-1 3.6 2.3 3-2.3 3 1 3.6-3.3 1.8-1 3.5-3.7-.8L12 22l-2.4-2.8-3.7.8-1-3.5-3.3-1.8 1-3.6-2.3-3 2.3-3-1-3.6 3.3-1.8 1-3.5 3.7.8L12 2z" fill="#0284C7"></path>
+<circle cx="12" cy="12" fill="#FFFFFF" r="4.5"></circle>
+<path d="M10 12l1.5 1.5 3-3" stroke="#0284C7" stroke-linecap="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<button class="text-slate-400 hover:text-slate-600">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+</button>
+</div>
+<h3 class="font-bold text-slate-900 mt-2 text-sm leading-snug">Verification Agent</h3>
+<p class="text-xs text-slate-500 font-medium">Quality and validation</p>
+<div class="mt-2.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E3FCEF] text-[#006644]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#006644]"></span>
+                    Active
+                  </span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600 font-medium">
+<div>
+<div class="flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>14 tasks</span>
+</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="text-slate-400">↻</span>
+<span>95%</span>
+</div>
+</div>
+<button class="px-3 py-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">View</button>
+</div>
+</div>
+<!-- Card 6: Add New Agent (Dashed) -->
+<div class="border-2 border-dashed border-slate-300 rounded-2xl p-5 flex flex-col items-center justify-center text-center hover:border-emerald-500 hover:bg-emerald-50/20 transition-all cursor-pointer min-h-[190px]" data-purpose="add-agent-card">
+<div class="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 font-light text-3xl mb-2">
+                +
+              </div>
+<h3 class="font-bold text-slate-900 text-sm">Add New Agent</h3>
+<p class="text-xs text-slate-500 mt-0.5">Customize or hire from marketplace</p>
+</div>
+</div>
+<!-- BEGIN: BottomAgentInsights -->
+<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm mt-auto" data-purpose="agent-insights">
+<div class="flex items-center gap-2 mb-3">
+<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<h4 class="font-bold text-slate-900 text-sm">Agent Insights</h4>
+</div>
+<!-- 4 Metric Badges -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<!-- Metric 1: Total Agents -->
+<div class="bg-slate-50 rounded-xl p-3 flex items-center gap-3 border border-slate-100">
+<div class="w-9 h-9 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<div class="text-lg font-extrabold text-slate-900 leading-tight">5</div>
+<div class="text-[11px] text-slate-500 font-semibold">Total Agents</div>
+</div>
+</div>
+<!-- Metric 2: Total Tasks -->
+<div class="bg-slate-50 rounded-xl p-3 flex items-center gap-3 border border-slate-100">
+<div class="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<div class="text-lg font-extrabold text-slate-900 leading-tight">104</div>
+<div class="text-[11px] text-slate-500 font-semibold">Total Tasks</div>
+</div>
+</div>
+<!-- Metric 3: Completed Today -->
+<div class="bg-slate-50 rounded-xl p-3 flex items-center gap-3 border border-slate-100">
+<div class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<div class="text-lg font-extrabold text-slate-900 leading-tight">23</div>
+<div class="text-[11px] text-slate-500 font-semibold">Completed Today</div>
+</div>
+</div>
+<!-- Metric 4: Productivity Increase -->
+<div class="bg-slate-50 rounded-xl p-3 flex items-center gap-3 border border-slate-100">
+<div class="w-9 h-9 rounded-lg bg-green-100 text-emerald-800 flex items-center justify-center shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</div>
+<div>
+<div class="text-lg font-extrabold text-slate-900 leading-tight">+32%</div>
+<div class="text-[11px] text-slate-500 font-semibold">Productivity Increase</div>
+</div>
+</div>
+</div>
+</div>
+<!-- END: BottomAgentInsights -->
+</div>
+<!-- END: Left Main Column -->
+<!-- BEGIN: RightSidebarColumn (4 cols) -->
+<div class="xl:col-span-4 flex flex-col gap-4">
+<!-- Agent Activity Panel -->
+<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between flex-1" data-purpose="agent-activity-feed">
+<div>
+<div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-2">
+<h3 class="font-bold text-slate-900 text-sm">Agent Activity</h3>
+<a class="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline" href="#">View All</a>
+</div>
+<!-- Activity Items List -->
+<div class="space-y-3 pt-1">
+<!-- Activity 1 -->
+<div class="flex items-start justify-between text-xs py-1">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.5L19 9.5V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<span class="font-bold text-slate-900">Research Agent</span>
+<span class="text-slate-600 font-normal"> completed market analysis</span>
+</div>
+</div>
+<span class="text-slate-400 text-[11px] whitespace-nowrap ml-2">2 min ago</span>
+</div>
+<!-- Activity 2 -->
+<div class="flex items-start justify-between text-xs py-1">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-md bg-red-50 text-red-500 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<span class="font-bold text-slate-900">Marketing Agent</span>
+<span class="text-slate-600 font-normal"> created new content strategy</span>
+</div>
+</div>
+<span class="text-slate-400 text-[11px] whitespace-nowrap ml-2">15 min ago</span>
+</div>
+<!-- Activity 3 -->
+<div class="flex items-start justify-between text-xs py-1">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-md bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M10 2l2 4 4-2-1 4h-10l-1-4 4 2 2-4z"></path><rect height="6" rx="1" width="12" x="4" y="11"></rect></svg>
+</div>
+<div>
+<span class="font-bold text-slate-900">CEO Agent</span>
+<span class="text-slate-600 font-normal"> approved budget for Q4 campaign</span>
+</div>
+</div>
+<span class="text-slate-400 text-[11px] whitespace-nowrap ml-2">1 hour ago</span>
+</div>
+<!-- Activity 4 -->
+<div class="flex items-start justify-between text-xs py-1">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<span class="font-bold text-slate-900">Verification Agent</span>
+<span class="text-slate-600 font-normal"> validated research report</span>
+</div>
+</div>
+<span class="text-slate-400 text-[11px] whitespace-nowrap ml-2">2 hours ago</span>
+</div>
+<!-- Activity 5 -->
+<div class="flex items-start justify-between text-xs py-1">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<span class="font-bold text-slate-900">Strategy Agent</span>
+<span class="text-slate-600 font-normal"> updated roadmap</span>
+</div>
+</div>
+<span class="text-slate-400 text-[11px] whitespace-nowrap ml-2">3 hours ago</span>
+</div>
+<!-- Activity 6 -->
+<div class="flex items-start justify-between text-xs py-1">
+<div class="flex items-start gap-2.5">
+<div class="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.5L19 9.5V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<span class="font-bold text-slate-900">Research Agent</span>
+<span class="text-slate-600 font-normal"> found 5 new market insights</span>
+</div>
+</div>
+<span class="text-slate-400 text-[11px] whitespace-nowrap ml-2">4 hours ago</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Motivational Forest Card -->
+<div class="relative rounded-2xl overflow-hidden h-[135px] border border-slate-200 shadow-sm shrink-0" data-purpose="quote-banner">
+<img alt="Forest with pixel wooden sign" class="w-full h-full object-cover object-bottom pixelated" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyW-RbzcgtN7gX1SwJxjyisczawLJG48e_fWPf8y1w3gYdP5YK3fF4YAtaLRFhgLBcqI-oZLzhS8InINTwro3zbIrbKElKl-4g2LMH5Cf1gql42FDrtrtjHZ_kI-qfxXbu35CbUrwdkUTJCc50BL2WI5_kpqmvDC-zNBGrTOM_v0oyn5zWGc4mpW9iqshzgg0UiAelbm43wjnV6bpGg4cM9yqpcTGcJIrFpva3nY5YJX_HCVoAquTFGO3edao3o3A1wA"/>
+<!-- Quote Overlay Sign -->
+<div class="absolute inset-0 bg-black/25 flex items-center justify-center p-3">
+<div class="bg-[#5c371b] border-4 border-[#3e2411] px-5 py-2.5 rounded-xl shadow-xl text-center max-w-[240px]">
+<p class="text-amber-100 font-extrabold text-xs md:text-sm tracking-wide leading-tight drop-shadow">
+                  Great teams build greater futures.
+                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- END: RightSidebarColumn -->
+</div>
+<!-- END: ContentTwoColumnLayout -->
+</main>
+<!-- END: MainContentArea -->
+</div>
+<!-- END: MainApplicationWindow -->
+</body></html>

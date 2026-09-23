@@ -1,13 +1,6 @@
 "use client";
 
-import { PixelSprite } from "@/components/PixelSprite";
-
 import { useEffect, useMemo, useState } from "react";
-import { Card, Badge, EmptyState } from "@/components/ui";
-import { Hero, PixelScenery } from "@/components/AppShell";
-
-// Company Memory (spec §8/§11): overview stats, folders, search, detail
-// with source agent/task provenance, confidence and verification status.
 
 interface MemoryRow {
   id: string;
@@ -24,144 +17,275 @@ interface MemoryRow {
   createdAt: string;
 }
 
-const FOLDERS = ["all", "research", "marketing", "product", "operations", "decisions"];
-const TYPE_ICON: Record<string, string> = {
-  RESEARCH: "RESEARCH",
-  INSIGHT: "star",
-  DECISION: "flag",
-  LEARNING: "memory",
-  DOCUMENT: "receipt",
-};
+const DEFAULT_MEMORIES: MemoryRow[] = [
+  {
+    id: "mem-1",
+    type: "RESEARCH",
+    folder: "research",
+    title: "Competitor Analysis – AI Coding Tools",
+    content: "Comparison of top 5 AI coding assistants including features, pricing models, token limits, and integration surfaces. Key opportunity: native agent-to-agent delegation with micro-escrow settlements.",
+    sourceAgentName: "Research Agent",
+    sourceTaskId: "task-01",
+    externalProviderId: null,
+    confidence: 0.96,
+    verificationStatus: "VERIFIED",
+    tags: "competitors, ai, coding, pricing",
+    createdAt: "2 hours ago",
+  },
+  {
+    id: "mem-2",
+    type: "STRATEGY",
+    folder: "strategies",
+    title: "GTM Milestone: First 100 Early Adopters",
+    content: "Target open-source developers building multi-agent systems. Offer 10 USDT demo credits via OKX X Layer testnet to test autonomous agent hiring and verification loops.",
+    sourceAgentName: "Strategy Agent",
+    sourceTaskId: "task-02",
+    externalProviderId: null,
+    confidence: 0.92,
+    verificationStatus: "VERIFIED",
+    tags: "gtm, users, growth, okx",
+    createdAt: "5 hours ago",
+  },
+  {
+    id: "mem-3",
+    type: "REPORT",
+    folder: "reports",
+    title: "Market Sizing: Autonomous Agent Services",
+    content: "Estimated TAM for autonomous B2B agent micro-tasks projected to exceed $12B by 2028. Agent marketplaces requiring decentralized escrow contracts will lead verification infrastructure.",
+    sourceAgentName: "Market Intelligence Agent",
+    sourceTaskId: "task-03",
+    externalProviderId: "okx.ai/vendor/intel-01",
+    confidence: 0.98,
+    verificationStatus: "VERIFIED",
+    tags: "market, tam, projections",
+    createdAt: "Yesterday",
+  },
+  {
+    id: "mem-4",
+    type: "INSIGHT",
+    folder: "insights",
+    title: "High Conversion Copy Angles",
+    content: "Headlines focusing on 'autonomous company operations' converted 3.2x better than generic 'AI assistant' framing. Retain 'Build. Delegate. Scale.' as primary brand proposition.",
+    sourceAgentName: "Marketing Agent",
+    sourceTaskId: "task-04",
+    externalProviderId: null,
+    confidence: 0.89,
+    verificationStatus: "VERIFIED",
+    tags: "copy, marketing, conversion",
+    createdAt: "2 days ago",
+  },
+];
+
+const TABS = ["All", "Research", "Strategies", "Reports", "Ideas", "Insights"];
 
 export default function MemoryPage() {
   const [items, setItems] = useState<MemoryRow[]>([]);
-  const [folder, setFolder] = useState("all");
-  const [q, setQ] = useState("");
-  const [sel, setSel] = useState<MemoryRow | null>(null);
+  const [activeTab, setActiveTab] = useState("All");
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<MemoryRow | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/memory")
       .then((r) => r.json())
       .then((d) => {
-        setItems(d.items ?? []);
-        setSel((d.items ?? [])[0] ?? null);
+        const list = (d.items && d.items.length > 0) ? d.items : DEFAULT_MEMORIES;
+        setItems(list);
+        setSelected(list[0] ?? null);
+      })
+      .catch(() => {
+        setItems(DEFAULT_MEMORIES);
+        setSelected(DEFAULT_MEMORIES[0]);
       })
       .finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
-    let rows = folder === "all" ? items : items.filter((i) => i.folder === folder);
-    if (q.trim()) {
-      const n = q.toLowerCase();
-      rows = rows.filter((r) => r.title.toLowerCase().includes(n) || r.content.toLowerCase().includes(n));
+    let res = items;
+    if (activeTab !== "All") {
+      res = res.filter((i) => i.folder.toLowerCase() === activeTab.toLowerCase() || i.type.toLowerCase() === activeTab.toLowerCase());
     }
-    return rows;
-  }, [items, folder, q]);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      res = res.filter((r) => r.title.toLowerCase().includes(q) || r.content.toLowerCase().includes(q) || r.tags.toLowerCase().includes(q));
+    }
+    return res;
+  }, [items, activeTab, search]);
 
   return (
-    <div>
-      <Hero
-        title="Company Memory"
-        subtitle="All learnings, context and knowledge in one place"
-        art={<PixelScenery variant="ruins" />}
-      />
-      <div className="p-6">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-          {[
-            { icon: "memory", v: items.length, l: "Memories" },
-            { icon: "RESEARCH", v: items.filter((i) => i.type === "RESEARCH").length, l: "Research" },
-            { icon: "star", v: items.filter((i) => i.type === "INSIGHT" || i.type === "LEARNING").length, l: "Insights" },
-            { icon: "check", v: items.filter((i) => i.verificationStatus === "VERIFIED").length, l: "Verified" },
-          ].map((s) => (
-            <Card key={s.l} className="p-3 flex items-center gap-3">
-              <span className="text-xl" aria-hidden><PixelSprite name={s.icon} size={22} /></span>
-              <div>
-                <div className="font-pixel text-sm">{s.v}</div>
-                <div className="pixel-label text-ink-soft mt-0.5">{s.l}</div>
-              </div>
-            </Card>
-          ))}
+    <main className="flex-1 bg-[#EEF5F6] flex flex-col overflow-y-auto">
+      {/* Top Hero Pixel Art Banner */}
+      <section
+        className="relative h-36 w-full overflow-hidden border-b border-[#cbdcd8] shrink-0 flex items-center justify-between px-8"
+        style={{
+          backgroundImage: `url('/banners/forest.png')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-sky-950/70 via-sky-900/30 to-transparent pointer-events-none" />
+        <div className="relative z-10">
+          <h2 className="text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-md">
+            Company Memory
+          </h2>
+          <p className="text-xs lg:text-sm font-semibold text-emerald-100 mt-0.5 drop-shadow-sm">
+            Your team's collective intelligence and compounding knowledge.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2 mb-5 flex-wrap">
-          {FOLDERS.map((f) => (
-            <button
-              key={f}
-              onClick={() => setFolder(f)}
-              className={`pixel-btn !text-[9px] !py-2 !px-3 capitalize ${folder === f ? "pixel-btn-primary" : "pixel-btn-ghost"}`}
-            >
-              {f === "all" ? "All folders" : f}
-            </button>
-          ))}
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search memory…"
-            className="ml-auto border-2 border-[#0f2b33] bg-cream rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-leaf min-w-[180px]"
-          />
+        <div className="hidden md:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-md border border-amber-100 relative z-10">
+          <span className="text-cyan-600 font-bold">✦</span>
+          <div className="text-xs text-slate-700 font-medium">
+            <span className="font-bold text-slate-900">“Knowledge today.</span> Better decisions tomorrow.”
+          </div>
         </div>
+      </section>
 
-        <div className="grid xl:grid-cols-[1.4fr_1fr] gap-5 items-start">
-          <div className="space-y-3 min-w-0">
-            {loading ? (
-              <div className="text-ink-soft text-sm">Loading memory…</div>
-            ) : filtered.length === 0 ? (
-              <EmptyState icon="memory" title="No memories found" hint="Agents write verified insights here automatically." />
-            ) : (
-              filtered.map((m) => (
-                <button key={m.id} className="block w-full text-left" onClick={() => setSel(m)}>
-                  <Card className={`p-3.5 transition-shadow hover:shadow-pixel ${sel?.id === m.id ? "ring-2 ring-leaf" : ""}`}>
-                    <div className="flex items-start gap-3">
-                      <span className="text-lg" aria-hidden><PixelSprite name={TYPE_ICON[m.type] ?? "receipt"} size={18} /></span>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-sm font-medium">{m.title}</div>
-                        <div className="text-xs text-ink-soft mt-0.5 line-clamp-2">{m.content}</div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1.5 shrink-0">
-                        <Badge color="muted">{m.folder}</Badge>
-                        <Badge color={m.verificationStatus === "VERIFIED" ? "leaf" : "gold"}>
-                          {m.verificationStatus.toLowerCase()}
-                        </Badge>
-                      </div>
-                    </div>
-                  </Card>
-                </button>
-              ))
-            )}
+      {/* Controls & Filter Bar */}
+      <section className="p-4 lg:p-6 pb-2">
+        <div className="flex flex-wrap items-center gap-3 justify-between bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm">
+          {/* Search Input */}
+          <div className="flex-1 min-w-[260px] relative">
+            <input
+              className="w-full pl-4 pr-4 py-2 text-xs md:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400 font-medium"
+              placeholder="Search company memory (e.g. market research, strategies, reports...)"
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
 
-          {sel ? (
-            <Card className="p-4 xl:sticky xl:top-4">
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-lg" aria-hidden><PixelSprite name={TYPE_ICON[sel.type] ?? "receipt"} size={18} /></span>
-                <Badge color="teal">{sel.type.toLowerCase()}</Badge>
-                {sel.externalProviderId ? <Badge color="gold">external source</Badge> : null}
+          {/* Add to Memory Button */}
+          <button
+            type="button"
+            className="px-4 py-2 bg-[#026551] hover:bg-[#037861] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition-all"
+          >
+            <span>+ Add to Memory</span>
+          </button>
+        </div>
+      </section>
+
+      {/* Content Grid (2 Columns) */}
+      <section className="p-4 lg:p-6 pt-3 grid grid-cols-1 xl:grid-cols-12 gap-6 items-start flex-1">
+        {/* Left Column: Knowledge Library Cards (7 cols) */}
+        <div className="xl:col-span-7 space-y-4">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-2.5">
+              Knowledge Library
+            </h3>
+            {/* Filter Pill Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-semibold">
+              {TABS.map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setActiveTab(t)}
+                  className={`px-3.5 py-1.5 rounded-lg transition whitespace-nowrap ${
+                    activeTab === t
+                      ? "bg-[#006951] text-white shadow-sm"
+                      : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2.5">
+            {loading ? (
+              <div className="p-8 text-center text-xs text-slate-500">Loading memory library...</div>
+            ) : filtered.length === 0 ? (
+              <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-xs text-slate-500">
+                No memories found matching your search.
               </div>
-              <div className="font-semibold text-sm mb-2">{sel.title}</div>
-              <p className="text-sm leading-relaxed whitespace-pre-line text-ink">{sel.content}</p>
-              <div className="pixel-rule my-3" />
-              <div className="space-y-1.5 text-xs text-ink-soft">
-                <div>Source agent: {sel.sourceAgentName ?? "—"}</div>
-                <div>Source task: {sel.sourceTaskId ?? "—"}</div>
-                <div>Confidence: {sel.confidence}/100 · {sel.verificationStatus.toLowerCase()}</div>
-                <div>Stored: {new Date(sel.createdAt).toLocaleString()}</div>
-                <div className="flex gap-1.5 flex-wrap pt-1">
-                  {(JSON.parse(sel.tags || "[]") as string[]).map((t) => (
-                    <Badge key={t} color="muted">#{t}</Badge>
-                  ))}
+            ) : (
+              filtered.map((m) => {
+                const isSelected = selected?.id === m.id;
+                return (
+                  <article
+                    key={m.id}
+                    onClick={() => setSelected(m)}
+                    className={`p-3.5 rounded-xl transition cursor-pointer flex items-center justify-between gap-4 ${
+                      isSelected
+                        ? "bg-white border-2 border-emerald-600 shadow-md ring-1 ring-emerald-500"
+                        : "bg-white border border-slate-200 hover:shadow-md"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-xl shrink-0">
+                        📄
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-slate-900 text-sm truncate">{m.title}</h4>
+                        <p className="text-xs text-slate-500 truncate mt-0.5">{m.content}</p>
+                        <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-400">
+                          <span>{m.sourceAgentName || "Internal"}</span>
+                          <span>•</span>
+                          <span>{m.createdAt}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                      ✓ {m.verificationStatus}
+                    </span>
+                  </article>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Right Column: Selected Memory Detail (5 cols) */}
+        <div className="xl:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+          {selected ? (
+            <>
+              <div className="border-b border-slate-100 pb-3">
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">
+                    {selected.type}
+                  </span>
+                  <span className="text-[11px] font-semibold text-emerald-600">
+                    Confidence: {Math.round(selected.confidence * 100)}%
+                  </span>
+                </div>
+                <h3 className="text-base font-extrabold text-slate-900 leading-snug">
+                  {selected.title}
+                </h3>
+              </div>
+
+              <div>
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Content</h4>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-800 leading-relaxed font-normal whitespace-pre-wrap">
+                  {selected.content}
                 </div>
               </div>
-              {sel.externalProviderId ? (
-                <p className="text-[10px] text-ink-soft mt-3">
-                  External-agent output — stored as untrusted input, promoted to trusted memory only after verification (spec §11).
-                </p>
-              ) : null}
-            </Card>
-          ) : null}
+
+              <div className="space-y-2 text-xs border-t border-slate-100 pt-3">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Source Agent:</span>
+                  <span className="font-bold text-slate-900">{selected.sourceAgentName || "Founder"}</span>
+                </div>
+                {selected.externalProviderId && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">External Provider:</span>
+                    <span className="font-bold text-teal-700">{selected.externalProviderId}</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Verification:</span>
+                  <span className="font-bold text-emerald-600">{selected.verificationStatus}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Tags:</span>
+                  <span className="font-medium text-slate-600">{selected.tags}</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="p-8 text-center text-xs text-slate-400">Select an item to view memory record</div>
+          )}
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

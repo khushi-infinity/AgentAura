@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentAura - Missions</title>
+<!-- Tailwind CSS v3 CDN with forms and container-queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<!-- Google Fonts for pixel-retro vibes -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sidebar: '#002521',
+            canvas: '#fdfbf2',
+            forest: {
+              800: '#003a33',
+              700: '#00584c',
+              600: '#007062',
+              500: '#008775',
+              400: '#00ab96',
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            pixel: ['"Press Start 2P"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbars-and-decorations">
+    /* Subtle custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 58, 51, 0.2);
+      border-radius: 4px;
+    }
+    /* Pixel shadow styling */
+    .retro-bubble-shadow {
+      box-shadow: 2px 3px 0px rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-[#1b2b32] text-slate-800 font-sans antialiased min-h-screen p-2 md:p-4 flex flex-col justify-center items-center select-none">
+<!-- BEGIN: ScreenIdentifier -->
+<div class="w-full max-w-[1440px] mb-2 flex items-center">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-t-lg bg-[#27404a] text-slate-100 text-xs font-bold tracking-wide border-t border-x border-[#3d5d6b]">
+<span>4. Missions</span>
+</div>
+</div>
+<!-- END: ScreenIdentifier -->
+<!-- BEGIN: MainContainer -->
+<div class="w-full max-w-[1440px] bg-canvas rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-[#0d342f] relative" style="min-height: 860px;">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-full md:w-60 bg-sidebar text-slate-200 flex flex-col justify-between p-4 flex-shrink-0 border-r border-[#003832]" data-purpose="application-sidebar">
+<div>
+<!-- Logo Header -->
+<div class="flex items-center gap-3 px-2 py-3 mb-4">
+<!-- Pixel Tree Icon -->
+<div class="w-10 h-10 rounded-lg bg-[#00423a] flex items-center justify-center border border-[#006054] shadow-inner text-emerald-400">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2L4 12h4v4H5l-1 2h16l-1-2h-3v-4h4L12 2zm0 4.5l3.5 4.5h-2v4h1v1h-5v-1h1v-4h-2L12 6.5z"></path>
+</svg>
+</div>
+<div>
+<h1 class="text-white font-extrabold text-base tracking-tight leading-none">AgentAura</h1>
+<p class="text-[10px] text-emerald-300/70 font-medium tracking-tight mt-1">Build. Delegate. Scale.</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav aria-label="Sidebar Navigation" class="space-y-1">
+<!-- Home -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 text-xs font-semibold transition-colors" href="#">
+<i class="w-4 h-4 text-slate-400" data-lucide="home"></i>
+<span>Home</span>
+</a>
+<!-- Missions (Active) -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl bg-white text-[#002f29] font-bold text-xs shadow-sm transition-colors" href="#">
+<i class="w-4 h-4 text-[#008775] fill-[#008775]" data-lucide="flag"></i>
+<span>Missions</span>
+</a>
+<!-- Agents -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 text-xs font-semibold transition-colors" href="#">
+<i class="w-4 h-4 text-slate-400" data-lucide="bot"></i>
+<span>Agents</span>
+</a>
+<!-- Marketplace -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 text-xs font-semibold transition-colors" href="#">
+<i class="w-4 h-4 text-amber-400" data-lucide="store"></i>
+<span>Marketplace</span>
+</a>
+<!-- Company Memory -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 text-xs font-semibold transition-colors" href="#">
+<i class="w-4 h-4 text-sky-400" data-lucide="library"></i>
+<span>Company Memory</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 text-xs font-semibold transition-colors" href="#">
+<i class="w-4 h-4 text-emerald-400" data-lucide="bar-chart-2"></i>
+<span>Analytics</span>
+</a>
+<!-- Wallet -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 text-xs font-semibold transition-colors" href="#">
+<i class="w-4 h-4 text-amber-300" data-lucide="wallet"></i>
+<span>Wallet</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 text-xs font-semibold transition-colors" href="#">
+<i class="w-4 h-4 text-slate-400" data-lucide="settings"></i>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Profile & Company Section -->
+<div class="pt-4 space-y-3">
+<!-- New Company Button -->
+<button class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-emerald-500/30 bg-[#003830] hover:bg-[#00483e] text-emerald-300 text-xs font-semibold transition">
+<i class="w-4 h-4" data-lucide="plus"></i>
+<span>New Company</span>
+</button>
+<!-- User Profile Card -->
+<div class="flex items-center justify-between p-2 rounded-xl bg-[#001c19] border border-[#00342e]">
+<div class="flex items-center gap-2.5">
+<!-- Pixel Character Avatar -->
+<div class="w-8 h-8 rounded-lg bg-amber-200 overflow-hidden flex items-center justify-center border border-amber-400/50">
+<svg class="w-7 h-7 text-amber-900 fill-current" viewbox="0 0 24 24">
+<circle cx="12" cy="8" fill="#E6A15C" r="4"></circle>
+<path d="M6 8c0-3.3 2.7-6 6-6s6 2.7 6 6c0 1.2-.4 2.3-1 3.2C16.4 10.4 15 10 13 10h-2c-2 0-3.4.4-4 1.2C6.4 10.3 6 9.2 6 8z" fill="#4B270C"></path>
+<path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7H5z" fill="#1C654D"></path>
+</svg>
+</div>
+<div>
+<p class="text-xs font-bold text-white leading-tight">Khushi</p>
+<p class="text-[10px] text-slate-400">Founder</p>
+</div>
+</div>
+<button aria-label="User menu" class="text-slate-400 hover:text-white p-1">
+<i class="w-4 h-4" data-lucide="more-vertical"></i>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 flex flex-col min-w-0 bg-[#fdfbf2]" data-purpose="missions-dashboard-content">
+<!-- BEGIN: HeroBannerHeader -->
+<section class="relative h-28 w-full overflow-hidden border-b border-[#e2dec9]" data-purpose="banner-header">
+<!-- Pixel Forest Background Image -->
+<img alt="Pixel forest banner" class="w-full h-full object-cover object-center brightness-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIsy45WWN0gB2rY6UeWY_X3j2tN0aJvP4VgYltefC7whoKacCE5PfR0w5-E_VwIwyFyEq1Fru98d_spotziO3JSTsMq2DwQFMYfndBPKnCG5jyPjLaJuqtQyph8OPuN5q0kIGo3ys8IByj9bX2q09ySRE9BtZLT5NSI6LKZTT-5L0AXeoqodfb0Rc2X58xbUreAQkcVGmypeSDYf8aG4MOoXI0xSm2t-6D33tPT3iRMjbDr0z73ELE7RFlWHgTWWRLrA"/>
+<!-- Overlay Banner Info -->
+<div class="absolute inset-0 bg-gradient-to-r from-emerald-950/60 via-transparent to-transparent flex items-center justify-between px-6">
+<div class="flex items-center gap-3 drop-shadow-md">
+<div class="w-10 h-10 rounded-xl bg-amber-100/90 border border-amber-300 p-1 flex items-center justify-center shadow">
+<span class="text-lg">🏛️</span>
+</div>
+<div>
+<h1 class="text-2xl font-black text-white tracking-tight drop-shadow-md">Missions</h1>
+<p class="text-xs text-emerald-100 font-medium drop-shadow">Turn big goals into achievable outcomes.</p>
+</div>
+</div>
+<!-- Quote Speech Bubble -->
+<div class="hidden lg:flex items-center gap-2 bg-white/95 px-4 py-2 rounded-xl border border-slate-200/90 retro-bubble-shadow backdrop-blur-sm">
+<span class="text-sky-500 font-bold text-xs">✦</span>
+<p class="text-xs font-semibold text-slate-700">"Big goals. Smaller steps. Real outcomes."</p>
+</div>
+</div>
+</section>
+<!-- END: HeroBannerHeader -->
+<!-- BEGIN: TabAndActionsBar -->
+<div class="p-6 pb-2 flex flex-wrap items-center justify-between gap-4">
+<!-- Filter Tabs -->
+<div class="flex items-center bg-[#eae5d5] p-1 rounded-xl text-xs font-semibold text-slate-600 gap-1 border border-[#dfd9c6]">
+<button class="px-4 py-1.5 rounded-lg bg-white text-[#004f43] font-bold border border-emerald-700/20 shadow-sm transition">
+            Active (3)
+          </button>
+<button class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+            Completed (5)
+          </button>
+<button class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+            Archived (1)
+          </button>
+</div>
+<!-- Add Mission Button -->
+<button class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#006050] hover:bg-[#004d40] text-white text-xs font-bold transition shadow-sm border border-[#004d40]">
+<i class="w-4 h-4" data-lucide="plus"></i>
+<span>New Mission</span>
+</button>
+</div>
+<!-- END: TabAndActionsBar -->
+<!-- BEGIN: MissionColumnsLayout -->
+<div class="p-6 pt-3 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 items-start">
+<!-- Column 1: Mission List & Suggestions (7 cols) -->
+<div class="lg:col-span-7 space-y-3.5">
+<!-- Mission Card 1 (Active / Selected) -->
+<article class="p-4 rounded-xl bg-white border-2 border-emerald-600/40 shadow-sm transition hover:shadow-md cursor-pointer relative" data-purpose="mission-card-launch">
+<h2 class="text-sm font-extrabold text-[#002f29] mb-2.5">
+              Launch our product and get first 100 users
+            </h2>
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 font-semibold border border-sky-200">
+                In Progress
+              </span>
+<!-- Progress Bar -->
+<div class="flex items-center gap-2 flex-1 max-w-[200px]">
+<div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 42%;"></div>
+</div>
+<span class="text-[11px] font-bold text-slate-600 whitespace-nowrap">42/100 tasks</span>
+</div>
+<!-- Priority Badge -->
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-50 text-red-600 font-bold border border-red-200 text-[11px]">
+                🔥 High
+              </span>
+</div>
+</article>
+<!-- Mission Card 2 -->
+<article class="p-4 rounded-xl bg-white/70 border border-slate-200 hover:border-slate-300 shadow-sm transition hover:bg-white cursor-pointer" data-purpose="mission-card-product-feedback">
+<h2 class="text-sm font-bold text-slate-800 mb-2.5">
+              Improve product based on user feedback
+            </h2>
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold border border-slate-200">
+                Not Started
+              </span>
+<!-- Progress Bar (Empty) -->
+<div class="flex items-center gap-2 flex-1 max-w-[200px]">
+<div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+<div class="bg-slate-400 h-full rounded-full" style="width: 0%;"></div>
+</div>
+<span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap">0/70 tasks</span>
+</div>
+<!-- Priority Badge -->
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold border border-amber-200 text-[11px]">
+                🚩 Medium
+              </span>
+</div>
+</article>
+<!-- Mission Card 3 -->
+<article class="p-4 rounded-xl bg-white/70 border border-slate-200 hover:border-slate-300 shadow-sm transition hover:bg-white cursor-pointer" data-purpose="mission-card-international-markets">
+<h2 class="text-sm font-bold text-slate-800 mb-2.5">
+              Explore international markets
+            </h2>
+<div class="flex items-center justify-between gap-3 text-xs">
+<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-semibold border border-slate-200">
+                Not Started
+              </span>
+<!-- Progress Bar (Empty) -->
+<div class="flex items-center gap-2 flex-1 max-w-[200px]">
+<div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+<div class="bg-slate-400 h-full rounded-full" style="width: 0%;"></div>
+</div>
+<span class="text-[11px] font-semibold text-slate-500 whitespace-nowrap">0/50 tasks</span>
+</div>
+<!-- Priority Badge -->
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 text-[11px]">
+                ⛳ Low
+              </span>
+</div>
+</article>
+<!-- AI Suggestions Box -->
+<section class="p-4 rounded-xl bg-white border border-[#dfd9c6] shadow-sm mt-5" data-purpose="ai-suggestions-section">
+<div class="flex items-start gap-2 mb-3">
+<i class="w-4 h-4 text-cyan-600 mt-0.5" data-lucide="sparkles"></i>
+<div>
+<h3 class="text-xs font-bold text-slate-800">AI Suggestions</h3>
+<p class="text-[11px] text-slate-500">Based on similar companies, here are some suggestions:</p>
+</div>
+</div>
+<!-- Suggestion Items -->
+<div class="space-y-2">
+<div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition">
+<div class="flex items-center gap-2.5">
+<span class="text-sm">💡</span>
+<span class="text-xs font-medium text-slate-700">Use a waitlist to validate demand early</span>
+</div>
+<button class="px-3 py-1 rounded bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold text-[10px] transition">Apply</button>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition">
+<div class="flex items-center gap-2.5">
+<span class="text-sm">👥</span>
+<span class="text-xs font-medium text-slate-700">Partner with student communities</span>
+</div>
+<button class="px-3 py-1 rounded bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold text-[10px] transition">Apply</button>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-100 transition">
+<div class="flex items-center gap-2.5">
+<span class="text-sm">📢</span>
+<span class="text-xs font-medium text-slate-700">Create short demo videos for social media</span>
+</div>
+<button class="px-3 py-1 rounded bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold text-[10px] transition">Apply</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Column 2: Mission Details (5 cols) -->
+<aside class="lg:col-span-5 bg-white/60 p-4 rounded-xl border border-[#dfd9c6] shadow-sm flex flex-col justify-between" data-purpose="mission-details-panel">
+<div>
+<!-- Detail Header -->
+<div class="flex items-center justify-between pb-3 border-b border-slate-200">
+<h2 class="text-sm font-extrabold text-slate-900">Mission Details</h2>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px] border border-emerald-300">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> In Progress
+              </span>
+</div>
+<!-- Title & Description -->
+<div class="flex items-start gap-3 my-4">
+<div class="p-2 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-300">
+<i class="w-5 h-5 fill-emerald-600 text-emerald-700" data-lucide="flag"></i>
+</div>
+<div>
+<h3 class="text-sm font-bold text-slate-900 leading-snug">Launch our product and get first 100 users</h3>
+<p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                  Get our first 100 users through targeted content, community and distribution.
+                </p>
+</div>
+</div>
+<!-- Checklist -->
+<div class="space-y-2.5 my-5">
+<!-- Item 1 (Done) -->
+<label class="flex items-center gap-2.5 cursor-pointer">
+<div class="w-4 h-4 rounded bg-emerald-600 flex items-center justify-center text-white text-[10px]">
+<i class="w-3 h-3 stroke-[3]" data-lucide="check"></i>
+</div>
+<span class="text-xs font-semibold text-slate-700">Market research</span>
+</label>
+<!-- Item 2 (Done) -->
+<label class="flex items-center gap-2.5 cursor-pointer">
+<div class="w-4 h-4 rounded bg-emerald-600 flex items-center justify-center text-white text-[10px]">
+<i class="w-3 h-3 stroke-[3]" data-lucide="check"></i>
+</div>
+<span class="text-xs font-semibold text-slate-700">Competitor analysis</span>
+</label>
+<!-- Item 3 -->
+<label class="flex items-center gap-2.5 cursor-pointer">
+<div class="w-4 h-4 rounded border border-slate-400 bg-white"></div>
+<span class="text-xs font-medium text-slate-600">Landing page strategy</span>
+</label>
+<!-- Item 4 -->
+<label class="flex items-center gap-2.5 cursor-pointer">
+<div class="w-4 h-4 rounded border border-slate-400 bg-white"></div>
+<span class="text-xs font-medium text-slate-600">Content plan</span>
+</label>
+<!-- Item 5 -->
+<label class="flex items-center gap-2.5 cursor-pointer">
+<div class="w-4 h-4 rounded border border-slate-400 bg-white"></div>
+<span class="text-xs font-medium text-slate-600">Community outreach</span>
+</label>
+<!-- Item 6 -->
+<label class="flex items-center gap-2.5 cursor-pointer">
+<div class="w-4 h-4 rounded border border-slate-400 bg-white"></div>
+<span class="text-xs font-medium text-slate-600">Get first 100 users</span>
+</label>
+</div>
+<!-- Priority & Due Date Meta -->
+<div class="flex items-center justify-between border-t border-slate-200/80 pt-4 text-xs font-medium text-slate-600">
+<div class="flex items-center gap-2">
+<span>Priority</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-100/70 text-red-600 font-bold border border-red-200 text-[11px]">
+                  🔥 High
+                </span>
+</div>
+<div class="flex items-center gap-2">
+<span>Due Date</span>
+<div class="flex items-center gap-1.5 font-bold text-slate-800">
+<i class="w-3.5 h-3.5 text-slate-700" data-lucide="calendar"></i>
+<span>30 Sep 2026</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Button -->
+<div class="mt-6 pt-2">
+<button class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#006050] hover:bg-[#004e41] text-white font-bold text-xs tracking-wide shadow-md transition">
+<span>View Execution</span>
+<i class="w-4 h-4" data-lucide="arrow-right"></i>
+</button>
+</div>
+</aside>
+</div>
+<!-- END: MissionColumnsLayout -->
+</main>
+<!-- END: MainContent -->
+</div>
+<!-- END: MainContainer -->
+<!-- BEGIN: ScriptInitializers -->
+<script data-purpose="icon-initialization">
+    // Render Lucide icons
+    lucide.createIcons();
+  </script>
+<!-- END: ScriptInitializers -->
+</body></html>

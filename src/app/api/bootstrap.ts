@@ -1,17 +1,14 @@
 import "server-only";
 import { migrate } from "@/lib/db/migrate";
-import { db } from "@/lib/db";
-import { companies } from "@/lib/db/schema";
 
 let ready: Promise<void> | null = null;
 
+// Bootstrap only ensures the schema exists. It deliberately does NOT seed a
+// demo company: a fresh install must land on /onboarding (spec §1 Welcome),
+// not on somebody else's sample data. Demo data is opt-in via
+// POST /api/seed-demo (Settings → Workspace → "Load demo workspace").
 async function doBootstrap() {
   migrate();
-  const rows = db.select().from(companies).limit(1).all();
-  if (rows.length === 0) {
-    const { seed } = await import("@/lib/db/seed");
-    seed();
-  }
 }
 
 export function bootstrap(): Promise<void> {

@@ -1,34 +1,32 @@
 "use client";
 
-import { PixelSprite, AGENT_MARK } from "@/components/PixelSprite";
-
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PixelButton } from "@/components/ui";
-import { PixelScenery } from "@/components/AppShell";
-
-// Create Company (spec §8): name, description, goal, budget, autonomy
-// policy + preview of agents that will be assembled.
 
 const AGENTS_PREVIEW = [
-  { icon: "CEO", name: "CEO Agent", desc: "Oversees strategy and decision making" },
-  { icon: "STRATEGY", name: "Strategy Agent", desc: "Planning and market positioning" },
-  { icon: "RESEARCH", name: "Research Agent", desc: "Market, users and competitors" },
-  { icon: "MARKETING", name: "Marketing Agent", desc: "Content, growth and community" },
-  { icon: "VERIFICATION", name: "Verification Agent", desc: "Quality check and validation" },
+  { icon: "🤖", name: "CEO Agent", role: "Planning", desc: "Oversees strategy and decision making" },
+  { icon: "📊", name: "Strategy Agent", role: "Strategy", desc: "Planning and market positioning" },
+  { icon: "🔍", name: "Research Agent", role: "Research", desc: "Market, users and competitors" },
+  { icon: "📢", name: "Marketing Agent", role: "Marketing", desc: "Content, growth and community" },
+  { icon: "🛡️", name: "Verification Agent", role: "Quality", desc: "Quality check and validation" },
 ];
 
 function CreateInner() {
   const router = useRouter();
   const params = useSearchParams();
-  const [name, setName] = useState("Acme AI");
-  const [description, setDescription] = useState("AI-powered developer productivity tool");
-  const [goal, setGoal] = useState(params.get("goal") ?? "Launch our product and get first 100 users");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [goal, setGoal] = useState(params.get("goal") ?? "");
   const [budget, setBudget] = useState(10);
-  const [policy, setPolicy] = useState("AUTO_HIRE_BELOW_BUDGET");
+  // Default to human-in-the-loop: the approve-hire moment (banner → OKX AI
+  // marketplace → x402 settlement) is the product's core demo. Founders can
+  // switch to auto-hire here or later in Settings.
+  const [policy, setPolicy] = useState("ASK_BEFORE_HIRING");
   const [busy, setBusy] = useState(false);
 
   const assemble = async () => {
+    // The goal is the whole point of the product — never invent one.
+    if (!goal.trim() || busy) return;
     setBusy(true);
     try {
       const res = await fetch("/api/companies", {
@@ -55,115 +53,198 @@ function CreateInner() {
     }
   };
 
+  const goalOk = goal.trim().length > 0;
+
   return (
-    <div className="min-h-screen bg-forest flex items-start justify-center px-4 py-10">
-      <div className="w-full max-w-4xl">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="text-3xl" aria-hidden><PixelSprite glyph={AGENT_MARK} size={32} /></span>
-          <div className="font-pixel text-cream text-lg">Create Your Company</div>
-        </div>
-        <p className="text-cream/70 text-sm mb-5">Set up your autonomous AI workforce.</p>
+    <div className="flex-1 flex flex-col min-w-0 bg-[#f8f5eb] relative overflow-hidden" data-purpose="content-area">
+      {/* Top Pixel Landscape Header Banner */}
+      <div className="relative w-full h-20 sm:h-24 overflow-hidden border-b border-[#e2dcc8]">
+        <img
+          alt="AgentAura Forest Landscape"
+          className="w-full h-full object-cover object-center pixelated"
+          src="/banners/forest.png"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#f8f5eb]/90" />
+      </div>
 
-        {/* Page hero: environmental pixel-art strip (spec §7). */}
-        <div className="relative overflow-hidden border-2 border-[#01141c] mb-6 h-28">
-          <PixelScenery variant="meadow" />
+      {/* Workspace Container */}
+      <div className="p-4 sm:p-6 md:p-8 flex-1 relative z-10">
+        {/* Top Header & Quote Row */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#193238] tracking-tight">
+              Create Your Company
+            </h2>
+            <p className="text-xs sm:text-sm text-[#5f7478] font-medium mt-0.5">
+              Set up your autonomous AI workforce.
+            </p>
+          </div>
+          {/* Quote Badge */}
+          <div className="inline-flex items-center space-x-2 text-xs font-medium text-[#486b6e] bg-[#e7f1ee]/90 px-3.5 py-1.5 rounded-full border border-[#cbdcd8] shadow-sm self-start">
+            <span className="text-emerald-600 font-bold">✦</span>
+            <span>“A goal, a budget, a workforce. That's a company.”</span>
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-[1.2fr_1fr] gap-6">
-          {/* Form */}
-          <div className="pixel-card p-5 space-y-4">
-            <div>
-              <label className="pixel-label block mb-1.5" htmlFor="cname">Company Name</label>
+        {/* 2-Column Content Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* LEFT COLUMN: Creation Form (7 cols) */}
+          <div className="lg:col-span-7 space-y-3.5" data-purpose="create-company-form">
+            {/* Company Name + Budget side-by-side — compact so the CTA stays in view */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-[#233f42] mb-1.5" htmlFor="company-name">
+                Company Name
+              </label>
               <input
-                id="cname"
+                className="w-full text-xs font-semibold text-[#183134] bg-white rounded-lg border border-[#d6cfb8] px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                id="company-name"
+                type="text"
+                placeholder="e.g. Aura Labs"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
               />
-            </div>
-            <div>
-              <label className="pixel-label block mb-1.5" htmlFor="cdesc">What are you building?</label>
+              </div>
+              <div>
+              <label className="block text-xs font-bold text-[#233f42] mb-1.5" htmlFor="initial-budget">
+                Initial Budget (USDT)
+              </label>
               <input
-                id="cdesc"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
-              />
-            </div>
-            <div>
-              <label className="pixel-label block mb-1.5" htmlFor="cgoal">Primary Goal</label>
-              <input
-                id="cgoal"
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
-              />
-            </div>
-            <div>
-              <label className="pixel-label block mb-1.5" htmlFor="cbudget">Initial Budget (USD₮0)</label>
-              <input
-                id="cbudget"
+                className="w-full text-xs font-semibold text-[#183134] bg-white rounded-lg border border-[#d6cfb8] px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                id="initial-budget"
                 type="number"
                 min={1}
                 value={budget}
                 onChange={(e) => setBudget(Number(e.target.value))}
-                className="w-full border-2 border-[#0f2b33] bg-parchment rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-leaf"
+              />
+              </div>
+            </div>
+
+            {/* What are you building? */}
+            <div>
+              <label className="block text-xs font-bold text-[#233f42] mb-1.5" htmlFor="building-desc">
+                What are you building?
+              </label>
+              <textarea
+                className="w-full text-xs font-medium text-[#183134] bg-white rounded-lg border border-[#d6cfb8] px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none transition-all"
+                id="building-desc"
+                rows={2}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
+
+            {/* Primary Goal */}
             <div>
-              <span className="pixel-label block mb-1.5">Agent Autonomy</span>
-              <div className="space-y-2">
+              <label className="block text-xs font-bold text-[#233f42] mb-1.5" htmlFor="primary-goal">
+                Primary Goal
+              </label>
+              <input
+                className={`w-full text-xs font-medium text-[#183134] bg-white rounded-lg border px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all ${
+                  goal && !goalOk ? "border-red-400" : goalOk ? "border-emerald-400" : "border-[#d6cfb8]"
+                }`}
+                id="primary-goal"
+                type="text"
+                placeholder="e.g. Research my market and launch a go-to-market plan"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+              />
+            </div>
+
+            {/* Agent Autonomy Radio Selection */}
+            <div>
+              <label className="block text-xs font-bold text-[#233f42] mb-1.5">Agent Autonomy</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {[
-                  { id: "ASK_BEFORE_HIRING", label: "Ask before hiring", hint: "You approve every external hire" },
-                  { id: "AUTO_HIRE_BELOW_BUDGET", label: "Auto-hire under budget", hint: "Agents act freely within your budget" },
-                  { id: "FULLY_AUTONOMOUS", label: "Fully autonomous", hint: "No approval needed" },
+                  {
+                    id: "MANUAL_APPROVAL",
+                    title: "Ask before hiring",
+                    desc: "Require founder approval for external agents",
+                  },
+                  {
+                    id: "AUTO_HIRE_BELOW_BUDGET",
+                    title: "Autonomous within budget",
+                    desc: "Agents hire within available funds automatically",
+                  },
+                  {
+                    id: "FULL_AUTONOMY",
+                    title: "Full Autonomy",
+                    desc: "Agents manage tasks and hiring independently",
+                  },
                 ].map((opt) => (
-                  <label
+                  <button
                     key={opt.id}
-                    className={`flex items-center gap-3 border-2 rounded-sm px-3 py-2.5 cursor-pointer transition-colors ${
-                      policy === opt.id ? "border-leaf bg-[#ddf0e6]" : "border-[#0f2b3355] bg-parchment hover:border-leaf/50"
+                    type="button"
+                    onClick={() => setPolicy(opt.id)}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      policy === opt.id
+                        ? "border-emerald-600 bg-emerald-50/70 shadow-sm ring-1 ring-emerald-500"
+                        : "border-[#d6cfb8] bg-white hover:bg-slate-50"
                     }`}
                   >
-                    <input
-                      type="radio"
-                      name="policy"
-                      checked={policy === opt.id}
-                      onChange={() => setPolicy(opt.id)}
-                      className="accent-[#007755]"
-                    />
-                    <span>
-                      <span className="text-sm font-medium block">{opt.label}</span>
-                      <span className="text-xs text-ink-soft">{opt.hint}</span>
-                    </span>
-                  </label>
+                    <div className="text-xs font-bold text-slate-900 mb-1">{opt.title}</div>
+                    <div className="text-[10px] text-slate-500 font-medium leading-tight">{opt.desc}</div>
+                  </button>
                 ))}
               </div>
             </div>
-            <PixelButton className="w-full" onClick={assemble} disabled={busy}>
-              {busy ? "Assembling…" : "Assemble My Company →"}
-            </PixelButton>
+
+            {/* Submit Action — sticky bottom so it's always reachable */}
+            <div className="pt-1 lg:sticky lg:bottom-2">
+              <button
+                type="button"
+                onClick={assemble}
+                disabled={busy || !goalOk}
+                title={goalOk ? undefined : "Describe what your company should achieve first"}
+                className="w-full py-3 rounded-xl bg-[#006050] hover:bg-[#004d40] text-white text-sm font-bold flex items-center justify-center gap-2 shadow transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span>{busy ? "Assembling Team & Minting Wallet..." : goalOk ? "Assemble My Company →" : "Write your Primary Goal to continue"}</span>
+              </button>
+            </div>
           </div>
 
-          {/* Preview */}
-          <div className="pixel-card p-5">
-            <div className="font-pixel text-[10px] mb-4">Your AI Company Will Include</div>
-            <div className="space-y-3">
-              {AGENTS_PREVIEW.map((a) => (
-                <div key={a.name} className="flex items-center gap-3">
-                  <span className="text-xl w-9 h-9 flex items-center justify-center bg-parchment border-2 border-[#0f2b33] rounded-sm" aria-hidden>
-                    <PixelSprite name={a.icon} size={20} />
-                  </span>
-                  <div>
-                    <div className="text-sm font-semibold">{a.name}</div>
-                    <div className="text-xs text-ink-soft">{a.desc}</div>
+          {/* RIGHT COLUMN: Team & Wallet Preview (5 cols) */}
+          <div className="lg:col-span-5 space-y-4">
+            {/* Default Starter Team */}
+            <div className="bg-white rounded-2xl border border-[#d6cfb8] p-4 shadow-sm">
+              <h3 className="text-xs font-extrabold text-[#193336] uppercase tracking-wide mb-3">
+                Your AI Company Will Include
+              </h3>
+              <div className="space-y-2.5">
+                {AGENTS_PREVIEW.map((ag) => (
+                  <div
+                    key={ag.name}
+                    className="flex items-center justify-between p-2 rounded-xl bg-[#fcfbf7] border border-[#ece8db]"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">{ag.icon}</span>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900">{ag.name}</div>
+                        <div className="text-[10px] text-slate-500">{ag.desc}</div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      {ag.role}
+                    </span>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-            <div className="pixel-rule my-4" />
-            <p className="text-xs text-ink-soft">
-              More agents can be hired as needed from the OKX.AI marketplace when your team hits a capability gap.
-            </p>
+
+            {/* OKX Agentic Wallet Card */}
+            <div className="bg-gradient-to-br from-[#012627] to-[#033b3c] text-white rounded-2xl p-4 border border-[#0d4a4d] shadow-md space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-emerald-300">Agentic Wallet · OKX X Layer</span>
+                <span className="text-[10px] font-mono text-emerald-400/80">0x3f9A...8b21</span>
+              </div>
+              <p className="text-[11px] text-slate-200 leading-snug">
+                An onchain wallet will be provisioned on OKX X Layer testnet to enable autonomous micro-settlements and escrow contracts.
+              </p>
+              <div className="flex items-center justify-between text-[11px] pt-1 border-t border-emerald-800/40">
+                <span className="text-slate-300">Initial Allocation:</span>
+                <span className="font-bold text-amber-300">{budget} USDT</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -171,9 +252,9 @@ function CreateInner() {
   );
 }
 
-export default function CreatePage() {
+export default function CreateCompanyPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-forest" />}>
+    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-500">Loading form...</div>}>
       <CreateInner />
     </Suspense>
   );

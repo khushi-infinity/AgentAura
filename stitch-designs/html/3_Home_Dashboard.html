@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentAura - Home Dashboard</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts & Phosphor / Lucide Icons Support -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal: '#012829',
+              darker: '#011c1d',
+              surface: '#02383a',
+              border: '#0d4a4d',
+              cream: '#fffdf6',
+              card: '#ffffff',
+              accent: '#0e8574',
+              activeGreen: '#128b6e',
+              pillBlue: '#e2f0fd',
+              pillTextBlue: '#206eb5'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            pixel: ['"Press Start 2P"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Theme Styles -->
+<style data-purpose="custom-layout">
+    body {
+      background-color: #011c1d;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #0d4a4d;
+      border-radius: 4px;
+    }
+    .pixel-border-gold {
+      box-shadow: 0 0 0 1.5px #cfb57a, 0 3px 0 rgba(0, 0, 0, 0.05);
+    }
+    .border-pixel-card {
+      border: 1px solid #e7eaec;
+    }
+  </style>
+</head>
+<body class="p-2 md:p-5 flex flex-col items-center justify-center min-h-screen text-slate-800">
+<!-- BEGIN: Top Indicator Badge -->
+<div class="w-full max-w-[1580px] mb-2 px-1 flex items-center">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-md bg-[#163a52]/80 border border-[#3b749e]/60 text-white shadow-sm">
+<span class="text-sm font-semibold tracking-wide">3. Home Dashboard (Final)</span>
+</div>
+</div>
+<!-- END: Top Indicator Badge -->
+<!-- BEGIN: Dashboard Main Wrapper -->
+<div class="w-full max-w-[1580px] bg-[#fffdf6] border-[2px] border-[#103d3f] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[890px]">
+<!-- BEGIN: Left Sidebar Navigation -->
+<aside class="w-full md:w-64 bg-[#012627] text-white flex flex-col justify-between p-4 border-r border-[#073d3e] shrink-0" data-purpose="sidebar-navigation">
+<div>
+<!-- Logo Section -->
+<div class="flex items-center gap-3 px-2 py-3 mb-6">
+<div class="w-10 h-10 rounded-lg bg-[#073c3d] flex items-center justify-center border border-[#1b6163] shadow-inner text-emerald-400 text-2xl">
+            🌲
+          </div>
+<div>
+<div class="font-extrabold text-lg leading-tight tracking-wide text-white">AgentAura</div>
+<div class="text-[10px] text-[#4ea99f] font-medium tracking-wide">Build. Delegate. Scale.</div>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="space-y-1.5" data-purpose="nav-links">
+<!-- Active 'Home' Nav Item -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-white text-[#0a2f31] font-bold text-sm shadow-sm transition-all" href="#">
+<svg class="w-5 h-5 text-[#0a2f31]" fill="currentColor" viewbox="0 0 20 20">
+<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+</svg>
+<span>Home</span>
+</a>
+<!-- Missions -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium text-sm transition-all" href="#">
+<i class="fa-solid fa-flag text-emerald-400 text-base"></i>
+<span>Missions</span>
+</a>
+<!-- Agents -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium text-sm transition-all" href="#">
+<i class="fa-solid fa-robot text-teal-300 text-base"></i>
+<span>Agents</span>
+</a>
+<!-- Marketplace -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium text-sm transition-all" href="#">
+<i class="fa-solid fa-store text-amber-400 text-base"></i>
+<span>Marketplace</span>
+</a>
+<!-- Company Memory -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium text-sm transition-all" href="#">
+<i class="fa-solid fa-book-open text-sky-300 text-base"></i>
+<span>Company Memory</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium text-sm transition-all" href="#">
+<i class="fa-solid fa-chart-simple text-emerald-400 text-base"></i>
+<span>Analytics</span>
+</a>
+<!-- Wallet -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium text-sm transition-all" href="#">
+<i class="fa-solid fa-wallet text-amber-300 text-base"></i>
+<span>Wallet</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium text-sm transition-all" href="#">
+<i class="fa-solid fa-gear text-slate-300 text-base"></i>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Controls: New Company & User Profile -->
+<div class="pt-6 space-y-4" data-purpose="sidebar-footer">
+<!-- New Company Button -->
+<button class="w-full py-2.5 px-4 rounded-xl border border-[#1b6b63] bg-[#023b3b] hover:bg-[#054b4b] text-emerald-200 font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-sm">
+<i class="fa-solid fa-plus text-xs"></i>
+<span>New Company</span>
+</button>
+<!-- User Profile Card -->
+<div class="flex items-center justify-between p-2 rounded-xl bg-[#022f30] border border-[#094749]">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center overflow-hidden border border-emerald-400/50">
+<!-- Pixel Girl Avatar -->
+<span class="text-xl leading-none">👧🏻</span>
+</div>
+<div>
+<div class="font-bold text-sm text-white leading-none">Khushi</div>
+<div class="text-[11px] text-[#71aaa3] font-medium mt-0.5">Founder</div>
+</div>
+</div>
+<button class="text-slate-400 hover:text-white p-1">
+<i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: Left Sidebar Navigation -->
+<!-- BEGIN: Main Dashboard View -->
+<main class="flex-1 flex flex-col bg-[#fdfbf4] overflow-y-auto">
+<!-- BEGIN: Hero Pixel Forest Banner -->
+<header class="relative w-full h-44 bg-cover bg-center overflow-hidden flex items-center justify-between px-8 border-b border-[#e1decf]" data-purpose="banner-header" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAUoWSZ1NUXVy8nAoLkHB2JYgsSnIvuD2OS8adJ6Wa1YjzF0h2mBrKvXzLkDbMKK4o2J_yCsBmIZ0-8OXqb29XAgjg1yzdpx-SEyQ1HCF6k1V2CR26rdE7bvSak18zO0N-ve9Cd4oiVzaeDq8NK-jLn1bVppKO6Y-0V0W2_3WRc6xkA_59yzjUf4CI7bkK0pJTqvd9AN8PHxCumO4LPcvieCCT0Ws0r8PXeP33rFGOl2E4TgG-0BcD6RuIHwKxp3Fi2Qg');">
+<!-- Overlay tint for legibility -->
+<div class="absolute inset-0 bg-gradient-to-r from-sky-100/85 via-white/40 to-transparent pointer-events-none"></div>
+<!-- Greeting Text Area -->
+<div class="relative z-10 max-w-xl">
+<h1 class="text-3xl lg:text-[2.25rem] font-black text-[#0f2d59] tracking-tight flex items-center gap-2">
+            Good evening, Khushi
+          </h1>
+<p class="text-[#32527b] text-base font-semibold mt-1">
+            Your AI company is up and running.
+          </p>
+</div>
+<!-- Top Right Indicators & Quote -->
+<div class="relative z-10 flex flex-col items-end gap-3">
+<!-- Status badges row -->
+<div class="flex items-center gap-2">
+<!-- Day / Weather -->
+<div class="bg-[#002224]/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#145053] text-white flex items-center gap-2 text-xs font-semibold shadow">
+<span class="text-amber-400 text-sm">☀️</span>
+<span>Day 12 • Clear</span>
+</div>
+<!-- Wallet USDT -->
+<div class="bg-[#002224]/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#145053] text-white flex items-center gap-2 text-xs font-semibold shadow">
+<span class="text-emerald-400 text-sm"><i class="fa-solid fa-wallet"></i></span>
+<span>24.48 USDT</span>
+</div>
+<!-- Notification Bell -->
+<div class="bg-[#002224]/85 backdrop-blur-md w-8 h-8 rounded-lg border border-[#145053] text-white flex items-center justify-center relative cursor-pointer shadow">
+<i class="fa-regular fa-bell text-xs"></i>
+<span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-rose-500 text-white rounded-full text-[9px] flex items-center justify-center font-bold">1</span>
+</div>
+<!-- User Mini Icon -->
+<div class="w-8 h-8 rounded-lg bg-[#002224]/85 border border-[#145053] flex items-center justify-center text-sm shadow">
+<span>👧🏻</span>
+</div>
+</div>
+<!-- Quote Tag -->
+<div class="bg-[#fefbf0]/95 border border-[#cfb57a] rounded-lg px-4 py-2 flex items-center gap-2.5 shadow-sm text-xs font-medium text-[#1c385b]">
+<span class="text-indigo-500 font-bold text-sm">✦</span>
+<span>“Autonomous teams build progress.”</span>
+</div>
+</div>
+</header>
+<!-- END: Hero Pixel Forest Banner -->
+<!-- BEGIN: Content Body (Grid Layout) -->
+<div class="p-6 space-y-6">
+<!-- BEGIN: Company Overview Card -->
+<section class="bg-white rounded-xl border border-[#e6e2d3] p-5 shadow-sm" data-purpose="company-overview-stats">
+<div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+<!-- Left: Company Identity & Progress -->
+<div class="flex-1 w-full">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<!-- Pixel Mountain Logo -->
+<div class="w-12 h-12 rounded-xl bg-[#002324] flex items-center justify-center border border-[#115a5d] text-2xl shadow">
+                    ⛰️
+                  </div>
+<div>
+<h2 class="text-xl font-black text-slate-900 leading-tight">Acme AI</h2>
+<p class="text-xs font-medium text-slate-500">Get first 100 users</p>
+</div>
+</div>
+<!-- Status Badge -->
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#e3f7ec] text-[#0d8253] border border-[#a2e0c0]">
+<span class="w-2 h-2 rounded-full bg-[#10b981]"></span>
+                  In Progress
+                </span>
+</div>
+<!-- Progress Bar -->
+<div class="mt-4">
+<div class="w-full bg-[#e8eceb] h-2.5 rounded-full overflow-hidden">
+<div class="bg-[#0b806d] h-full rounded-full" style="width: 42%;"></div>
+</div>
+<div class="flex justify-between items-center text-xs font-bold text-slate-500 mt-2">
+<span class="text-[#0b806d]">42%</span>
+<span>42/100 tasks</span>
+</div>
+</div>
+</div>
+<!-- Right: Metric Counters -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full lg:w-auto shrink-0">
+<!-- Active Agents -->
+<div class="bg-[#fcfbf7] border border-[#ece8db] rounded-xl px-5 py-3 text-center min-w-[105px]">
+<div class="w-7 h-7 mx-auto rounded-full bg-[#004e92] text-white flex items-center justify-center text-xs font-bold mb-1 shadow-sm">
+                  6
+                </div>
+<div class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">Active Agents</div>
+</div>
+<!-- External Agents -->
+<div class="bg-[#fcfbf7] border border-[#ece8db] rounded-xl px-5 py-3 text-center min-w-[105px]">
+<div class="w-7 h-7 mx-auto rounded-full bg-[#0275d8] text-white flex items-center justify-center text-xs font-bold mb-1 shadow-sm">
+                  2
+                </div>
+<div class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">External Agents</div>
+</div>
+<!-- Executions -->
+<div class="bg-[#fcfbf7] border border-[#ece8db] rounded-xl px-5 py-3 text-center min-w-[105px]">
+<div class="w-7 h-7 mx-auto rounded-full bg-[#205493] text-white flex items-center justify-center text-xs font-bold mb-1 shadow-sm">
+                  14
+                </div>
+<div class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">Executions</div>
+</div>
+<!-- Total Spent -->
+<div class="bg-[#fcfbf7] border border-[#ece8db] rounded-xl px-5 py-3 text-center min-w-[115px]">
+<div class="flex items-center justify-center gap-1 mb-1">
+<span class="text-amber-500 text-base">🪙</span>
+<span class="text-sm font-black text-slate-800">4.82 USDT</span>
+</div>
+<div class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">Total Spent</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Company Overview Card -->
+<!-- BEGIN: Split Section (Agent Team & Activity vs Current Mission) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column (Agent Team + Recent Activity) - 8 cols -->
+<div class="lg:col-span-8 space-y-6">
+<!-- BEGIN: Your Agent Team -->
+<section data-purpose="agent-team-list">
+<h3 class="text-base font-extrabold text-slate-900 mb-3">Your Agent Team</h3>
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+<!-- Agent 1: CEO -->
+<div class="bg-white border border-[#eae6d8] rounded-xl p-3.5 flex flex-col items-center text-center shadow-sm hover:border-emerald-300 transition-all">
+<div class="w-12 h-12 mb-2 flex items-center justify-center text-3xl">
+                    🤖
+                  </div>
+<div class="text-xs font-bold text-slate-900 mb-2">CEO Agent</div>
+<span class="px-2.5 py-0.5 rounded-md bg-[#e3f2fd] text-[#1976d2] font-semibold text-[10px]">Planning</span>
+</div>
+<!-- Agent 2: Strategy -->
+<div class="bg-white border border-[#eae6d8] rounded-xl p-3.5 flex flex-col items-center text-center shadow-sm hover:border-emerald-300 transition-all">
+<div class="w-12 h-12 mb-2 flex items-center justify-center text-2xl">
+                    📊
+                  </div>
+<div class="text-xs font-bold text-slate-900 mb-2">Strategy Agent</div>
+<span class="px-2.5 py-0.5 rounded-md bg-[#e3f2fd] text-[#1976d2] font-semibold text-[10px]">Strategy</span>
+</div>
+<!-- Agent 3: Research -->
+<div class="bg-white border border-[#eae6d8] rounded-xl p-3.5 flex flex-col items-center text-center shadow-sm hover:border-emerald-300 transition-all">
+<div class="w-12 h-12 mb-2 flex items-center justify-center text-2xl">
+                    🔍
+                  </div>
+<div class="text-xs font-bold text-slate-900 mb-2">Research Agent</div>
+<span class="px-2.5 py-0.5 rounded-md bg-[#e3f2fd] text-[#1976d2] font-semibold text-[10px]">Research</span>
+</div>
+<!-- Agent 4: Marketing -->
+<div class="bg-white border border-[#eae6d8] rounded-xl p-3.5 flex flex-col items-center text-center shadow-sm hover:border-emerald-300 transition-all">
+<div class="w-12 h-12 mb-2 flex items-center justify-center text-2xl">
+                    📢
+                  </div>
+<div class="text-xs font-bold text-slate-900 mb-2">Marketing Agent</div>
+<span class="px-2.5 py-0.5 rounded-md bg-[#e3f2fd] text-[#1976d2] font-semibold text-[10px]">Marketing</span>
+</div>
+<!-- Agent 5: Verification -->
+<div class="bg-white border border-[#eae6d8] rounded-xl p-3.5 flex flex-col items-center text-center shadow-sm hover:border-emerald-300 transition-all">
+<div class="w-12 h-12 mb-2 flex items-center justify-center text-2xl">
+                    🛡️
+                  </div>
+<div class="text-xs font-bold text-slate-900 mb-2">Verification Agent</div>
+<span class="px-2.5 py-0.5 rounded-md bg-[#e3f2fd] text-[#1976d2] font-semibold text-[10px]">Quality</span>
+</div>
+</div>
+</section>
+<!-- END: Your Agent Team -->
+<!-- BEGIN: Recent Activity Feed -->
+<section data-purpose="recent-activity-feed">
+<h3 class="text-base font-extrabold text-slate-900 mb-3">Recent Activity</h3>
+<div class="bg-white border border-[#eae6d8] rounded-xl p-4 divide-y divide-slate-100 shadow-sm">
+<!-- Activity Item 1 -->
+<div class="py-2.5 flex items-center justify-between text-xs">
+<div class="flex items-center gap-3">
+<span class="text-base">🤖</span>
+<p class="text-slate-700">
+<a class="font-bold text-[#1d5fb4] hover:underline" href="#">Research Agent</a> found Market Intelligence Agent
+                    </p>
+</div>
+<span class="text-slate-400 font-medium whitespace-nowrap">2 min ago</span>
+</div>
+<!-- Activity Item 2 -->
+<div class="py-2.5 flex items-center justify-between text-xs">
+<div class="flex items-center gap-3">
+<span class="text-base">📄</span>
+<p class="text-slate-700 font-medium">
+                      Market research report completed
+                    </p>
+</div>
+<span class="text-slate-400 font-medium whitespace-nowrap">18 min ago</span>
+</div>
+<!-- Activity Item 3 -->
+<div class="py-2.5 flex items-center justify-between text-xs">
+<div class="flex items-center gap-3">
+<span class="text-emerald-500 font-bold text-base"><i class="fa-solid fa-circle-check"></i></span>
+<p class="text-slate-700 font-medium">
+                      Verified and payment released
+                    </p>
+</div>
+<span class="text-slate-400 font-medium whitespace-nowrap">25 min ago</span>
+</div>
+<!-- Activity Item 4 -->
+<div class="py-2.5 flex items-center justify-between text-xs">
+<div class="flex items-center gap-3">
+<span class="text-base">🤖</span>
+<p class="text-slate-700">
+<a class="font-bold text-[#1d5fb4] hover:underline" href="#">Marketing Agent</a> created new content strategy
+                    </p>
+</div>
+<span class="text-slate-400 font-medium whitespace-nowrap">1 hour ago</span>
+</div>
+<!-- Activity Item 5 -->
+<div class="py-2.5 flex items-center justify-between text-xs">
+<div class="flex items-center gap-3">
+<span class="text-base">📄</span>
+<p class="text-slate-700 font-medium">
+                      Company memory updated with competitor analysis
+                    </p>
+</div>
+<span class="text-slate-400 font-medium whitespace-nowrap">2 hours ago</span>
+</div>
+</div>
+</section>
+<!-- END: Recent Activity Feed -->
+</div>
+<!-- END: Left Column -->
+<!-- BEGIN: Right Column (Missions & Promo Card) - 4 cols -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Current Mission Card -->
+<section class="bg-white border border-[#eae6d8] rounded-xl p-5 shadow-sm" data-purpose="current-mission-tracker">
+<h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Current Mission</h3>
+<h4 class="text-sm font-extrabold text-slate-900 leading-snug mb-5">Launch our product and get first 100 users</h4>
+<!-- Checklist with individual progress bars -->
+<div class="space-y-4 text-xs font-semibold text-slate-700">
+<!-- Item 1 (Done) -->
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="text-[#0d8557] text-sm"><i class="fa-solid fa-circle-check"></i></span>
+<span class="text-slate-800">Market research</span>
+</div>
+<div class="w-16 bg-[#e5e9e7] h-2 rounded-full overflow-hidden shrink-0">
+<div class="bg-[#0b806d] h-full w-full rounded-full"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full border border-slate-300 block"></span>
+<span class="text-slate-700">Competitor analysis</span>
+</div>
+<div class="w-16 bg-[#e5e9e7] h-2 rounded-full overflow-hidden shrink-0">
+<div class="bg-[#0b806d] h-full w-2/5 rounded-full"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full border border-slate-300 block"></span>
+<span class="text-slate-700">Landing page strategy</span>
+</div>
+<div class="w-16 bg-[#e5e9e7] h-2 rounded-full overflow-hidden shrink-0">
+<div class="bg-[#0b806d] h-full w-3/5 rounded-full"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full border border-slate-300 block"></span>
+<span class="text-slate-700">Content plan</span>
+</div>
+<div class="w-16 bg-[#e5e9e7] h-2 rounded-full overflow-hidden shrink-0">
+<div class="bg-[#0b806d] h-full w-2/5 rounded-full"></div>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full border border-slate-300 block"></span>
+<span class="text-slate-700">Community outreach</span>
+</div>
+<div class="w-16 bg-[#e5e9e7] h-2 rounded-full overflow-hidden shrink-0">
+<div class="bg-[#0b806d] h-full w-4/5 rounded-full"></div>
+</div>
+</div>
+<!-- Item 6 -->
+<div class="flex items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full border border-slate-300 block"></span>
+<span class="text-slate-700">Get first 100 users</span>
+</div>
+<div class="w-16 bg-[#e5e9e7] h-2 rounded-full overflow-hidden shrink-0">
+<div class="bg-[#0b806d] h-full w-1/4 rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Motivational Promo Card -->
+<section class="bg-gradient-to-br from-[#f8faf8] to-[#fffdf5] border border-[#cfb57a] rounded-xl p-4 shadow-sm relative overflow-hidden" data-purpose="promo-card">
+<div class="flex items-center gap-4">
+<!-- Pixel Bot with Book Icon -->
+<div class="w-20 h-20 shrink-0 flex items-center justify-center bg-emerald-100/50 rounded-lg border border-emerald-200 text-4xl">
+                  🤖
+                </div>
+<div class="space-y-2">
+<p class="text-xs font-extrabold text-slate-800 leading-tight">
+                    Small steps today, big outcomes tomorrow.
+                  </p>
+<button class="px-3 py-1.5 rounded-lg bg-[#0e7c6b] hover:bg-[#0a6657] text-white text-[11px] font-bold inline-flex items-center gap-1.5 transition-all shadow">
+<span>Create New Mission</span>
+<i class="fa-solid fa-arrow-right text-[10px]"></i>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- END: Right Column -->
+</div>
+<!-- END: Split Section -->
+</div>
+<!-- END: Content Body -->
+</main>
+<!-- END: Main Dashboard View -->
+</div>
+<!-- END: Dashboard Main Wrapper -->
+</body></html>

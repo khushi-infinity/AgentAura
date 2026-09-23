@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentAura - Create Company</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans for clean modern UI & Press Start 2P for subtle retro accents -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- FontAwesome Icons for sidebar and UI symbols -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            aura: {
+              dark: '#081c1c',
+              sidebar: '#0d2827',
+              sidebarHover: '#133937',
+              accent: '#10b981',
+              emerald: '#059669',
+              cream: '#fbf8ee',
+              cardBg: '#faf7ed',
+              creamHover: '#f2ece0',
+              border: '#e4decb',
+              textMain: '#1c2e2d',
+              textMuted: '#677977'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b181c;
+      color: #1e293b;
+    }
+    /* Pixelated rendering for avatar and retro icons */
+    .pixelated {
+      image-rendering: pixelated;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f4744;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 md:p-6 lg:p-8 select-none">
+<!-- BEGIN: TopHeaderIndicator -->
+<!-- Top Title Tag mirroring '2. Create Company' badge -->
+<header class="w-full max-w-[1240px] mb-3 flex items-center justify-start" data-purpose="step-indicator">
+<div class="inline-flex items-center px-4 py-1.5 rounded-lg bg-[#273a4b]/90 border border-slate-600/60 text-slate-100 font-bold text-sm tracking-wide shadow-md backdrop-blur-sm">
+<span class="text-blue-300 mr-1.5 font-extrabold text-base">2.</span> Create Company
+    </div>
+</header>
+<!-- END: TopHeaderIndicator -->
+<!-- BEGIN: MainApplicationWindow -->
+<main class="w-full max-w-[1240px] bg-aura-sidebar rounded-2xl overflow-hidden shadow-2xl border border-[#1b3d3a] flex flex-col md:flex-row relative">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-full md:w-64 bg-gradient-to-b from-[#0a2322] via-[#0d2a28] to-[#071918] p-4 flex flex-col justify-between border-r border-[#163a37] z-20 shrink-0" data-purpose="navigation-sidebar">
+<div>
+<!-- Brand / Logo -->
+<div class="flex items-center space-x-3 px-2 py-3 mb-4">
+<div class="w-10 h-10 rounded-xl bg-[#143e3c] border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl shadow-inner">
+<!-- Pixel style tree icon -->
+<i class="fa-solid fa-tree pixelated"></i>
+</div>
+<div>
+<h1 class="text-white font-bold text-lg tracking-tight leading-none flex items-center gap-1">
+              AgentAura
+            </h1>
+<p class="text-[10px] text-emerald-400/80 font-medium tracking-wide mt-1">Build. Delegate. Scale.</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="space-y-1" data-purpose="sidebar-links">
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-house w-4 text-center text-sm text-emerald-400/80"></i>
+<span>Home</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-flag w-4 text-center text-sm text-emerald-400/80"></i>
+<span>Missions</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-robot w-4 text-center text-sm text-emerald-400/80"></i>
+<span>Agents</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-store w-4 text-center text-sm text-emerald-400/80"></i>
+<span>Marketplace</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-brain w-4 text-center text-sm text-emerald-400/80"></i>
+<span>Company Memory</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-chart-column w-4 text-center text-sm text-emerald-400/80"></i>
+<span>Analytics</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-wallet w-4 text-center text-sm text-amber-400/80"></i>
+<span>Wallet</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-emerald-100/70 hover:bg-[#143d3b] hover:text-white text-xs font-semibold transition-colors" href="#">
+<i class="fa-solid fa-gear w-4 text-center text-sm text-emerald-400/80"></i>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Sidebar Actions -->
+<div class="mt-6 space-y-4">
+<!-- New Company Button -->
+<button class="w-full flex items-center justify-center space-x-2 py-2.5 px-3 rounded-lg border border-emerald-500/40 bg-emerald-950/40 hover:bg-emerald-800/40 text-emerald-300 text-xs font-bold transition-all shadow-sm">
+<i class="fa-solid fa-plus text-xs"></i>
+<span>New Company</span>
+</button>
+<!-- User Profile Card -->
+<div class="pt-3 border-t border-[#163a37] flex items-center justify-between px-1" data-purpose="user-profile">
+<div class="flex items-center space-x-2.5">
+<div class="w-9 h-9 rounded-full bg-emerald-900 border border-emerald-400/50 flex items-center justify-center overflow-hidden">
+<i class="fa-solid fa-user-astronaut text-emerald-200 text-base"></i>
+</div>
+<div>
+<div class="text-white text-xs font-bold leading-tight">Khushi</div>
+<div class="text-[10px] text-emerald-400/70">Explorer</div>
+</div>
+</div>
+<button class="text-emerald-400/60 hover:text-emerald-200 p-1">
+<i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContentArea -->
+<div class="flex-1 flex flex-col min-w-0 bg-[#f8f5eb] relative overflow-hidden" data-purpose="content-area">
+<!-- Top Pixel Landscape Header Banner -->
+<div class="relative w-full h-24 sm:h-28 md:h-32 overflow-hidden border-b border-[#e2dcc8]">
+<img alt="AgentAura Forest Landscape" class="w-full h-full object-cover object-center pixelated" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkwIk-2vPiBUlN-3IMcOCsRKuiAot-Bd-QVeic3_4bNqCWhl9G9Mr6PbX1hRlNBR8ShcizeWPF2MMofxCcGiAfknD08ZiOlwyu-rUVkJFq1boRtrT1azozj6hMVB3j8Uo5JNPVqZHRqWG9LSb92qFS0lBPsrKkg0A0Nc8dVqk4EW3yiFDeXnvM6wiSZ-160SQnBgp81ud99hDiNHeL1cKIRwSbsKAif_ivN41ZSqh_4yZKJmW9QMeUKcdc7ij8144AdQ"/>
+<!-- Subtle subtle gradient overlay at bottom edge to transition cleanly into content -->
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#f8f5eb]/90"></div>
+</div>
+<!-- Workspace Container -->
+<div class="p-4 sm:p-6 md:p-8 flex-1 flex flex-col justify-between -mt-6 sm:-mt-8 relative z-10">
+<!-- Top Header & Quote Row -->
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+<div>
+<h2 class="text-2xl sm:text-3xl font-extrabold text-[#193238] tracking-tight">Create Your Company</h2>
+<p class="text-xs sm:text-sm text-[#5f7478] font-medium mt-0.5">Set up your autonomous AI workforce.</p>
+</div>
+<!-- Quote Badge -->
+<div class="inline-flex items-center space-x-2 text-xs font-medium text-[#486b6e] bg-[#e7f1ee]/90 px-3.5 py-1.5 rounded-full border border-[#cbdcd8] shadow-sm self-start">
+<i class="fa-solid fa-network-wired text-emerald-600 text-[11px]"></i>
+<span>“A goal, a budget, a workforce. That's a company.”</span>
+</div>
+</div>
+<!-- 2-Column Content Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- LEFT COLUMN: Creation Form (7 cols) -->
+<form class="lg:col-span-7 space-y-4" data-purpose="create-company-form" onsubmit="event.preventDefault();">
+<!-- Company Name -->
+<div>
+<label class="block text-xs font-bold text-[#233f42] mb-1.5" for="company-name">Company Name</label>
+<input class="w-full text-xs font-semibold text-[#183134] bg-white rounded-lg border border-[#d6cfb8] px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" id="company-name" type="text" value="Acme AI"/>
+</div>
+<!-- What are you building? -->
+<div>
+<label class="block text-xs font-bold text-[#233f42] mb-1.5" for="building-desc">What are you building?</label>
+<textarea class="w-full text-xs font-medium text-[#183134] bg-white rounded-lg border border-[#d6cfb8] px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none transition-all" id="building-desc" rows="2">AI-powered developer productivity tool</textarea>
+</div>
+<!-- Primary Goal -->
+<div>
+<label class="block text-xs font-bold text-[#233f42] mb-1.5" for="primary-goal">Primary Goal</label>
+<input class="w-full text-xs font-medium text-[#183134] bg-white rounded-lg border border-[#d6cfb8] px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" id="primary-goal" type="text" value="Get first 100 users"/>
+</div>
+<!-- Initial Budget -->
+<div>
+<label class="block text-xs font-bold text-[#233f42] mb-1.5" for="initial-budget">Initial Budget (USDT)</label>
+<input class="w-full text-xs font-semibold text-[#183134] bg-white rounded-lg border border-[#d6cfb8] px-3.5 py-2.5 shadow-xs focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all" id="initial-budget" type="text" value="10"/>
+</div>
+<!-- Agent Autonomy Radio Selection -->
+<div>
+<label class="block text-xs font-bold text-[#233f42] mb-1.5">Agent Autonomy</label>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+<!-- Option 1: Ask before hiring -->
+<label class="cursor-pointer border border-[#d6cfb8] rounded-lg p-2.5 bg-white/70 hover:bg-white flex flex-col justify-between transition-all">
+<div class="flex items-center space-x-2">
+<input class="text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 border-gray-300" name="autonomy" type="radio"/>
+<span class="text-[11px] font-bold text-[#1f383c]">Ask before hiring</span>
+</div>
+<span class="text-[9.5px] text-[#697f82] mt-1 pl-5 leading-tight">You approve all hires</span>
+</label>
+<!-- Option 2: Auto-hire under budget (Selected) -->
+<label class="cursor-pointer border-2 border-emerald-600 bg-[#eef8f3] rounded-lg p-2.5 flex flex-col justify-between shadow-xs transition-all">
+<div class="flex items-center space-x-2">
+<input checked="" class="text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 border-gray-300" name="autonomy" type="radio"/>
+<span class="text-[11px] font-bold text-[#104b38]">Auto-hire under budget</span>
+</div>
+<span class="text-[9.5px] text-[#2d6e56] mt-1 pl-5 leading-tight">Agents can hire under set limit</span>
+</label>
+<!-- Option 3: Fully autonomous -->
+<label class="cursor-pointer border border-[#d6cfb8] rounded-lg p-2.5 bg-white/70 hover:bg-white flex flex-col justify-between transition-all">
+<div class="flex items-center space-x-2">
+<input class="text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 border-gray-300" name="autonomy" type="radio"/>
+<span class="text-[11px] font-bold text-[#1f383c]">Fully autonomous</span>
+</div>
+<span class="text-[9.5px] text-[#697f82] mt-1 pl-5 leading-tight">No approval needed</span>
+</label>
+</div>
+</div>
+</form>
+<!-- RIGHT COLUMN: Default AI Workforce Preview Card (5 cols) -->
+<div class="lg:col-span-5 bg-[#f3efe2] border border-[#e2d8c3] rounded-xl p-4 shadow-sm" data-purpose="workforce-preview-card">
+<h3 class="text-xs font-extrabold text-[#193336] uppercase tracking-wide mb-3 flex items-center justify-between">
+<span>Your AI Company Will Include</span>
+</h3>
+<!-- Agent List -->
+<div class="space-y-3.5">
+<!-- CEO Agent -->
+<div class="flex items-start space-x-3">
+<div class="w-9 h-9 rounded-lg bg-[#d5e7e0] border border-[#a2c9be] flex items-center justify-center text-teal-800 text-sm shadow-xs shrink-0 mt-0.5">
+<i class="fa-solid fa-crown text-amber-500 text-xs"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-[#1a3336] leading-tight">CEO Agent</h4>
+<p class="text-[10.5px] text-[#63797b] leading-tight mt-0.5">Overall strategy and decision making</p>
+</div>
+</div>
+<!-- Strategy Agent -->
+<div class="flex items-start space-x-3">
+<div class="w-9 h-9 rounded-lg bg-[#e8e2d4] border border-[#cfc3ad] flex items-center justify-center text-rose-700 text-sm shadow-xs shrink-0 mt-0.5">
+<i class="fa-solid fa-chess-knight text-red-500 text-xs"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-[#1a3336] leading-tight">Strategy Agent</h4>
+<p class="text-[10.5px] text-[#63797b] leading-tight mt-0.5">Planning and market positioning</p>
+</div>
+</div>
+<!-- Research Agent -->
+<div class="flex items-start space-x-3">
+<div class="w-9 h-9 rounded-lg bg-[#d4e4ea] border border-[#aac7d2] flex items-center justify-center text-sky-700 text-sm shadow-xs shrink-0 mt-0.5">
+<i class="fa-solid fa-magnifying-glass-chart text-sky-600 text-xs"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-[#1a3336] leading-tight">Research Agent</h4>
+<p class="text-[10.5px] text-[#63797b] leading-tight mt-0.5">Market, users and competitors</p>
+</div>
+</div>
+<!-- Marketing Agent -->
+<div class="flex items-start space-x-3">
+<div class="w-9 h-9 rounded-lg bg-[#fae5d9] border border-[#eac2ac] flex items-center justify-center text-orange-700 text-sm shadow-xs shrink-0 mt-0.5">
+<i class="fa-solid fa-bullhorn text-orange-500 text-xs"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-[#1a3336] leading-tight">Marketing Agent</h4>
+<p class="text-[10.5px] text-[#63797b] leading-tight mt-0.5">Content, growth and community</p>
+</div>
+</div>
+<!-- Verification Agent -->
+<div class="flex items-start space-x-3">
+<div class="w-9 h-9 rounded-lg bg-[#e2e7ec] border border-[#bdc8d4] flex items-center justify-center text-indigo-700 text-sm shadow-xs shrink-0 mt-0.5">
+<i class="fa-solid fa-shield-check text-blue-600 text-xs"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-[#1a3336] leading-tight">Verification Agent</h4>
+<p class="text-[10.5px] text-[#63797b] leading-tight mt-0.5">Quality check and validation</p>
+</div>
+</div>
+</div>
+<!-- Footer note within agent card -->
+<div class="mt-5 pt-3 border-t border-[#e2d9c4] text-center">
+<span class="text-[10.5px] text-[#6d8182] font-medium">More agents can be hired as needed.</span>
+</div>
+</div>
+</div>
+<!-- Assemble Button Full Width -->
+<div class="mt-6 pt-2">
+<button class="w-full bg-gradient-to-r from-[#0c594c] via-[#0f766e] to-[#0d6e66] hover:from-[#09473d] hover:to-[#0b5a54] text-white font-bold py-3 px-6 rounded-xl shadow-md flex items-center justify-center space-x-2 text-sm transition-all transform active:scale-[0.99] border border-emerald-600/30" data-purpose="submit-assemble-button" type="button">
+<span>Assemble My Company</span>
+<i class="fa-solid fa-arrow-right text-xs"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- END: MainContentArea -->
+</main>
+<!-- END: MainApplicationWindow -->
+</body></html>

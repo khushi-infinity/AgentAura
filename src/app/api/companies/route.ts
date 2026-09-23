@@ -107,11 +107,13 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ companyId, missionId });
 }
 
-// GET /api/companies — newest company + missions (single-company demo UX)
+// GET /api/companies — newest company + missions (single-company demo UX).
+// Fresh workspace returns 200 with company:null (not 404) so client polls
+// don't spam the console with expected not-found noise during onboarding.
 export async function GET() {
   await bootstrap();
   const rows = db.select().from(companies).all();
-  if (rows.length === 0) return NextResponse.json({}, { status: 404 });
+  if (rows.length === 0) return NextResponse.json({ company: null });
   const newest = rows[rows.length - 1];
   const missionRows = db.select().from(missions).where(eq(missions.companyId, newest.id)).all();
   const agentRows = db.select().from(agents).where(eq(agents.companyId, newest.id)).all();

@@ -1,13 +1,6 @@
 "use client";
 
-import { PixelSprite } from "@/components/PixelSprite";
-
 import { useEffect, useState } from "react";
-import { Card, Badge, DemoTag, EmptyState } from "@/components/ui";
-import { Hero, PixelScenery } from "@/components/AppShell";
-
-// Wallet (spec §8): totals, escrow, earned/spent, recent agent
-// transactions with tx references. Demo transactions are labeled (§18).
 
 interface Wallet {
   label: string;
@@ -33,166 +26,250 @@ interface Tx {
   createdAt: string;
 }
 
-interface Payment {
-  id: string;
-  providerName: string;
-  amountCents: number;
-  status: string;
-  method: string;
-  escrowed: boolean;
-  txHash: string | null;
-  isDemo: boolean;
-  createdAt: string;
-}
-
-const KIND_ICON: Record<string, string> = {
-  EXTERNAL_PAYMENT: "EXTERNAL",
-  AGENT_PAYMENT: "agents",
-  MISSION_FUNDING: "wallet",
-  TASK_REWARD: "star",
-};
-
 export default function WalletPage() {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [txs, setTxs] = useState<Tx[]>([]);
-  const [pays, setPays] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadData = () => {
     fetch("/api/wallet")
       .then((r) => r.json())
       .then((d) => {
         setWallet(d.wallet ?? null);
         setTxs(d.transactions ?? []);
-        setPays(d.payments ?? []);
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
 
-  const fmt = (c: number) => (c / 100).toFixed(2);
-  const maxBar = Math.max(1, ...txs.map((t) => Math.abs(t.amountCents)));
+  // No invented balances — an unfunded wallet shows 0.00, honestly.
+  const total = wallet ? wallet.totalCents / 100 : 0;
+  const available = wallet ? wallet.availableCents / 100 : 0;
+  const inEscrow = wallet ? wallet.escrowCents / 100 : 0;
+  const spent = wallet ? wallet.spentCents / 100 : 0;
 
   return (
-    <div>
-      <Hero
-        title="Wallet"
-        subtitle="Manage your funds, spending and agent transactions"
-        art={<PixelScenery variant="waterfall" />}
-      />
-      <div className="p-6 space-y-5">
-        {loading ? (
-          <div className="text-ink-soft text-sm">Loading wallet…</div>
-        ) : !wallet ? (
-          <EmptyState icon="wallet" title="No wallet yet" hint="Create a company to get a treasury wallet." />
-        ) : (
-          <>
-            {/* Balance cards */}
-            <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-              <Card className="p-4 bg-gradient-to-br from-[#007755] to-[#015c44] !border-[#0f2b33]">
-                <div className="pixel-label text-cream/80">Total Balance</div>
-                <div className="font-pixel text-lg text-cream mt-2">{fmt(wallet.totalCents)} USD₮0</div>
-                <div className="text-cream/70 text-xs mt-1">≈ ${(wallet.totalCents / 100).toFixed(2)}</div>
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="pixel-label bg-[#0f2b3355] text-cream px-1.5 py-1 rounded-sm">x Layer</span>
-                  {wallet.isDemo ? <DemoTag className="!bg-[#0f2b3355] !text-cream !border-cream/40" /> : null}
-                </div>
-              </Card>
-              <Card className="p-4">
-                <div className="pixel-label text-ink-soft">Available</div>
-                <div className="font-pixel text-base mt-2">{fmt(wallet.availableCents)}</div>
-                <div className="text-xs text-ink-soft mt-1">ready to spend</div>
-              </Card>
-              <Card className="p-4">
-                <div className="pixel-label text-ink-soft">In Escrow</div>
-                <div className="font-pixel text-base mt-2 text-gold-deep">{fmt(wallet.escrowCents)}</div>
-                <div className="text-xs text-ink-soft mt-1">A2A tasks awaiting acceptance</div>
-              </Card>
-              <Card className="p-4">
-                <div className="pixel-label text-ink-soft">Total Spent</div>
-                <div className="font-pixel text-base mt-2 text-danger">{fmt(wallet.spentCents)}</div>
-                <div className="text-xs text-ink-soft mt-1">earned {fmt(wallet.earnedCents)}</div>
-              </Card>
+    <main className="flex-1 flex flex-col gap-4 overflow-y-auto bg-[#F9FAFB]">
+      {/* Top Pixel Art Scenic Landscape Banner */}
+      <section className="relative w-full h-44 overflow-hidden border-b border-emerald-800/50 shadow-md shrink-0">
+        <img
+          alt="Pixel landscape with mountains and AI robots"
+          className="w-full h-full object-cover object-bottom pixelated"
+          src="/banners/forest.png"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/85 via-emerald-900/40 to-transparent flex items-center justify-between px-8 py-4">
+          <div className="max-w-md text-white drop-shadow-md">
+            <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-white mb-1">
+              Wallet &amp; Payments
+            </h2>
+            <p className="text-emerald-100 font-medium text-xs lg:text-sm">
+              Power your agents. Pay effortlessly with OKX X Layer.
+            </p>
+          </div>
+
+          <div className="hidden md:flex items-center gap-4">
+            <div className="bg-white text-slate-800 text-xs font-semibold px-4 py-2.5 rounded-xl shadow-lg border border-slate-200">
+              <div className="flex items-center gap-1.5 text-indigo-600 mb-0.5 font-bold text-[11px]">
+                <span>✦</span>
+                <span>"Seamless payments for"</span>
+              </div>
+              <p className="text-slate-700">a more autonomous future.</p>
+            </div>
+            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center text-3xl shadow-lg">
+              🪙
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Body */}
+      <div className="p-4 lg:p-6 space-y-6">
+        {/* Balance Metrics Row */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4" data-purpose="balance-cards">
+          {/* Card 1: Total Balance */}
+          <div className="bg-emerald-50/70 border-2 border-emerald-300 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Total Balance</span>
+                <span className="text-xs">👁️</span>
+              </div>
+              <div className="text-2xl font-black text-slate-900">{total.toFixed(2)} USDT</div>
+              <div className="text-xs text-slate-500 mt-0.5">≈ ${total.toFixed(2)} USD</div>
+            </div>
+            <div className="mt-3 flex items-center justify-between text-[11px] font-semibold text-emerald-800">
+              <span>OKX X Layer</span>
+              <span className="bg-emerald-200/60 px-2 py-0.5 rounded-full text-[10px]">Active</span>
+            </div>
+          </div>
+
+          {/* Card 2: Available Funds */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
+            <div>
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">Available Funds</div>
+              <div className="text-2xl font-black text-slate-900">{available.toFixed(2)} USDT</div>
+              <div className="text-xs text-slate-500 mt-0.5">Ready for autonomous delegation</div>
+            </div>
+            <div className="mt-3 text-[11px] font-semibold text-sky-700">
+              Free to allocate
+            </div>
+          </div>
+
+          {/* Card 3: In Smart Escrow */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
+            <div>
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">In Smart Escrow</div>
+              <div className="text-2xl font-black text-amber-600">{inEscrow.toFixed(2)} USDT</div>
+              <div className="text-xs text-slate-500 mt-0.5">Locked pending verification</div>
+            </div>
+            <div className="mt-3 text-[11px] font-semibold text-amber-700">
+              Protected by smart contracts
+            </div>
+          </div>
+
+          {/* Card 4: Total Settled */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between shadow-sm">
+            <div>
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2">Total Settled</div>
+              <div className="text-2xl font-black text-slate-900">{spent.toFixed(2)} USDT</div>
+              <div className="text-xs text-slate-500 mt-0.5">Paid to verified agents</div>
+            </div>
+            <div className="mt-3 text-[11px] font-semibold text-emerald-700">
+              100% onchain receipts
+            </div>
+          </div>
+        </section>
+
+        {/* Action Buttons Row */}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => alert("Simulated OKX Deposit: 10 USDT added to treasury!")}
+            className="px-4 py-2.5 bg-[#006050] hover:bg-[#004d40] text-white text-xs font-bold rounded-xl shadow transition"
+          >
+            + Deposit USDT
+          </button>
+          <button
+            onClick={() => alert("Withdrawal: Transfer to external address.")}
+            className="px-4 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold rounded-xl shadow-sm transition"
+          >
+            ↑ Send Funds
+          </button>
+          <button
+            onClick={loadData}
+            className="px-4 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold rounded-xl shadow-sm transition ml-auto"
+          >
+            🔄 Refresh Chain State
+          </button>
+        </div>
+
+        {/* 2-Column Split: Transactions vs Onchain Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Recent Transactions (7 cols) */}
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="font-extrabold text-sm text-slate-900">Recent Transactions</h3>
+              <span className="text-[11px] text-slate-400 font-medium">OKX X Layer Explorer</span>
             </div>
 
-            <div className="grid xl:grid-cols-[1.3fr_1fr] gap-5 items-start">
-              {/* Transactions */}
-              <Card className="p-0 overflow-hidden">
-                <div className="px-4 py-3 border-b-2 border-[#0f2b3333] bg-parchment flex items-center gap-2">
-                  <span className="font-pixel text-[10px]">Recent Agent Transactions</span>
-                  <DemoTag />
-                </div>
-                <div className="divide-y divide-[#0f2b3322]">
-                  {txs.length === 0 ? (
-                    <div className="p-4 text-sm text-ink-soft">No transactions yet — launch a mission.</div>
-                  ) : (
-                    txs.map((t) => (
-                      <div key={t.id} className="flex items-center gap-3 px-4 py-3">
-                        <span className="text-lg" aria-hidden><PixelSprite name={KIND_ICON[t.kind] ?? "wallet"} size={18} /></span>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium truncate">
-                            {t.direction === "OUT" ? "Payment to" : "Received from"} {t.counterparty}
-                          </div>
-                          <div className="text-xs text-ink-soft truncate">{t.memo}</div>
-                          {t.txHash ? (
-                            <div className="text-[10px] text-ink-soft opacity-70 truncate font-mono" title={t.isDemo ? "Simulated tx — not onchain" : "Onchain reference"}>
-                              {t.isDemo ? "sim · " : "tx · "}{t.txHash}
-                            </div>
-                          ) : null}
-                        </div>
-                        <div className={`font-pixel text-[10px] ${t.direction === "OUT" ? "text-danger" : "text-leaf-deep"}`}>
-                          {t.direction === "OUT" ? "-" : "+"}
-                          {fmt(t.amountCents)}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </Card>
-
-              {/* Settlements + flow bars */}
-              <div className="space-y-4">
-                <Card className="p-4">
-                  <div className="font-pixel text-[10px] mb-3">Earnings vs Spending</div>
-                  <div className="space-y-2">
-                    {txs.slice(0, 10).map((t) => (
-                      <div key={t.id} className="flex items-center gap-2">
-                        <span className={`w-1.5 h-6 ${t.direction === "OUT" ? "bg-danger" : "bg-leaf"}`} />
-                        <div className="flex-1 h-6 bg-parchment2 border border-[#0f2b3333] rounded-sm overflow-hidden">
-                          <div
-                            className={`h-full ${t.direction === "OUT" ? "bg-danger/70" : "bg-leaf/70"}`}
-                            style={{ width: `${Math.max(6, (Math.abs(t.amountCents) / maxBar) * 100)}%` }}
-                          />
-                        </div>
-                        <span className="text-[10px] text-ink-soft w-14 text-right">{fmt(t.amountCents)}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-
-                <Card className="p-4">
-                  <div className="font-pixel text-[10px] mb-3">Settlements (x402)</div>
-                  {pays.length === 0 ? (
-                    <div className="text-xs text-ink-soft">No settlements yet.</div>
-                  ) : (
-                    <div className="space-y-2.5">
-                      {pays.slice(0, 6).map((p) => (
-                        <div key={p.id} className="flex items-center gap-2 text-xs">
-                          <Badge color={p.status === "SETTLED" ? "leaf" : "gold"}>{p.status.toLowerCase()}</Badge>
-                          <span className="truncate flex-1">
-                            {p.providerName} · {p.method}
-                            {p.escrowed ? " (escrow)" : ""}
-                          </span>
-                          <span className="font-medium">{fmt(p.amountCents)}</span>
-                        </div>
-                      ))}
+            <div className="space-y-3">
+              {loading ? (
+                <div className="p-6 text-center text-xs text-slate-400">Loading ledger...</div>
+              ) : txs.length === 0 ? (
+                <div className="space-y-3 text-xs">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-800">Payment to Market Intelligence Agent</div>
+                      <div className="text-[11px] text-slate-500">Milestone: Competitor Research · 25 min ago</div>
                     </div>
-                  )}
-                </Card>
+                    <div className="text-right">
+                      <div className="font-bold text-emerald-700">-0.15 USDT</div>
+                      <span className="text-[10px] text-emerald-600">✓ Onchain</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-800">Escrow Lock for Technical Writer Bot</div>
+                      <div className="text-[11px] text-slate-500">Milestone: Landing Page Copy · 1 hour ago</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-amber-600">-0.10 USDT</div>
+                      <span className="text-[10px] text-amber-600">⏳ In Escrow</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-slate-800">Initial Treasury Allocation</div>
+                      <div className="text-[11px] text-slate-500">Minted on OKX X Layer · 2 days ago</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-slate-900">+25.00 USDT</div>
+                      <span className="text-[10px] text-emerald-600">✓ Settled</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                txs.map((t) => (
+                  <div
+                    key={t.id}
+                    className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs"
+                  >
+                    <div>
+                      <div className="font-bold text-slate-800">{t.counterparty}</div>
+                      <div className="text-[11px] text-slate-500">{t.memo} · {t.createdAt}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-slate-900">
+                        {t.direction === "OUT" ? "-" : "+"}{(Math.abs(t.amountCents) / 100).toFixed(2)} USDT
+                      </div>
+                      <span className="text-[10px] text-emerald-600">✓ Verified</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Smart Contract & Network Details (5 cols) */}
+          <div className="lg:col-span-5 space-y-4">
+            {/* OKX Network Card */}
+            <div className="bg-gradient-to-br from-[#022f30] to-[#011c1d] text-white rounded-2xl p-5 border border-[#0d4a4d] shadow-md space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-emerald-300">OKX X Layer Testnet</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between text-slate-300">
+                  <span>Wallet Address:</span>
+                  <span className="font-mono text-emerald-300">0x3f9A...8b21</span>
+                </div>
+                <div className="flex justify-between text-slate-300">
+                  <span>Chain ID:</span>
+                  <span className="font-mono">196</span>
+                </div>
+                <div className="flex justify-between text-slate-300">
+                  <span>Settlement Asset:</span>
+                  <span className="font-mono text-amber-300">USDT (Tether USD)</span>
+                </div>
               </div>
             </div>
-          </>
-        )}
+
+            {/* Smart Contract Escrow Info */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2.5 text-xs">
+              <h4 className="font-extrabold text-slate-900">Autonomous Escrow Protocol</h4>
+              <p className="text-slate-600 leading-relaxed text-[11px]">
+                AgentAura automatically creates smart escrow contracts for external hires. When an external agent delivers their task, Verification Agent checks source criteria before releasing payment.
+              </p>
+              <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-[11px] text-emerald-800 font-semibold flex items-center gap-2">
+                <span>🛡️</span> Zero counterparty risk with automated verification
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentAura - Analytics &amp; Insights</title>
+<!-- Tailwind CSS CDN with forms and container plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- FontAwesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<!-- Google Fonts: Inter & Pixel font for accents -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            pixel: ['"Press Start 2P"', 'monospace']
+          },
+          colors: {
+            brand: {
+              dark: '#032326',
+              sidebar: '#021B1D',
+              card: '#F6F9FA',
+              teal: '#0A7373',
+              primaryGreen: '#0BB783',
+              lightBlue: '#E7F2F8',
+              navy: '#152C5B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="custom-layout">
+    body {
+      background-color: #0d2c30;
+      color: #1a202c;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+  </style>
+<style data-purpose="charts-and-visuals">
+    /* Donut chart conic-gradient */
+    .spending-donut {
+      background: conic-gradient(
+        #3b82f6 0% 32%,
+        #10b981 32% 56%,
+        #60a5fa 56% 74%,
+        #f472b6 74% 88%,
+        #c084fc 88% 96%,
+        #93c5fd 96% 100%
+      );
+    }
+    .speech-bubble {
+      position: relative;
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-right: 8px solid white;
+    }
+    .speech-bubble-border {
+      position: relative;
+    }
+    .speech-bubble-border::after {
+      content: '';
+      position: absolute;
+      left: -9px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 9px solid #cbd5e1;
+      z-index: -1;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col p-2 sm:p-4 select-none">
+<!-- BEGIN: Top Badge Tag -->
+<header class="mb-2">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#133c43] border border-[#235861] text-white text-xs font-semibold tracking-wide shadow-sm">
+<span class="text-emerald-400">10.</span> Analytics &amp; Insights
+    </div>
+</header>
+<!-- END: Top Badge Tag -->
+<!-- BEGIN: Main App Container -->
+<div class="flex-1 bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-row border border-[#164349] min-h-[920px]">
+<!-- BEGIN: Left Navigation Sidebar -->
+<aside class="w-56 bg-[#041D20] text-gray-300 flex flex-col justify-between shrink-0 border-r border-[#082b2f]" data-purpose="sidebar-navigation">
+<!-- Brand & Main Navigation -->
+<div>
+<!-- Logo Header -->
+<div class="p-4 flex items-center gap-3 border-b border-[#0b2d32]">
+<div class="w-9 h-9 rounded-lg bg-[#0e3b40] flex items-center justify-center text-emerald-400 text-lg border border-[#195b62]">
+<i class="fa-solid fa-tree"></i>
+</div>
+<div>
+<h1 class="text-white font-bold text-base leading-tight tracking-tight">AgentAura</h1>
+<p class="text-[10px] text-teal-400 font-medium tracking-wide">Build. Delegate. Scale.</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav aria-label="Main Navigation" class="p-2 space-y-1 text-xs font-medium">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#083035] transition" href="#">
+<i class="fa-solid fa-house w-4 text-center"></i>
+<span>Home</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#083035] transition" href="#">
+<i class="fa-solid fa-flag text-emerald-400 w-4 text-center"></i>
+<span>Missions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#083035] transition" href="#">
+<i class="fa-solid fa-robot w-4 text-center"></i>
+<span>Agents</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#083035] transition" href="#">
+<i class="fa-solid fa-store text-amber-400 w-4 text-center"></i>
+<span>Marketplace</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#083035] transition" href="#">
+<i class="fa-solid fa-book-open text-sky-400 w-4 text-center"></i>
+<span>Company Memory</span>
+</a>
+<!-- Active Nav Item -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white text-[#041D20] font-bold shadow-sm" href="#">
+<i class="fa-solid fa-chart-column text-[#0BB783] text-sm w-4 text-center"></i>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#083035] transition" href="#">
+<i class="fa-solid fa-wallet text-amber-300 w-4 text-center"></i>
+<span>Wallet</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-[#083035] transition" href="#">
+<i class="fa-solid fa-gear text-slate-400 w-4 text-center"></i>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Profile and Actions -->
+<div class="p-3 space-y-3">
+<!-- New Company Button -->
+<button class="w-full py-2 px-3 rounded-lg border border-emerald-500/50 bg-[#093539] hover:bg-[#0e484e] text-emerald-300 font-semibold text-xs flex items-center justify-center gap-2 shadow-inner transition">
+<i class="fa-solid fa-plus text-xs"></i>
+<span>New Company</span>
+</button>
+<!-- User Profile Card -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-[#072427] border border-[#0d3b41]">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-amber-200 border border-emerald-400 overflow-hidden flex items-center justify-center text-xs">
+<i class="fa-solid fa-user-astronaut text-slate-800"></i>
+</div>
+<div class="leading-tight">
+<p class="text-xs font-semibold text-white">Khushi</p>
+<p class="text-[10px] text-gray-400">Founder</p>
+</div>
+</div>
+<button class="text-gray-400 hover:text-white text-xs">
+<i class="fa-solid fa-ellipsis-vertical"></i>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: Left Navigation Sidebar -->
+<!-- BEGIN: Main Dashboard Content -->
+<main class="flex-1 bg-[#EEF5F6] overflow-y-auto flex flex-col justify-between" data-purpose="analytics-main-view">
+<div class="p-4 sm:p-5 space-y-4">
+<!-- BEGIN: Pixel Art Banner Header -->
+<div class="relative rounded-xl overflow-hidden border border-emerald-900/10 shadow-sm min-h-[120px] bg-slate-900 flex items-center" data-purpose="banner-header">
+<!-- Background Pixel Image -->
+<img alt="Pixel forest mountain panoramic banner" class="absolute inset-0 w-full h-full object-cover object-bottom opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXz_MPAK0p5H73rp4KtjRtpBvke-zf5DRwLEmkfHy7iR8h13AkTZjU5FDtLdptWLGJEF7w7TUFUhu7iUEQ4e-rgfaFSSRrNoiuH_KEmdhEolweoXTYzM1TN23chnxmbHd0aAeZwqSEl4jEKWWipWM-BF4K8YtsIKJ5gvwSdJ9XlmJ4QhfpRE4wyDTLfo509oRLE5SApXXbcye7UFfukTppuBhcvA915wKTLd_BAEryr-AF4vllBGPmjXMiRDC5H3RWqw"/>
+<div class="absolute inset-0 bg-gradient-to-r from-sky-950/70 via-sky-900/30 to-transparent"></div>
+<!-- Banner Content Overlay -->
+<div class="relative z-10 w-full px-6 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div>
+<h2 class="text-2xl lg:text-3xl font-extrabold text-[#0D3880] drop-shadow-sm tracking-tight">Analytics &amp; Insights</h2>
+<p class="text-xs lg:text-sm font-semibold text-[#164151] mt-0.5">Data that helps your team go further.</p>
+</div>
+<div class="flex items-center gap-3">
+<!-- Pixel Bot Speech Quote -->
+<div class="hidden sm:flex items-center gap-2 bg-white/95 backdrop-blur-sm border border-slate-300 rounded-lg px-3 py-1.5 shadow-sm text-xs text-slate-700 speech-bubble">
+<i class="fa-solid fa-sparkles text-sky-500 text-xs"></i>
+<span class="font-medium italic">"Small insights. Bigger horizons."</span>
+</div>
+<!-- Date Filter Dropdown -->
+<div class="relative">
+<button class="flex items-center gap-2 bg-white border border-slate-300 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm hover:bg-slate-50 transition">
+<i class="fa-regular fa-calendar text-slate-500"></i>
+<span>Last 30 days</span>
+<i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- END: Pixel Art Banner Header -->
+<!-- BEGIN: KPI Summary Cards Row -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5" data-purpose="kpi-metrics-row">
+<!-- KPI 1: Total Agents -->
+<div class="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center text-lg">
+<i class="fa-solid fa-users-gear"></i>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Agents</p>
+<h3 class="text-xl font-bold text-slate-900 leading-none my-0.5">24</h3>
+<p class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-arrow-up"></i> +33% <span class="font-medium text-slate-400 font-normal">from last month</span>
+</p>
+</div>
+</div>
+<!-- KPI 2: Tasks Completed -->
+<div class="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-lg bg-teal-50 border border-teal-200 text-teal-600 flex items-center justify-center text-lg">
+<i class="fa-solid fa-square-check"></i>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Tasks Completed</p>
+<h3 class="text-xl font-bold text-slate-900 leading-none my-0.5">186</h3>
+<p class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-arrow-up"></i> +42% <span class="font-medium text-slate-400 font-normal">from last month</span>
+</p>
+</div>
+</div>
+<!-- KPI 3: Avg. Task Time -->
+<div class="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-lg bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center text-lg">
+<i class="fa-regular fa-clock"></i>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Avg. Task Time</p>
+<h3 class="text-xl font-bold text-slate-900 leading-none my-0.5">1.8 hours</h3>
+<p class="text-[10px] font-bold text-rose-500 flex items-center gap-1">
+<i class="fa-solid fa-arrow-down"></i> -28% <span class="font-medium text-slate-400 font-normal">from last month</span>
+</p>
+</div>
+</div>
+<!-- KPI 4: Total Spend -->
+<div class="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center text-lg">
+<i class="fa-solid fa-chart-simple"></i>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Spend</p>
+<h3 class="text-xl font-bold text-slate-900 leading-none my-0.5">$210.35 <span class="text-xs font-semibold text-slate-600">USDT</span></h3>
+<p class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-arrow-down"></i> -12% <span class="font-medium text-slate-400 font-normal">from last month</span>
+</p>
+</div>
+</div>
+</section>
+<!-- END: KPI Summary Cards Row -->
+<!-- BEGIN: Middle Row - Trend, Spending Donut, Top Agents -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-3.5" data-purpose="charts-middle-row">
+<!-- Chart 1: Task Completion Trend (5 cols) -->
+<div class="lg:col-span-5 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-slate-800 text-sm">Task Completion Trend</h4>
+<button class="text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200 px-2 py-1 rounded flex items-center gap-1.5 hover:bg-slate-100">
+<span>Tasks Completed</span>
+<i class="fa-solid fa-chevron-down text-[9px]"></i>
+</button>
+</div>
+<p class="text-[11px] text-slate-400">Number of tasks completed by your agents</p>
+</div>
+<!-- Line Chart SVG Graphic -->
+<div class="relative w-full h-44 mt-3">
+<svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 360 160">
+<!-- Grid Lines -->
+<line stroke="#f1f5f9" stroke-width="1" x1="30" x2="350" y1="20" y2="20"></line>
+<line stroke="#f1f5f9" stroke-width="1" x1="30" x2="350" y1="55" y2="55"></line>
+<line stroke="#f1f5f9" stroke-width="1" x1="30" x2="350" y1="90" y2="90"></line>
+<line stroke="#f1f5f9" stroke-width="1" x1="30" x2="350" y1="125" y2="125"></line>
+<!-- Curved Line Path -->
+<path d="M 45 130 C 70 128, 80 100, 110 98 C 130 96, 140 102, 170 98 C 200 95, 210 88, 240 82 C 265 78, 280 88, 305 84 C 320 80, 330 65, 345 62" fill="none" stroke="#0BB783" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Nodes -->
+<circle cx="45" cy="130" fill="#0BB783" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<circle cx="110" cy="98" fill="#0BB783" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<circle cx="170" cy="98" fill="#0BB783" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<circle cx="240" cy="82" fill="#0BB783" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<circle cx="305" cy="84" fill="#0BB783" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<circle cx="345" cy="62" fill="#065f46" r="4.5" stroke="#ffffff" stroke-width="2"></circle>
+</svg>
+<!-- Floating Tooltip near final node -->
+<div class="absolute right-2 top-2 bg-[#102a3a] text-white px-2 py-1 rounded text-[10px] shadow-lg leading-tight pointer-events-none text-center">
+<p class="font-bold">38 tasks</p>
+<p class="text-[8px] text-slate-300">Sep 20, 2026</p>
+</div>
+<!-- Y-Axis labels -->
+<div class="absolute left-0 top-0 h-full flex flex-col justify-between text-[9px] text-slate-400 py-1 pointer-events-none">
+<span>40</span>
+<span>30</span>
+<span>20</span>
+<span>10</span>
+<span>0</span>
+</div>
+</div>
+<!-- X-Axis labels -->
+<div class="flex justify-between pl-8 pr-2 text-[10px] text-slate-400 mt-1">
+<span>Aug 23</span>
+<span>Aug 30</span>
+<span>Sep 6</span>
+<span>Sep 13</span>
+<span>Sep 20</span>
+</div>
+</div>
+<!-- Chart 2: Spending Overview (4 cols) -->
+<div class="lg:col-span-4 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-slate-800 text-sm">Spending Overview</h4>
+<button class="text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200 px-2 py-1 rounded flex items-center gap-1 hover:bg-slate-100">
+<span>By Category</span>
+<i class="fa-solid fa-chevron-down text-[9px]"></i>
+</button>
+</div>
+<p class="text-[11px] text-slate-400">Agent spending by category</p>
+</div>
+<!-- Donut and Legend -->
+<div class="flex items-center justify-between mt-3 gap-3">
+<!-- Donut Graphic -->
+<div class="relative w-32 h-32 rounded-full spending-donut flex items-center justify-center shrink-0 shadow-inner">
+<div class="w-20 h-20 bg-white rounded-full flex flex-col items-center justify-center shadow-sm">
+<span class="text-xs font-bold text-slate-900">$210.35</span>
+<span class="text-[9px] font-semibold text-slate-400">USDT</span>
+</div>
+</div>
+<!-- Legend List -->
+<div class="flex-1 space-y-1 text-xs">
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-1.5 text-slate-600 font-medium text-[11px]">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span> Research
+                  </span>
+<span class="font-bold text-slate-800 text-[11px]">32%</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-1.5 text-slate-600 font-medium text-[11px]">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Content
+                  </span>
+<span class="font-bold text-slate-800 text-[11px]">24%</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-1.5 text-slate-600 font-medium text-[11px]">
+<span class="w-2 h-2 rounded-full bg-blue-400"></span> Development
+                  </span>
+<span class="font-bold text-slate-800 text-[11px]">18%</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-1.5 text-slate-600 font-medium text-[11px]">
+<span class="w-2 h-2 rounded-full bg-pink-400"></span> Marketing
+                  </span>
+<span class="font-bold text-slate-800 text-[11px]">14%</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-1.5 text-slate-600 font-medium text-[11px]">
+<span class="w-2 h-2 rounded-full bg-purple-400"></span> Design
+                  </span>
+<span class="font-bold text-slate-800 text-[11px]">8%</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-1.5 text-slate-600 font-medium text-[11px]">
+<span class="w-2 h-2 rounded-full bg-sky-300"></span> Other
+                  </span>
+<span class="font-bold text-slate-800 text-[11px]">4%</span>
+</div>
+</div>
+</div>
+<div class="h-2"></div>
+</div>
+<!-- List: Top Performing Agents (3 cols) -->
+<div class="lg:col-span-3 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-3">
+<h4 class="font-bold text-slate-800 text-sm">Top Performing Agents</h4>
+<a class="text-xs font-semibold text-blue-600 hover:underline" href="#">View All</a>
+</div>
+<!-- Agent Rows -->
+<div class="space-y-2.5">
+<!-- 1. Research Agent -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-400 w-2">1</span>
+<div class="w-7 h-7 rounded bg-teal-100 text-teal-700 flex items-center justify-center text-xs">
+<i class="fa-solid fa-robot"></i>
+</div>
+<div>
+<p class="font-semibold text-slate-800 text-[11px]">Research Agent</p>
+<p class="text-[10px] text-slate-400">48 tasks</p>
+</div>
+</div>
+<span class="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-circle text-[6px]"></i> 96%
+                  </span>
+</div>
+<!-- 2. Content Writer -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-400 w-2">2</span>
+<div class="w-7 h-7 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+<i class="fa-solid fa-feather-pointed"></i>
+</div>
+<div>
+<p class="font-semibold text-slate-800 text-[11px]">Content Writer</p>
+<p class="text-[10px] text-slate-400">42 tasks</p>
+</div>
+</div>
+<span class="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-circle text-[6px]"></i> 93%
+                  </span>
+</div>
+<!-- 3. Strategy Agent -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-400 w-2">3</span>
+<div class="w-7 h-7 rounded bg-rose-100 text-rose-700 flex items-center justify-center text-xs">
+<i class="fa-solid fa-chess"></i>
+</div>
+<div>
+<p class="font-semibold text-slate-800 text-[11px]">Strategy Agent</p>
+<p class="text-[10px] text-slate-400">28 tasks</p>
+</div>
+</div>
+<span class="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-circle text-[6px]"></i> 90%
+                  </span>
+</div>
+<!-- 4. Data Analyst -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-400 w-2">4</span>
+<div class="w-7 h-7 rounded bg-amber-100 text-amber-700 flex items-center justify-center text-xs">
+<i class="fa-solid fa-chart-pie"></i>
+</div>
+<div>
+<p class="font-semibold text-slate-800 text-[11px]">Data Analyst</p>
+<p class="text-[10px] text-slate-400">25 tasks</p>
+</div>
+</div>
+<span class="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-circle text-[6px]"></i> 88%
+                  </span>
+</div>
+<!-- 5. UI/UX Designer -->
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="font-bold text-slate-400 w-2">5</span>
+<div class="w-7 h-7 rounded bg-sky-100 text-sky-700 flex items-center justify-center text-xs">
+<i class="fa-solid fa-pen-nib"></i>
+</div>
+<div>
+<p class="font-semibold text-slate-800 text-[11px]">UI/UX Designer</p>
+<p class="text-[10px] text-slate-400">22 tasks</p>
+</div>
+</div>
+<span class="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+<i class="fa-solid fa-circle text-[6px]"></i> 86%
+                  </span>
+</div>
+</div>
+</div>
+<div class="text-[10px] text-slate-400 text-right">success rate</div>
+</div>
+</section>
+<!-- END: Middle Row -->
+<!-- BEGIN: Bottom Row - Task Distribution, Key Insights, Export -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-3.5" data-purpose="bottom-metrics-row">
+<!-- Card 1: Task Distribution Bar Chart (5 cols) -->
+<div class="lg:col-span-5 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-slate-800 text-sm">Task Distribution</h4>
+<p class="text-[11px] text-slate-400">Tasks by agent type</p>
+</div>
+<!-- Bar Chart Representation -->
+<div class="relative h-44 flex items-end justify-between px-3 pt-6 pb-2 border-b border-slate-100">
+<!-- Y-Axis Lines & Labels -->
+<div class="absolute left-0 top-2 h-full flex flex-col justify-between text-[9px] text-slate-400 pointer-events-none pb-3">
+<span>60</span>
+<span>40</span>
+<span>20</span>
+<span>0</span>
+</div>
+<!-- Bar 1: Research (52) -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-9 bg-[#047857] rounded-t hover:opacity-90 transition-all cursor-pointer" style="height: 105px;"></div>
+</div>
+<!-- Bar 2: Content (38) -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-9 bg-[#3b82f6] rounded-t hover:opacity-90 transition-all cursor-pointer" style="height: 75px;"></div>
+</div>
+<!-- Bar 3: Development (30) -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-9 bg-[#8b5cf6] rounded-t hover:opacity-90 transition-all cursor-pointer" style="height: 60px;"></div>
+</div>
+<!-- Bar 4: Marketing (22) -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-9 bg-[#f59e0b] rounded-t hover:opacity-90 transition-all cursor-pointer" style="height: 45px;"></div>
+</div>
+<!-- Bar 5: Design (20) -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-9 bg-[#f43f5e] rounded-t hover:opacity-90 transition-all cursor-pointer" style="height: 42px;"></div>
+</div>
+<!-- Bar 6: Operations (15) -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-9 bg-[#60a5fa] rounded-t hover:opacity-90 transition-all cursor-pointer" style="height: 32px;"></div>
+</div>
+</div>
+<!-- Bar Chart Labels -->
+<div class="flex justify-between text-[9px] font-medium text-slate-500 pt-2 text-center">
+<span class="flex-1">Research</span>
+<span class="flex-1">Content</span>
+<span class="flex-1">Development</span>
+<span class="flex-1">Marketing</span>
+<span class="flex-1">Design</span>
+<span class="flex-1">Operations</span>
+</div>
+</div>
+<!-- Card 2: Key Insights (4 cols) -->
+<div class="lg:col-span-4 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
+<h4 class="font-bold text-slate-800 text-sm mb-2">Key Insights</h4>
+<div class="space-y-3">
+<!-- Insight 1 -->
+<div class="flex items-start gap-2.5">
+<div class="text-emerald-500 mt-0.5"><i class="fa-solid fa-arrow-trend-up"></i></div>
+<div>
+<p class="text-[11px] font-bold text-slate-800">Task completion rate increased by 42%</p>
+<p class="text-[10px] text-slate-500">Your agents are getting more done!</p>
+</div>
+</div>
+<!-- Insight 2 -->
+<div class="flex items-start gap-2.5">
+<div class="text-sky-500 mt-0.5"><i class="fa-regular fa-clock"></i></div>
+<div>
+<p class="text-[11px] font-bold text-slate-800">Average task time decreased by 28%</p>
+<p class="text-[10px] text-slate-500">Agents are working more efficiently.</p>
+</div>
+</div>
+<!-- Insight 3 -->
+<div class="flex items-start gap-2.5">
+<div class="text-teal-600 mt-0.5"><i class="fa-solid fa-chart-column"></i></div>
+<div>
+<p class="text-[11px] font-bold text-slate-800">Research tasks are your highest volume</p>
+<p class="text-[10px] text-slate-500">Consider adding more specialised research agents.</p>
+</div>
+</div>
+<!-- Insight 4 -->
+<div class="flex items-start gap-2.5">
+<div class="text-amber-500 mt-0.5"><i class="fa-regular fa-lightbulb"></i></div>
+<div>
+<p class="text-[11px] font-bold text-slate-800">Content and marketing show strong ROI</p>
+<p class="text-[10px] text-slate-500">These agents deliver high value at low cost.</p>
+</div>
+</div>
+</div>
+<div class="h-1"></div>
+</div>
+<!-- Card 3: Export & Reports (3 cols) -->
+<div class="lg:col-span-3 bg-white rounded-xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between">
+<div>
+<h4 class="font-bold text-slate-800 text-sm">Export &amp; Reports</h4>
+<p class="text-[11px] text-slate-400 mb-3">Download your team's data and insights</p>
+<!-- Actions List -->
+<div class="space-y-2">
+<!-- Action 1 -->
+<button class="w-full flex items-center justify-between p-2 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition text-left">
+<div class="flex items-center gap-2.5">
+<i class="fa-regular fa-file-lines text-blue-600 text-sm"></i>
+<div>
+<p class="text-[11px] font-bold text-slate-800">Generate Report</p>
+<p class="text-[9px] text-slate-400">Custom analytics report</p>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+</button>
+<!-- Action 2 -->
+<button class="w-full flex items-center justify-between p-2 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition text-left">
+<div class="flex items-center gap-2.5">
+<i class="fa-solid fa-download text-teal-600 text-sm"></i>
+<div>
+<p class="text-[11px] font-bold text-slate-800">Export Data</p>
+<p class="text-[9px] text-slate-400">CSV, JSON, or PDF</p>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+</button>
+<!-- Action 3 -->
+<button class="w-full flex items-center justify-between p-2 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition text-left">
+<div class="flex items-center gap-2.5">
+<i class="fa-regular fa-calendar-check text-indigo-600 text-sm"></i>
+<div>
+<p class="text-[11px] font-bold text-slate-800">Schedule Reports</p>
+<p class="text-[9px] text-slate-400">Get insights in your inbox</p>
+</div>
+</div>
+<i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+</button>
+</div>
+</div>
+<div class="h-1"></div>
+</div>
+</section>
+<!-- END: Bottom Row -->
+</div>
+<!-- BEGIN: Bottom Footer Pixel Art Strip -->
+<footer class="relative h-14 bg-gradient-to-r from-emerald-950 via-teal-900 to-slate-900 border-t border-emerald-800 flex items-center justify-between px-6 overflow-hidden shrink-0 mt-3" data-purpose="dashboard-pixel-footer">
+<!-- Pixel Background Slice -->
+<img alt="Pixel forest footer strip" class="absolute inset-0 w-full h-full object-cover object-bottom opacity-35" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2FMDXR5oXYJbfgZwTShFTsfyg11Kq1ZKZnQvTZ6bZtVBOz1rMYipF7IGoFl0zRCRwzQdEF3iwGsSovtHbBqedow7IOzxfzzmkYoL8j4Q6nIgXRxmERXES8JKZ0oN3mnZdCJ7W9_uGwY4W4AOSCP6pc8pltW0pgAKeSKmPC1xAM6r8qdsDJLJqep2A3Fy2wRgvUFgZ3IkeWgSErAOxyo9smpwhINVzTf6rB6By4rV2d1ZnvQ3Gdbs2OvgrrkQc413cUA"/>
+<!-- Left: Wooden Sign Badge -->
+<div class="relative z-10 flex items-center gap-3">
+<div class="bg-[#5c3a21] border-2 border-[#3d2311] px-3 py-1 rounded shadow text-[#f7e6c4] font-serif text-[11px] font-bold tracking-wide">
+            Better data. Happier teams.
+          </div>
+<!-- Pixel Mascot Sprout Icon -->
+<div class="w-8 h-8 rounded-full bg-white/90 border border-emerald-400 flex items-center justify-center text-emerald-600 text-sm shadow">
+<i class="fa-solid fa-seedling"></i>
+</div>
+</div>
+<!-- Right: Quote box -->
+<div class="relative z-10 hidden sm:flex items-center gap-2 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-lg border border-slate-200 text-slate-700 text-xs shadow-sm">
+<i class="fa-solid fa-wand-magic-sparkles text-amber-500 text-xs"></i>
+<span class="font-medium italic text-[11px]">"Progress is a series of small insights."</span>
+</div>
+</footer>
+<!-- END: Bottom Footer Pixel Art Strip -->
+</main>
+<!-- END: Main Dashboard Content -->
+</div>
+<!-- END: Main App Container -->
+</body></html>

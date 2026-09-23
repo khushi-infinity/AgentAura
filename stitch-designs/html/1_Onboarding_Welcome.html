@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgentAura - Welcome</title>
+<!-- Tailwind CSS CDN with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts for pixel accents and modern clean typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Silkscreen:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: {
+              900: '#041d1e',
+              850: '#062828',
+              800: '#0a3333',
+              700: '#0e4344',
+            },
+            parchment: {
+              50: '#fefdf8',
+              100: '#fcf7e6',
+              200: '#f6eed0',
+              300: '#eddca9',
+              800: '#5c4826',
+              900: '#342610'
+            },
+            emeraldBrand: {
+              500: '#0f766e',
+              600: '#0d6b63',
+              700: '#0b5650'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            pixel: ['"Silkscreen"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Pixel & Parchment Styles -->
+<style data-purpose="custom-styling">
+    /* Pixel border and parchment container styling */
+    .parchment-panel {
+      background-color: #fbf5e2;
+      border: 3px solid #845f34;
+      box-shadow: 
+        inset 0 0 0 2px #faedd0,
+        0 4px 12px rgba(0, 0, 0, 0.28);
+      position: relative;
+    }
+
+    .parchment-panel::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border: 1px dashed rgba(132, 95, 52, 0.45);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* Scrollbar aesthetics */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #062828;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #0f766e;
+      border-radius: 3px;
+    }
+  </style>
+<!-- END: Custom Pixel & Parchment Styles -->
+</head>
+<body class="bg-forest-900 text-slate-100 font-sans h-screen w-screen overflow-hidden flex select-none">
+<!-- BEGIN: Sidebar Navigation -->
+<aside class="w-64 bg-forest-900 flex flex-col justify-between border-r border-[#0e3b3a] z-20 shrink-0 h-full" data-purpose="main-sidebar">
+<div class="p-5 flex flex-col gap-6">
+<!-- Brand Logo Header -->
+<div class="flex items-center gap-3" data-purpose="brand">
+<!-- Pixel Tree Icon -->
+<div class="w-10 h-10 shrink-0 rounded bg-[#0a3a39] flex items-center justify-center p-1 border border-[#1b5d5b] shadow-sm">
+<svg class="w-8 h-8 text-emerald-400 fill-current drop-shadow" style="image-rendering: pixelated;" viewbox="0 0 24 24">
+<path d="M12 2L8 7h3v3H7l4 5H8l4 6h2l-2-3h3l-4-5h4l-3-3h3z"></path>
+<rect fill="#8B5A2B" height="3" width="2" x="11" y="19"></rect>
+</svg>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-white flex items-center leading-none">AgentAura</h1>
+<p class="text-[11px] text-[#4ea399] tracking-wider mt-1 font-medium">Build. Delegate. Scale.</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-1 text-[13px] font-medium text-emerald-100/75" data-purpose="sidebar-links">
+<!-- Active Home Tab -->
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-[#faedd0] text-[#133834] font-bold shadow-sm transition" href="#">
+<svg class="w-5 h-5 text-[#133834]" fill="currentColor" viewbox="0 0 24 24">
+<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+</svg>
+<span class="">Home</span>
+</a>
+<!-- Missions -->
+<a class="flex items-center gap-3 px-3.5 py-2 rounded-lg hover:bg-[#073030] hover:text-white transition" href="#">
+<svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Missions</span>
+</a>
+<!-- Agents -->
+<a class="flex items-center gap-3 px-3.5 py-2 rounded-lg hover:bg-[#073030] hover:text-white transition" href="#">
+<svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="10" rx="2" width="18" x="3" y="11"></rect>
+<circle cx="12" cy="5" r="2"></circle>
+<path d="M12 7v4m-4 5h.01m8 0h.01"></path>
+</svg>
+<span class="">Agents</span>
+</a>
+<!-- Marketplace -->
+<a class="flex items-center gap-3 px-3.5 py-2 rounded-lg hover:bg-[#073030] hover:text-white transition" href="#">
+<svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Marketplace</span>
+</a>
+<!-- Company Memory -->
+<a class="flex items-center gap-3 px-3.5 py-2 rounded-lg hover:bg-[#073030] hover:text-white transition" href="#">
+<svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Company Memory</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-3 px-3.5 py-2 rounded-lg hover:bg-[#073030] hover:text-white transition" href="#">
+<svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Analytics</span>
+</a>
+<!-- Wallet -->
+<a class="flex items-center gap-3 px-3.5 py-2 rounded-lg hover:bg-[#073030] hover:text-white transition" href="#">
+<svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Wallet</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-3.5 py-2 rounded-lg hover:bg-[#073030] hover:text-white transition" href="#">
+<svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Bottom Actions: New Company & Profile -->
+<div class="p-4 border-t border-[#0e3b3a] flex flex-col gap-3">
+<!-- New Company Button -->
+<button class="w-full py-2 px-3 rounded-lg border border-[#1b6b66] bg-[#0c4e4b] hover:bg-[#0f5d59] text-emerald-100 font-medium text-sm flex items-center justify-center gap-2 shadow transition">
+<svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="">New Company</span>
+</button>
+<!-- Founder Profile Strip -->
+<div class="flex items-center justify-between p-2 rounded-lg hover:bg-[#073030] cursor-pointer transition" data-purpose="user-profile">
+<div class="flex items-center gap-3">
+<!-- Pixelated Avatar -->
+<div class="w-9 h-9 rounded-md bg-[#2d5236] border border-[#44784e] flex items-center justify-center overflow-hidden">
+<svg class="w-8 h-8" style="image-rendering: pixelated;" viewbox="0 0 16 16">
+<rect fill="#693b22" height="3" width="8" x="4" y="2"></rect>
+<rect fill="#502b17" height="2" width="10" x="3" y="5"></rect>
+<rect fill="#f8cca4" height="5" width="8" x="4" y="6"></rect>
+<rect fill="#321f14" height="2" width="2" x="5" y="8"></rect>
+<rect fill="#321f14" height="2" width="2" x="9" y="8"></rect>
+<rect fill="#306b3e" height="5" width="8" x="4" y="11"></rect>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white leading-tight">Khushi</span>
+<span class="text-[11px] text-emerald-300/70">Founder</span>
+</div>
+</div>
+<!-- Options Menu Icon -->
+<button class="text-slate-400 hover:text-white p-1">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20">
+<path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+</svg>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar Navigation -->
+<!-- BEGIN: Main Dashboard View -->
+<main class="flex-1 relative flex flex-col justify-between overflow-hidden bg-cover bg-no-repeat" data-purpose="content-area" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA3np0ENmwxUNzUEBwFxXsvLL8_vhYfIix2lwU3pl8v0VR-oLUpHocMCCYDc4M1wAtP1asHpS710qCFIZwDOpbfC5ZwcceSecAe0ObcP0ocgbFoVZ8wzMez0EKwzVXkl4zGst3aJcTTrwbaOSNJU_A1uOPwmHS3qc5Fu9QsaCnXJYbsGjEbYMg2qKohRhQH1ZD3HGLhM3YWqfp7LjGlfRzKhOWs4KIlzTKV-CkloBowINWRcmZXvu8HWqSnpxN-ZffwYA'); background-size: cover; background-position: center bottom;">
+<!-- Subtle Ambient Dark Overlay for sharp UI contrast -->
+<div class="absolute inset-0 bg-black/5 pointer-events-none"></div>
+<!-- Top Floating Section: Sparkle Quote -->
+<div class="relative z-10 w-full flex justify-end p-6 pt-5">
+<div class="parchment-panel rounded-xl px-5 py-2 flex items-center gap-3 max-w-sm" data-purpose="quote-badge">
+<!-- Sparkle Star Icon -->
+<svg class="w-5 h-5 text-[#1b435b] shrink-0 fill-current" viewbox="0 0 24 24">
+<path d="M12 0l2.5 8.5L23 11l-8.5 2.5L12 22l-2.5-8.5L1 11l8.5-2.5z"></path>
+</svg>
+<p class="text-[13px] font-bold text-[#1f2e3d] leading-snug tracking-tight">
+          “Ideas are cheap.<br/>Execution compounds.”
+        </p>
+</div>
+</div>
+<!-- Center Section: Hero Title & Creation Card -->
+<div class="relative z-10 flex flex-col justify-center -mt-4 px-4 items-center">
+<!-- Main Page Headlines -->
+<div class="text-center mb-6">
+<h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight drop-shadow-sm">
+<span class="text-[#162a36]">Welcome to </span><span class="text-[#1f805a]">AgentAura</span>
+</h1>
+<p class="mt-2 text-base md:text-lg font-medium text-[#2d3748] drop-shadow-sm">
+          Turn your ideas into outcomes with an AI workforce.
+        </p>
+</div>
+<!-- Main Build Input Card -->
+<div class="parchment-panel rounded-2xl w-full max-w-[530px] p-6 shadow-2xl mx-auto" data-purpose="prompt-card">
+<label class="block text-base md:text-lg font-extrabold text-[#162a36] mb-3" for="building-input">
+          What are you building?
+        </label>
+<!-- Text Input Field -->
+<input class="w-full bg-[#fcf9ef] text-[#2c3e46] placeholder-[#8c8273] border border-[#cebfa2] rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#136c64] focus:border-transparent transition mb-4 shadow-inner" id="building-input" placeholder="e.g. Launch my product and get my first 100 users" type="text"/>
+<!-- Action Button -->
+<button class="w-full bg-[#136c53] hover:bg-[#0f5944] active:scale-[0.99] text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 border border-[#0d4f3d] shadow-[0_3px_0_#093b2d] transition-all">
+<span class="font-bold tracking-wide">Let’s Build →</span>
+</button>
+</div>
+</div>
+<!-- BEGIN: Bottom Highlights Banner -->
+<footer class="relative z-10 px-8 pb-6 w-full max-w-7xl mx-auto" data-purpose="features-bar">
+<div class="parchment-panel rounded-2xl p-5 shadow-xl">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-[#dfd0b2] gap-4 lg:gap-0">
+<!-- Column 1: AI Agents -->
+<div class="flex flex-col items-center text-center px-4 pt-2 sm:pt-0">
+<div class="w-8 h-8 mb-2 flex items-center justify-center text-[#114b46]">
+<svg class="w-7 h-7 fill-current" viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+</div>
+<h3 class="font-extrabold text-[#112d3b] text-sm tracking-tight mb-1">AI Agents</h3>
+<p class="text-xs text-[#524434] leading-relaxed font-semibold">
+              Plan, delegate, hire<br/>and get work done.
+            </p>
+</div>
+<!-- Column 2: Real Expertise -->
+<div class="flex flex-col items-center text-center px-4 pt-3 sm:pt-0">
+<div class="w-8 h-8 mb-2 flex items-center justify-center text-[#114b46]">
+<svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9"></circle>
+<circle cx="12" cy="12" r="5"></circle>
+<circle cx="12" cy="12" fill="currentColor" r="1.5"></circle>
+</svg>
+</div>
+<h3 class="font-extrabold text-[#112d3b] text-sm tracking-tight mb-1">Real Expertise</h3>
+<p class="text-xs text-[#524434] leading-relaxed font-semibold">
+              Access specialized<br/>agents from the marketplace.
+            </p>
+</div>
+<!-- Column 3: Autonomous Execution -->
+<div class="flex flex-col items-center text-center px-4 pt-3 sm:pt-0">
+<div class="w-8 h-8 mb-2 flex items-center justify-center text-[#114b46]">
+<svg class="w-7 h-7 fill-current" viewbox="0 0 24 24">
+<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.485.485 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
+</svg>
+</div>
+<h3 class="font-extrabold text-[#112d3b] text-sm tracking-tight mb-1">Autonomous Execution</h3>
+<p class="text-xs text-[#524434] leading-relaxed font-semibold">
+              Let your agents work<br/>together toward your goals.
+            </p>
+</div>
+<!-- Column 4: Real Economic Value -->
+<div class="flex flex-col items-center text-center px-4 pt-3 sm:pt-0">
+<div class="w-8 h-8 mb-2 flex items-center justify-center text-[#114b46]">
+<svg class="w-7 h-7 fill-current" viewbox="0 0 24 24">
+<rect height="7" rx="0.5" width="3" x="4" y="13"></rect>
+<rect height="12" rx="0.5" width="3" x="10.5" y="8"></rect>
+<rect height="17" rx="0.5" width="3" x="17" y="3"></rect>
+</svg>
+</div>
+<h3 class="font-extrabold text-[#112d3b] text-sm tracking-tight mb-1">Real Economic Value</h3>
+<p class="text-xs text-[#524434] leading-relaxed font-semibold">
+              Agents transact securely<br/>using OKX and the X Layer.
+            </p>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: Bottom Highlights Banner -->
+</main>
+<!-- END: Main Dashboard View -->
+</body></html>

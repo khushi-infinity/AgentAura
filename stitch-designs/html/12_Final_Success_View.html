@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AgentAura - Final Success View</title>
+<!-- Tailwind CSS CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: VT323 & Plus Jakarta Sans / Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=VT323&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<style data-purpose="custom-styling">
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      user-select: none;
+    }
+    .font-pixel-heading {
+      font-family: 'Press Start 2P', monospace;
+    }
+    .font-pixel-text {
+      font-family: 'VT323', monospace;
+    }
+    /* Pixel art border style for the mission complete sign */
+    .pixel-board {
+      border: 4px solid #4a341b;
+      box-shadow: inset 0 -4px 0 #b3884d, inset 0 4px 0 #fff2c4, 0 6px 0 rgba(0,0,0,0.35);
+    }
+    /* Quote balloon pointer */
+    .quote-tail::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: 28px;
+      border-width: 8px 8px 0;
+      border-style: solid;
+      border-color: #ffffff transparent transparent transparent;
+      display: block;
+      width: 0;
+    }
+  </style>
+</head>
+<body class="bg-[#051319] min-h-screen text-slate-100 flex flex-col">
+<!-- BEGIN: Screen Wrapper -->
+<div class="w-full bg-[#00171d] overflow-hidden flex flex-col min-h-screen" data-purpose="screen-container">
+<!-- BEGIN: Header Label Badge -->
+
+<!-- END: Header Label Badge -->
+<!-- BEGIN: Main App Container -->
+<div class="flex flex-1 flex-col lg:flex-row w-full min-h-screen" data-purpose="main-layout">
+<!-- BEGIN: Sidebar Navigation -->
+<aside class="w-full lg:w-[240px] bg-[#021b22] border-r border-[#08303a] flex flex-col justify-between p-4 flex-shrink-0" data-purpose="navigation-sidebar">
+<div class="space-y-6">
+<!-- Logo & Brand -->
+<div class="flex items-center gap-3 px-2 py-1" data-purpose="brand-logo">
+<!-- Pixel Robot Avatar Icon -->
+<div class="w-9 h-9 rounded-lg bg-[#00ff9d]/20 border border-[#00e58f] flex items-center justify-center p-1 shadow-[0_0_10px_rgba(0,229,143,0.3)]">
+<svg class="w-7 h-7 text-[#00e58f]" fill="currentColor" viewBox="0 0 24 24">
+<path d="M12 2a1 1 0 0 1 1 1v1h2a3 3 0 0 1 3 3v2h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1v2a3 3 0 0 1-3 3h-2v1a1 1 0 0 1-2 0v-1H9a3 3 0 0 1-3-3v-2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1V7a3 3 0 0 1 3-3h2V3a1 1 0 0 1 1-1zm-4 6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H8zm2 2h1v3h-1v-3zm4 0h1v3h-1v-3z"></path>
+</svg>
+</div>
+<div>
+<div class="font-bold text-white text-base tracking-tight leading-tight">AgentAura</div>
+<div class="text-[10px] text-[#558694] font-medium tracking-wider">Build. Delegate. Scale.</div>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="space-y-1.5 text-sm font-medium" data-purpose="sidebar-menu">
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#072a33] transition-colors" href="#">
+<svg class="w-5 h-5 text-[#88b9c7]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Home</span>
+</a>
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-emerald-400 bg-[#06313b]/60 font-semibold border-l-2 border-emerald-400" href="#">
+<svg class="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M4 3v18h2v-6h11l1.5-4L17 7H6V3H4z"></path></svg>
+<span class="">Missions</span>
+</a>
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#072a33] transition-colors" href="#">
+<svg class="w-5 h-5 text-[#88b9c7]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Agents</span>
+</a>
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#072a33] transition-colors" href="#">
+<svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h16l1 4v2a2 2 0 01-2 2v7a1 1 0 01-1 1H6a1 1 0 01-1-1v-7a2 2 0 01-2-2V8l1-4zm2 13h12v-5H6v5z"></path></svg>
+<span class="">Marketplace</span>
+</a>
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#072a33] transition-colors" href="#">
+<svg class="w-5 h-5 text-[#88b9c7]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Company Memory</span>
+</a>
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#072a33] transition-colors" href="#">
+<svg class="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M4 19h16v2H4zm2-4h3v3H6zm5-6h3v9h-3zm5-5h3v14h-3z"></path></svg>
+<span class="">Analytics</span>
+</a>
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#072a33] transition-colors" href="#">
+<svg class="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 24 24"><path d="M21 7H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2zm-2 7a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"></path></svg>
+<span class="">Wallet</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer -->
+<div class="pt-4 border-t border-[#093540]">
+<a class="flex items-center gap-3.5 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#072a33] text-sm font-medium transition-colors" href="#">
+<svg class="w-5 h-5 text-[#88b9c7]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Settings</span>
+</a>
+</div>
+</aside>
+<!-- END: Sidebar Navigation -->
+<!-- BEGIN: Hero Content Area -->
+<main class="flex-1 relative flex flex-col justify-between overflow-hidden bg-cover bg-center min-h-[580px]" data-purpose="content-display" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA_40_29Ssa3KzeVFK7eEUp456dHKI4_js09OxQr0zEvde59eEF7VOKrmyddEvBHfdc3IbWTImA1z2sCaw0jUMoCDXJdQie0EdCSkEBx3VDwH-at859B4tIhyL1ZehCdRRTcZkg1n6YkIZFMkoccCCU6zKq9cy1RUicKDFgfjAdF1dIae-agho2BI4S6kee42sFhi9DBedeEqnkIFJ7UUZjZnUI2BtZMxRtlMcaEzjlEoGKEm2WzuIwvLV3K0bt-rDOkA');">
+<!-- BEGIN: Top Floating Content (Signboard & Quote) -->
+<div class="relative z-10 w-full px-6 pt-5 flex items-start justify-between" data-purpose="top-announcements">
+<!-- Spacer left for centered wooden board -->
+<div class="hidden md:block w-48"></div>
+<!-- Central Wooden Signboard -->
+<div class="mx-auto bg-[#ffeed0] pixel-board px-8 py-3.5 rounded-lg text-center shadow-2xl relative" data-purpose="mission-complete-signboard">
+<!-- Little Pixel Leaves decorative accent -->
+<div class="absolute -top-3.5 left-2 text-emerald-600 text-lg select-none">🍃</div>
+<div class="absolute -top-3.5 right-2 text-emerald-600 text-lg select-none">🌿</div>
+<h1 class="text-[#102d4e] font-extrabold text-xl sm:text-2xl tracking-wide uppercase drop-shadow-sm font-pixel-heading">
+              MISSION COMPLETE!
+            </h1>
+<p class="text-[#2b4429] font-bold text-xs sm:text-sm mt-1 tracking-tight">
+              Launch our product and get first 100 users
+            </p>
+</div>
+<!-- Top-Right Speech Quote Bubble -->
+<div class="hidden sm:block relative bg-white border border-slate-200/90 text-slate-800 font-bold px-4 py-2 rounded-xl shadow-lg quote-tail text-xs md:text-sm tracking-tight self-start" data-purpose="speech-bubble">
+            “From idea to impact. Together.”
+          </div>
+</div>
+<!-- END: Top Floating Content -->
+<!-- Middle spacing to show off the pixel robots in the background image -->
+<div class="flex-1 min-h-[160px]"></div>
+<!-- BEGIN: Bottom Summary Dashboard & Actions -->
+<div class="relative z-10 w-full px-4 sm:px-8 pb-5 flex flex-col items-center" data-purpose="bottom-metrics-and-actions">
+<!-- Metric Summary Bar Card -->
+<section class="w-full max-w-6xl bg-[#fdfbf6]/95 backdrop-blur-sm rounded-2xl border-2 border-[#e6dbc8] shadow-2xl p-2.5 sm:p-3.5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-4 divide-y sm:divide-y-0 md:divide-x divide-stone-200" data-purpose="metrics-summary-bar">
+<!-- Metric 1: Tasks Completed -->
+<div class="flex items-center gap-3 px-2 py-1 justify-center sm:justify-start" data-purpose="stat-tasks">
+<div class="w-9 h-9 rounded-full bg-[#10b981] flex items-center justify-center text-white shadow-md flex-shrink-0">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="text-left">
+<div class="text-lg font-extrabold text-[#112d38] leading-none">124</div>
+<div class="text-[11px] font-bold text-stone-500 tracking-tight mt-0.5">Tasks Completed</div>
+</div>
+</div>
+<!-- Metric 2: Involved -->
+<div class="flex items-center gap-3 px-2 py-1 justify-center sm:justify-start" data-purpose="stat-involved">
+<div class="w-9 h-9 rounded-full bg-[#0284c7] flex items-center justify-center text-white shadow-md flex-shrink-0">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path></svg>
+</div>
+<div class="text-left">
+<div class="text-lg font-extrabold text-[#112d38] leading-none">6</div>
+<div class="text-[11px] font-bold text-stone-500 tracking-tight mt-0.5">Involved</div>
+</div>
+</div>
+<!-- Metric 3: External Agents -->
+<div class="flex items-center gap-3 px-2 py-1 justify-center sm:justify-start" data-purpose="stat-external">
+<div class="w-9 h-9 rounded-full bg-[#2563eb] flex items-center justify-center text-white shadow-md flex-shrink-0">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A.991.991 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15z"></path></svg>
+</div>
+<div class="text-left">
+<div class="text-lg font-extrabold text-[#112d38] leading-none">3</div>
+<div class="text-[11px] font-bold text-stone-500 tracking-tight mt-0.5">External Agents</div>
+</div>
+</div>
+<!-- Metric 4: Executions -->
+<div class="flex items-center gap-3 px-2 py-1 justify-center sm:justify-start" data-purpose="stat-executions">
+<div class="w-9 h-9 rounded-full bg-[#f59e0b] flex items-center justify-center text-white shadow-md flex-shrink-0">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"></path></svg>
+</div>
+<div class="text-left">
+<div class="text-lg font-extrabold text-[#112d38] leading-none">14</div>
+<div class="text-[11px] font-bold text-stone-500 tracking-tight mt-0.5">Executions</div>
+</div>
+</div>
+<!-- Metric 5: Total Spent -->
+<div class="flex items-center gap-3 px-2 py-1 justify-center sm:justify-start" data-purpose="stat-spent">
+<div class="w-9 h-9 rounded-full bg-[#eab308] border-2 border-amber-600 flex items-center justify-center text-amber-950 font-bold text-sm shadow-md flex-shrink-0">
+                $
+              </div>
+<div class="text-left">
+<div class="text-lg font-extrabold text-[#112d38] leading-none">4.82 USDT</div>
+<div class="text-[11px] font-bold text-stone-500 tracking-tight mt-0.5">Total Spent</div>
+</div>
+</div>
+<!-- Metric 6: Verified -->
+<div class="flex items-center gap-3 px-2 py-1 justify-center sm:justify-start" data-purpose="stat-verified">
+<div class="w-9 h-9 rounded-full bg-[#0d9488] flex items-center justify-center text-white shadow-md flex-shrink-0">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg>
+</div>
+<div class="text-left">
+<div class="text-lg font-extrabold text-[#112d38] leading-none">100%</div>
+<div class="text-[11px] font-bold text-stone-500 tracking-tight mt-0.5">Verified</div>
+</div>
+</div>
+</section>
+<!-- Bottom Dual Buttons -->
+<div class="mt-4 flex items-center justify-center gap-3.5" data-purpose="action-buttons">
+<!-- View Report Button -->
+<button class="bg-white/95 hover:bg-white text-[#10343f] font-bold text-sm px-6 py-2.5 rounded-lg border border-slate-300 shadow-md hover:shadow transition-all duration-150 active:scale-95" type="button">
+              View Report
+            </button>
+<!-- Start New Mission Button -->
+<button class="bg-[#057a55] hover:bg-[#046c4e] text-white font-bold text-sm px-7 py-2.5 rounded-lg border border-emerald-600 shadow-md hover:shadow-lg transition-all duration-150 active:scale-95" type="button">
+              Start New Mission
+            </button>
+</div>
+</div>
+<!-- END: Bottom Summary Dashboard & Actions -->
+</main>
+<!-- END: Hero Content Area -->
+</div>
+<!-- END: Main App Container -->
+</div>
+<!-- END: Screen Wrapper -->
+
+
+</body></html>

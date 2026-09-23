@@ -61,7 +61,11 @@ const config: Config = {
       },
       fontFamily: {
         pixel: ['"Press Start 2P"', "ui-monospace", "monospace"],
-        body: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        // Stitch screens load Plus Jakarta Sans as the UI face (self-hosted
+        // via next/font, exposed as --font-jakarta). Inter is the fallback.
+        // `sans` is overridden because the app shell uses `font-sans`.
+        sans: ["var(--font-jakarta)", '"Plus Jakarta Sans"', "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        body: ["var(--font-jakarta)", '"Plus Jakarta Sans"', "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       boxShadow: {
         pixel: "3px 3px 0 0 rgba(5, 20, 27, 0.45)",

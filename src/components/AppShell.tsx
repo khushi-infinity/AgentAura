@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { PixelSprite, GLYPHS, AGENT_MARK, BRAND_MARK } from "./PixelSprite";
+import { HireApprovalBanner } from "@/components/HireApprovalBanner";
 
 // Shared UI shell (spec §7), matched to the reference layout:
 //   - slim icon rail on the left (~61px in the reference), dark teal-blue
@@ -28,109 +28,9 @@ const NAV = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  // /create is a bare focus flow. /onboarding renders inside the shell (the
-  // reference welcome screen shows the full sidebar) but full-bleed — no top
-  // status bar, no footer and no ambient layer, so the scenery owns the frame.
-  if (pathname === "/create") return <>{children}</>;
-  const fullBleed = pathname === "/onboarding";
-
-  return (
-    <div className="min-h-screen flex bg-forest">
-      {/* ── Navigation sidebar ──
-          The reference shows a WIDE, LABELLED sidebar (logo + tagline, nav
-          labels, New Company action, founder chip). Below `lg` it collapses to
-          the slim icon rail so small screens stay usable. */}
-      <aside className="w-16 lg:w-[236px] xl:w-[248px] shrink-0 bg-forest-2 border-r-2 border-[#01141c] flex flex-col sticky top-0 h-screen z-20">
-        <Link
-          href="/"
-          title="AgentAura"
-          className="lg:h-[68px] h-14 shrink-0 flex items-center justify-center lg:justify-start lg:gap-3 lg:px-4 border-b-2 border-[#01141c] transition-colors"
-        >
-          <span className="text-leaf-bright">
-            <PixelSprite glyph={BRAND_MARK} size={26} />
-          </span>
-          <span className="hidden lg:block min-w-0">
-            <span className="block font-pixel text-cream text-[13px] leading-none">AgentAura</span>
-            <span className="block text-[10px] text-leaf-bright mt-1.5">Build. Delegate. Scale.</span>
-          </span>
-        </Link>
-
-        <nav className="flex-1 py-2 overflow-y-auto pixel-scroll">
-          {NAV.map((n) => {
-            const active = n.href === "/" ? pathname === "/" : pathname.startsWith(n.href);
-            return (
-              <Link
-                key={n.href}
-                href={n.href}
-                title={n.label}
-                aria-label={n.label}
-                data-active={active}
-                className="side-link"
-              >
-                <span className={active ? "text-leaf-deep shrink-0" : "text-leaf-bright shrink-0"}>
-                  <PixelSprite glyph={GLYPHS[n.key]} size={19} />
-                </span>
-                <span className="hidden lg:inline truncate">{n.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <Link
-          href="/create"
-          title="New company"
-          aria-label="New company"
-          className="mx-2 lg:mx-3 mb-3 h-11 shrink-0 flex items-center justify-center gap-2 rounded-sm bg-leaf text-cream font-pixel text-[11px] border-2 border-[#01141c] shadow-[0_3px_0_0_#01141c] hover:bg-leaf-bright transition-colors"
-        >
-          <span className="text-base leading-none">+</span>
-          <span className="hidden lg:inline">New Company</span>
-        </Link>
-
-        <div className="hidden lg:flex items-center gap-2.5 mx-2 mb-3 px-2.5 py-2.5 rounded-sm border-t-2 border-[#01141c] pt-3">
-          <span className="w-9 h-9 shrink-0 grid place-items-center rounded-full bg-forest-3 border-2 border-leaf text-leaf-bright">
-            <PixelSprite glyph={AGENT_MARK} size={19} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[12px] text-cream leading-tight truncate">Khushi</span>
-            <span className="block text-[10px] text-cream/50 mt-0.5">Founder</span>
-          </span>
-          <span className="text-cream/40 text-lg leading-none select-none" aria-hidden>
-            ⋮
-          </span>
-        </div>
-      </aside>
-
-      {/* ── Main column ── */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {fullBleed ? null : <TopStatusBar />}
-        <main className="flex-1 min-w-0 relative">
-          {/* Ambient environment behind the functional UI (spec §6). */}
-          {fullBleed ? null : (
-            <div className="pointer-events-none absolute inset-0 opacity-[0.22]" aria-hidden>
-              <AmbientScenery />
-            </div>
-          )}
-          <div className="relative">{children}</div>
-        </main>
-        {fullBleed ? null : <StatusStrip />}
-      </div>
-    </div>
-  );
-}
-
-/** Thin top status bar: date/session, connection, wallet balance, avatar. */
-function TopStatusBar() {
-  const [now, setNow] = useState<string>("--:--");
   const [balance, setBalance] = useState<number | null>(null);
 
-  useEffect(() => {
-    const tick = () => setNow(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
-    tick();
-    const t = setInterval(tick, 30_000);
-    return () => clearInterval(t);
-  }, []);
-
-  // Live treasury balance — never hardcode money in the chrome.
+  // Live treasury balance — Rule 7: Never hardcode money in the chrome
   useEffect(() => {
     let stop = false;
     const load = async () => {
@@ -155,50 +55,109 @@ function TopStatusBar() {
     };
   }, []);
 
+  // Onboarding is a full-bleed moment (Stitch screen 1) — no sidebar chrome.
+  // Rendered after all hooks so the rules of hooks hold across navigation.
+  if (pathname === "/onboarding") return <>{children}</>;
+
   return (
-    <header className="bg-chrome border-b-2 border-[#01141c] h-9 px-4 flex items-center gap-4 text-[11px] text-cream/75 sticky top-0 z-10">
-      <span className="hidden sm:inline">
-        Day {new Date().getDate()} · Session
-      </span>
-      <span className="font-pixel text-[9px] text-leaf-bright">{now}</span>
-      <span className="ml-auto flex items-center gap-3">
-        <span className="hidden md:flex items-center gap-1.5">
-          <span className="w-2 h-2 bg-leaf-bright animate-pulse-soft" />
-          OKX AI connected
-        </span>
-        <span className="pixel-label bg-forest-3 text-leaf-bright border border-leaf px-1.5 py-1">
-          {balance === null ? "— USD₮0" : `${(balance / 100).toFixed(2)} USD₮0`}
-        </span>
-        <span
-          className="w-6 h-6 bg-forest-3 border border-[#01141c] flex items-center justify-center text-sky"
-          title="Founder"
+    <div className="min-h-screen bg-[#011c1d] flex flex-col items-center justify-start text-slate-800 font-sans antialiased p-0 md:p-3 selection:bg-emerald-800 selection:text-white">
+      {/* Main Container Wrapper matching Stitch 1580px frame */}
+      <div className="w-full max-w-[1600px] bg-[#fffdf6] border-[2px] border-[#103d3f] rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[920px]">
+        {/* Left Sidebar Navigation */}
+        <aside
+          className="w-full md:w-64 bg-[#012627] text-white flex flex-col justify-between p-4 border-r border-[#073d3e] shrink-0 z-20"
+          data-purpose="sidebar-navigation"
         >
-          <PixelSprite glyph={AGENT_MARK} size={16} />
-        </span>
-      </span>
-    </header>
+          <div>
+            {/* Logo Section */}
+            <Link href="/" className="flex items-center gap-3 px-2 py-3 mb-5 group">
+              <div className="w-10 h-10 rounded-xl bg-[#073c3d] flex items-center justify-center border border-[#1b6163] shadow-inner text-emerald-400 text-2xl group-hover:scale-105 transition-transform">
+                🌲
+              </div>
+              <div>
+                <div className="font-extrabold text-lg leading-tight tracking-wide text-white">AgentAura</div>
+                <div className="text-[10px] text-[#4ea99f] font-medium tracking-wide">Build. Delegate. Scale.</div>
+              </div>
+            </Link>
+
+            {/* Navigation Links */}
+            <nav className="space-y-1.5" data-purpose="nav-links">
+              {NAV.map((n) => {
+                const active = n.href === "/" ? pathname === "/" : pathname.startsWith(n.href);
+                return (
+                  <Link
+                    key={n.href}
+                    href={n.href}
+                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-all ${
+                      active
+                        ? "bg-white text-[#0a2f31] font-bold shadow-sm"
+                        : "text-[#95b8b6] hover:text-white hover:bg-[#063839] font-medium"
+                    }`}
+                  >
+                    <span className="shrink-0 text-base">
+                      {n.key === "home" && "🏠"}
+                      {n.key === "missions" && "🚩"}
+                      {n.key === "agents" && "🤖"}
+                      {n.key === "marketplace" && "🏬"}
+                      {n.key === "memory" && "🧠"}
+                      {n.key === "analytics" && "📊"}
+                      {n.key === "wallet" && "💳"}
+                      {n.key === "settings" && "⚙️"}
+                    </span>
+                    <span>{n.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Bottom Controls: New Company & User Profile */}
+          <div className="pt-6 space-y-3.5" data-purpose="sidebar-footer">
+            {/* Live Treasury Badge */}
+            <div className="px-3 py-2 rounded-xl bg-[#022f30] border border-[#094749] flex items-center justify-between text-xs">
+              <span className="text-[#649e97] font-medium">Treasury</span>
+              <span className="font-bold text-emerald-400">
+                {balance !== null ? `${(balance / 100).toFixed(2)} USDT` : "Loading..."}
+              </span>
+            </div>
+
+            {/* New Company Button */}
+            <Link
+              href="/create"
+              className="w-full py-2.5 px-4 rounded-xl border border-[#1b6b63] bg-[#023b3b] hover:bg-[#054b4b] text-emerald-200 font-semibold text-sm flex items-center justify-center gap-2 transition-all shadow-sm"
+            >
+              <span className="text-base font-bold leading-none">+</span>
+              <span>New Company</span>
+            </Link>
+
+            {/* User Profile Card */}
+            <div className="flex items-center justify-between p-2 rounded-xl bg-[#022f30] border border-[#094749]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center overflow-hidden border border-emerald-400/50 shadow-sm text-lg">
+                  👧🏻
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-white leading-none">Khushi</div>
+                  <div className="text-[11px] text-[#71aaa3] font-medium mt-0.5">Founder</div>
+                </div>
+              </div>
+              <Link href="/settings" className="text-slate-400 hover:text-white p-1 text-xs">
+                ⋮
+              </Link>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Application Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 bg-[#fffdf6] overflow-y-auto">
+          <HireApprovalBanner />
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }
 
-function StatusStrip() {
-  return (
-    <footer className="bg-forest-2 border-t-2 border-[#01141c] px-5 py-2 flex items-center gap-5 text-[10px] text-cream/55">
-      <span className="flex items-center gap-1.5">
-        <span className="w-2 h-2 bg-leaf-bright" />
-        OKX AI
-      </span>
-      <span className="flex items-center gap-1.5">
-        <span className="w-2 h-2 bg-gold" />
-        X Layer Testnet
-      </span>
-      <span className="flex items-center gap-1.5">
-        <span className="w-2 h-2 bg-sky" />
-        Agentic Wallet
-      </span>
-      <span className="ml-auto hidden sm:inline opacity-60">Build a company. Let agents run it.</span>
-    </footer>
-  );
-}
 
 export function Hero({
   title,
