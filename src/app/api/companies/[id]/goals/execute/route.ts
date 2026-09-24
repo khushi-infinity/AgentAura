@@ -55,3 +55,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
 
   return NextResponse.json({ missionId });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

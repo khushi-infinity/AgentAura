@@ -15,3 +15,6 @@ export async function GET(req: NextRequest) {
   rows.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   return NextResponse.json({ tasks: rows });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

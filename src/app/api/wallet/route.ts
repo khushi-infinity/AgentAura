@@ -20,3 +20,6 @@ export async function GET(req: NextRequest) {
   txs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   return NextResponse.json({ wallet, transactions: txs, payments: pays });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

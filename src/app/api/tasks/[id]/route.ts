@@ -15,3 +15,6 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
   const payment = db.select().from(payments).where(eq(payments.taskId, id)).get();
   return NextResponse.json({ task, events, deliverable, payment });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

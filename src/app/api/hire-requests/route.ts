@@ -48,3 +48,6 @@ export async function POST(req: NextRequest) {
   const ok = await decideHire(parsed.data.hireId, parsed.data.approved);
   return NextResponse.json({ ok });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

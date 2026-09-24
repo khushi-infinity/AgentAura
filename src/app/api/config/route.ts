@@ -17,3 +17,6 @@ export async function GET() {
     llmModel: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

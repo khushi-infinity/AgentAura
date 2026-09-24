@@ -41,3 +41,6 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ ok: true, reset: true });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

@@ -48,3 +48,6 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true, txId, balanceCents: wallet.totalCents + amount });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

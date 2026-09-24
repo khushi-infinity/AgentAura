@@ -66,3 +66,6 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ agents: internalRows, externalProviders: [...externals.values()] });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

@@ -60,3 +60,6 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
   const latest = await db.select().from(missions).where(eq(missions.companyId, id)).orderBy(desc(missions.createdAt)).get();
   return NextResponse.json({ nodes, edges, latestMission: latest ?? null });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

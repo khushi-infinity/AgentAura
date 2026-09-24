@@ -159,3 +159,6 @@ export async function GET() {
     { headers: { "Cache-Control": "no-store" } },
   );
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

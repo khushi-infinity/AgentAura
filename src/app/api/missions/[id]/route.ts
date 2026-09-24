@@ -14,3 +14,6 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
   const dels = db.select().from(deliverables).all().filter((d) => taskRows.some((t) => t.id === d.taskId));
   return NextResponse.json({ mission, tasks: taskRows, deliverables: dels });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

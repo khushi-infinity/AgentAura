@@ -10,3 +10,6 @@ export async function POST() {
   seed();
   return NextResponse.json({ ok: true, seeded: "demo" });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";

@@ -37,3 +37,6 @@ export async function GET() {
     averageTicketCents: settled.length ? Math.round(gmvCents / settled.length) : 0,
   });
 }
+
+// No build-time execution: this route touches SQLite at request time only.
+export const dynamic = "force-dynamic";
