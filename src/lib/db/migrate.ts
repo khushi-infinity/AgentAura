@@ -8,6 +8,7 @@ const STATEMENTS = [
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL DEFAULT '',
+    founder_name TEXT NOT NULL DEFAULT 'Jane Doe',
     mission TEXT,
     budget_cents INTEGER NOT NULL DEFAULT 1000,
     autonomy_policy TEXT NOT NULL DEFAULT 'ASK_BEFORE_HIRING',
@@ -178,8 +179,8 @@ const STATEMENTS = [
     kind TEXT NOT NULL DEFAULT 'AGENTIC',
     network TEXT NOT NULL DEFAULT 'xlayer-testnet',
     is_demo INTEGER NOT NULL DEFAULT 1,
-    total_cents INTEGER NOT NULL DEFAULT 1000,
-    available_cents INTEGER NOT NULL DEFAULT 1000,
+    total_cents INTEGER NOT NULL DEFAULT 0,
+    available_cents INTEGER NOT NULL DEFAULT 0,
     escrow_cents INTEGER NOT NULL DEFAULT 0,
     earned_cents INTEGER NOT NULL DEFAULT 0,
     spent_cents INTEGER NOT NULL DEFAULT 0

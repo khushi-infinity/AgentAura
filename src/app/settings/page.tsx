@@ -7,6 +7,7 @@ interface Config {
   llmConfigured: boolean;
   llmModel: string;
   network: string;
+  founderName?: string;
 }
 
 const TABS = ["Profile", "Team", "Integrations", "Preferences", "Security", "Billing"];
@@ -14,17 +15,42 @@ const TABS = ["Profile", "Team", "Integrations", "Preferences", "Security", "Bil
 export default function SettingsPage() {
   const [cfg, setCfg] = useState<Config | null>(null);
   const [activeTab, setActiveTab] = useState("Profile");
-  const [name, setName] = useState("Khushi Sarawagi");
-  const [email, setEmail] = useState("khushi@example.com");
+  // Founder identity lives on the company row — loaded from /api/config,
+  // saved via PATCH /api/companies, reflected app-wide instantly.
+  const [name, setName] = useState("Jane Doe");
+  const [nameLoaded, setNameLoaded] = useState(false);
+  const [email, setEmail] = useState("jane@agentaura.app");
   const [policy, setPolicy] = useState("AUTO_HIRE_BELOW_BUDGET");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     fetch("/api/config")
       .then((r) => r.json())
-      .then(setCfg)
+      .then((d: Config) => {
+        setCfg(d);
+        if (d.founderName) {
+          setName(d.founderName);
+          setNameLoaded(true);
+        }
+      })
       .catch(() => setCfg(null));
   }, []);
+
+  const saveProfile = async () => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    await fetch("/api/companies", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ founderName: trimmed }),
+    }).catch(() => {});
+    // Instant propagation: sidebar listens for this, other tabs poll /api/config.
+    window.dispatchEvent(
+      new CustomEvent("agentaura:founder-changed", { detail: { founderName: trimmed } }),
+    );
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
 
   return (
     <main className="flex-1 bg-[#EEF5F6] flex flex-col overflow-y-auto">
@@ -99,7 +125,7 @@ export default function SettingsPage() {
                 👧🏻
               </div>
               <div>
-                <div className="font-bold text-sm text-slate-900">{name}</div>
+                <div className="font-bold text-sm text-slate-900">{nameLoaded ? name : "Jane Doe"}</div>
                 <div className="text-xs text-slate-500">Founder · AgentAura</div>
               </div>
             </div>
@@ -131,7 +157,7 @@ export default function SettingsPage() {
                   defaultValue="xlayer-testnet"
                   className="w-full text-xs font-medium px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white outline-none"
                 >
-                  <option value="xlayer-testnet">OKX X Layer Testnet (Chain ID 196)</option>
+                  <option value="xlayer-testnet">OKX X Layer Testnet (Chain ID 1952)</option>
                   <option value="xlayer-mainnet" disabled>OKX X Layer Mainnet (Production)</option>
                 </select>
               </div>
@@ -140,10 +166,7 @@ export default function SettingsPage() {
             <div className="pt-2">
               <button
                 type="button"
-                onClick={() => {
-                  setSaved(true);
-                  setTimeout(() => setSaved(false), 2000);
-                }}
+                onClick={saveProfile}
                 className="px-4 py-2.5 bg-[#006050] hover:bg-[#004d40] text-white text-xs font-bold rounded-xl shadow transition"
               >
                 {saved ? "Changes Saved ✓" : "Save Changes"}

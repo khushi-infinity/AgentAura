@@ -29,8 +29,11 @@ const NAV = [
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [balance, setBalance] = useState<number | null>(null);
+  const [founderName, setFounderName] = useState("Jane Doe");
 
-  // Live treasury balance — Rule 7: Never hardcode money in the chrome
+  // Live treasury balance — Rule 7: Never hardcode money in the chrome.
+  // 2s poll so deposits made anywhere (wallet page, APIs) show up fast in
+  // the sidebar; the Wallet page also broadcasts a same-tab event.
   useEffect(() => {
     let stop = false;
     const load = async () => {
@@ -47,11 +50,43 @@ export function AppShell({ children }: { children: ReactNode }) {
         /* noop */
       }
     };
+    const onDeposit = () => {
+      load();
+    };
+    window.addEventListener("agentaura:wallet-changed", onDeposit);
     load();
-    const t = setInterval(load, 8000);
+    const t = setInterval(load, 2000);
     return () => {
       stop = true;
       clearInterval(t);
+      window.removeEventListener("agentaura:wallet-changed", onDeposit);
+    };
+  }, []);
+
+  // Founder display name — live from the public config endpoint (one row in
+  // the companies table; edited in Settings → Profile, shown everywhere).
+  useEffect(() => {
+    let stop = false;
+    const load = () => {
+      fetch("/api/config")
+        .then((r) => r.json())
+        .then((d: { founderName?: string }) => {
+          if (!stop && d.founderName) setFounderName(d.founderName);
+        })
+        .catch(() => {});
+    };
+    const onRename = (e: Event) => {
+      const detail = (e as CustomEvent<{ founderName?: string }>).detail;
+      if (detail?.founderName) setFounderName(detail.founderName);
+      else load();
+    };
+    window.addEventListener("agentaura:founder-changed", onRename);
+    load();
+    const t = setInterval(load, 5000);
+    return () => {
+      stop = true;
+      clearInterval(t);
+      window.removeEventListener("agentaura:founder-changed", onRename);
     };
   }, []);
 
@@ -137,7 +172,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   👧🏻
                 </div>
                 <div>
-                  <div className="font-bold text-sm text-white leading-none">Khushi</div>
+                  <div className="font-bold text-sm text-white leading-none">{founderName}</div>
                   <div className="text-[11px] text-[#71aaa3] font-medium mt-0.5">Founder</div>
                 </div>
               </div>

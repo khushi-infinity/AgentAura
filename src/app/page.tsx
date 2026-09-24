@@ -22,6 +22,7 @@ interface CompanyData {
   company: {
     id: string;
     name: string;
+    founderName?: string;
     mission: string | null;
     autonomyPolicy: string;
     budgetCents?: number;
@@ -101,6 +102,28 @@ function HomeInner() {
       }
     };
     load();
+    // Keep the treasury chip and dashboard counters live — a deposit made on
+    // the Wallet page (or a payment settled by the engine) shows up here.
+    const onWallet = () => {
+      fetch("/api/companies")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d: CompanyData | { company: null } | null) => {
+          if (!d || !("company" in d) || !d.company) return;
+          setCompany(d);
+          return fetch(`/api/wallet?companyId=${d.company.id}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((wj: { wallet?: { availableCents?: number } } | null) => {
+              if (wj) setBalanceCents(wj.wallet?.availableCents ?? null);
+            });
+        })
+        .catch(() => {});
+    };
+    window.addEventListener("agentaura:wallet-changed", onWallet);
+    const t = setInterval(load, 3000);
+    return () => {
+      window.removeEventListener("agentaura:wallet-changed", onWallet);
+      clearInterval(t);
+    };
   }, []);
 
   // Poll treasury while running
@@ -161,7 +184,8 @@ function HomeInner() {
   // Time-aware greeting.
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const founderName = "Khushi";
+  // Founder display name — from the company row (Settings → Profile edits it).
+  const founderName = company.company.founderName || "Jane Doe";
   // Team roster for the Agent Team strip — internal agents in spec role order.
   const roster = [...internals].sort((a, b) => {
     const ia = ROLE_ORDER.indexOf(a.role); const ib = ROLE_ORDER.indexOf(b.role);

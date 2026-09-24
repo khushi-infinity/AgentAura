@@ -107,6 +107,25 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ companyId, missionId });
 }
 
+// PATCH /api/companies — update the workspace's editable fields (founder
+// name). One company in the demo UX; no id needed.
+const patchSchema = z.object({
+  founderName: z.string().min(1).max(60),
+});
+export async function PATCH(req: NextRequest) {
+  if (!rateLimit(clientKey(req, "companies"), 10)) return tooMany();
+  await bootstrap();
+  const parsed = patchSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+  const row = db.select().from(companies).all().at(-1);
+  if (!row) return NextResponse.json({ error: "no_company" }, { status: 404 });
+  db.update(companies)
+    .set({ founderName: parsed.data.founderName.trim() })
+    .where(eq(companies.id, row.id))
+    .run();
+  return NextResponse.json({ ok: true, founderName: parsed.data.founderName.trim() });
+}
+
 // GET /api/companies — newest company + missions (single-company demo UX).
 // Fresh workspace returns 200 with company:null (not 404) so client polls
 // don't spam the console with expected not-found noise during onboarding.

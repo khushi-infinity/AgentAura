@@ -57,6 +57,9 @@ export default function WalletPage() {
         body: JSON.stringify({ amountCents: 1000 }),
       });
       loadData();
+      // Same-tab broadcast so the sidebar + home treasury chips update
+      // instantly (other tabs pick it up via their short balance polls).
+      window.dispatchEvent(new Event("agentaura:wallet-changed"));
     } finally {
       setDepositing(false);
     }

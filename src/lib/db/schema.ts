@@ -5,6 +5,9 @@ export const companies = sqliteTable("companies", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description").notNull().default(""),
+  // Founder identity — one row, shown everywhere (home greeting, sidebar,
+  // settings). Editable in Settings → Profile.
+  founderName: text("founder_name").notNull().default("Jane Doe"),
   mission: text("mission"),
   budgetCents: integer("budget_cents").notNull().default(1000),
   autonomyPolicy: text("autonomy_policy").notNull().default("ASK_BEFORE_HIRING"),
@@ -206,8 +209,8 @@ export const wallets = sqliteTable("wallets", {
   kind: text("kind").notNull().default("AGENTIC"), // TREASURY | AGENTIC
   network: text("network").notNull().default("xlayer-testnet"),
   isDemo: integer("is_demo", { mode: "boolean" }).notNull().default(true),
-  totalCents: integer("total_cents").notNull().default(1000),
-  availableCents: integer("available_cents").notNull().default(1000),
+  totalCents: integer("total_cents").notNull().default(0),
+  availableCents: integer("available_cents").notNull().default(0),
   escrowCents: integer("escrow_cents").notNull().default(0),
   earnedCents: integer("earned_cents").notNull().default(0),
   spentCents: integer("spent_cents").notNull().default(0),
