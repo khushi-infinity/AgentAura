@@ -41,10 +41,18 @@ all live in `data/agentaura.db`). Any container/VM host with a volume works.
    ```
 
 4. **Settings → Volumes** → **New Volume** → mount path `/app/data`. This is what
-   makes companies/wallets survive restarts.
+   makes companies/wallets survive restarts. (The image runs as root so it can
+   create the SQLite file on the root-owned volume mount — verified live on
+   Railway. On a VPS you can keep `USER node` and chown the mount instead.)
 5. **Settings → Networking → Generate Domain** → you get a public URL.
 6. Visit the URL → the app migrates its DB on first request and lands on the
    Welcome screen.
+
+> **Verified live:** `https://web-production-e03209.up.railway.app` — deployed
+> via the Railway CLI from this Dockerfile, volume attached, LLM planner,
+> hire-approval gate and 5% fee settlement all exercised in production.
+> The `PORT` env var injected by the platform is respected
+> (`next start -p ${PORT:-3000}`).
 
 ## 3. Option B — Render
 
