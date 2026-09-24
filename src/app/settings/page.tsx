@@ -8,6 +8,7 @@ interface Config {
   llmModel: string;
   network: string;
   founderName?: string;
+  autonomyPolicy?: string;
 }
 
 const TABS = ["Profile", "Team", "Integrations", "Preferences", "Security", "Billing"];
@@ -32,6 +33,9 @@ export default function SettingsPage() {
           setName(d.founderName);
           setNameLoaded(true);
         }
+        if (typeof d.autonomyPolicy === "string") {
+          setPolicy(d.autonomyPolicy);
+        }
       })
       .catch(() => setCfg(null));
   }, []);
@@ -42,11 +46,14 @@ export default function SettingsPage() {
     await fetch("/api/companies", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ founderName: trimmed }),
+      body: JSON.stringify({ founderName: trimmed, autonomyPolicy: policy }),
     }).catch(() => {});
     // Instant propagation: sidebar listens for this, other tabs poll /api/config.
     window.dispatchEvent(
       new CustomEvent("agentaura:founder-changed", { detail: { founderName: trimmed } }),
+    );
+    window.dispatchEvent(
+      new CustomEvent("agentaura:policy-changed", { detail: { autonomyPolicy: policy } }),
     );
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -211,9 +218,9 @@ export default function SettingsPage() {
 
             <div className="space-y-2.5">
               {[
-                { id: "MANUAL_APPROVAL", title: "Ask before hiring", desc: "Every external agent hire requires founder approval" },
+                { id: "ASK_BEFORE_HIRING", title: "Ask before hiring", desc: "Every external agent hire requires founder approval" },
                 { id: "AUTO_HIRE_BELOW_BUDGET", title: "Autonomous within budget", desc: "Agents hire within available treasury funds" },
-                { id: "FULL_AUTONOMY", title: "Full Autonomy", desc: "No approval gates; complete autonomous execution" },
+                { id: "FULLY_AUTONOMOUS", title: "Full Autonomy", desc: "No approval gates; complete autonomous execution" },
               ].map((opt) => (
                 <label
                   key={opt.id}

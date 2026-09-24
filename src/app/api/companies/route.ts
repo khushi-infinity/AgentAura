@@ -111,6 +111,7 @@ export async function POST(req: NextRequest) {
 // name). One company in the demo UX; no id needed.
 const patchSchema = z.object({
   founderName: z.string().min(1).max(60),
+  autonomyPolicy: z.enum(["ASK_BEFORE_HIRING", "AUTO_HIRE_BELOW_BUDGET", "FULLY_AUTONOMOUS"]).optional(),
 });
 export async function PATCH(req: NextRequest) {
   if (!rateLimit(clientKey(req, "companies"), 10)) return tooMany();
@@ -119,11 +120,12 @@ export async function PATCH(req: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   const row = db.select().from(companies).all().at(-1);
   if (!row) return NextResponse.json({ error: "no_company" }, { status: 404 });
+  const policy = parsed.data.autonomyPolicy ?? row.autonomyPolicy;
   db.update(companies)
-    .set({ founderName: parsed.data.founderName.trim() })
+    .set({ founderName: parsed.data.founderName.trim(), autonomyPolicy: policy })
     .where(eq(companies.id, row.id))
     .run();
-  return NextResponse.json({ ok: true, founderName: parsed.data.founderName.trim() });
+  return NextResponse.json({ ok: true, founderName: parsed.data.founderName.trim(), autonomyPolicy: policy });
 }
 
 // GET /api/companies — newest company + missions (single-company demo UX).

@@ -166,7 +166,7 @@ function CreateInner() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {[
                   {
-                    id: "MANUAL_APPROVAL",
+                    id: "ASK_BEFORE_HIRING",
                     title: "Ask before hiring",
                     desc: "Require founder approval for external agents",
                   },
@@ -176,7 +176,7 @@ function CreateInner() {
                     desc: "Agents hire within available funds automatically",
                   },
                   {
-                    id: "FULL_AUTONOMY",
+                    id: "FULLY_AUTONOMOUS",
                     title: "Full Autonomy",
                     desc: "Agents manage tasks and hiring independently",
                   },

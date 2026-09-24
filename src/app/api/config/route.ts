@@ -8,11 +8,16 @@ import { bootstrap } from "../bootstrap";
 // (demo vs live OKX AI rail, founder display name). No secrets.
 export async function GET() {
   await bootstrap();
-  const row = db.select({ founderName: companies.founderName }).from(companies).all().at(-1);
+  const row = db
+    .select({ founderName: companies.founderName, autonomyPolicy: companies.autonomyPolicy })
+    .from(companies)
+    .all()
+    .at(-1);
   return NextResponse.json({
     demoMode: isDemoMode(),
     network: process.env.ONCHAINOS_NETWORK ?? "xlayer-testnet",
     founderName: row?.founderName ?? "Jane Doe",
+    autonomyPolicy: row?.autonomyPolicy ?? "ASK_BEFORE_HIRING",
     llmConfigured: Boolean(process.env.OPENAI_API_KEY),
     llmModel: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   });

@@ -46,12 +46,31 @@ const BASE = process.env.BASE || "http://localhost:3000";
     return inputs.length;
   });
   console.log("form fields filled:", filled);
+
+  // Reproduce the reported bug exactly: explicitly choose "Ask before hiring"
+  // (used to send the invalid MANUAL_APPROVAL enum → 400 → onboarding bounce).
+  await page.evaluate(() => {
+    const btns = [...document.querySelectorAll("button")];
+    const ask = btns.find((b) => /ask before hiring/i.test(b.textContent || ""));
+    if (ask) ask.click();
+    return Boolean(ask);
+  }).then((clicked) => console.log("policy 'Ask before hiring' selected:", clicked));
+
+  // Capture the POST /api/companies status so an API rejection can't hide.
+  let resolveStatus;
+  const postStatus = new Promise((res) => { resolveStatus = res; });
+  page.on("response", (r) => {
+    if (r.url().endsWith("/api/companies") && r.request().method() === "POST") resolveStatus(r.status());
+  });
+
   await page.evaluate(() => {
     const btns = [...document.querySelectorAll("button")];
     const submit = btns.find((b) => !b.disabled && /assemble|create|launch|build/i.test(b.textContent || ""));
     if (submit) submit.click();
     return Boolean(submit);
   }).then((clicked) => console.log("submit clicked:", clicked));
+  const status = await Promise.race([postStatus, sleep(12000).then(() => "no-post")]);
+  console.log("POST /api/companies status:", status === 200 ? "200 OK" : String(status));
 
   // 4. The fix under test: must land on HOME, not bounce to onboarding.
   let landed = "timeout";
@@ -66,6 +85,7 @@ const BASE = process.env.BASE || "http://localhost:3000";
     }
   }
   console.log("step4 result:", landed);
+  if (landed !== "HOME-WITH-DASHBOARD") process.exitCode = 1;
   const finalTxt = await page.evaluate(() => document.body.innerText);
   console.log("dashboard has greeting:", /Good (morning|afternoon|evening), Jane Doe/.test(finalTxt) ? "PASS" : "—");
   console.log("dashboard has OKX strip:", /OKX AI/.test(finalTxt) ? "PASS" : "—");
