@@ -162,6 +162,9 @@ export async function runMission(missionId: string, opts: RunOptions = {}): Prom
   });
 
   for (const spec of plan) {
+    // Workspace may have been reset mid-mission (POST /api/reset) — abort
+    // instead of inserting orphan tasks for a deleted company.
+    if (!db.select({ id: missions.id }).from(missions).where(eq(missions.id, missionId)).get()) return;
     const assignee = byRole(spec.role);
     const taskId = newId("task");
     db.insert(tasks)

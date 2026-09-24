@@ -52,6 +52,32 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  // Workspace lifecycle: true fresh-start (onboarding) or the polished demo.
+  const [busy, setBusy] = useState<"reset" | "demo" | null>(null);
+  const resetWorkspace = async () => {
+    if (!window.confirm("Reset the workspace? All companies, missions, payments and memory will be deleted.")) return;
+    setBusy("reset");
+    try {
+      // The API wipes all rows and restarts the server process; then land
+      // on the Welcome screen exactly as a first-run user would.
+      await fetch("/api/reset", { method: "POST" }).catch(() => {});
+      setTimeout(() => {
+        window.location.href = "/onboarding";
+      }, 1200);
+    } finally {
+      setBusy(null);
+    }
+  };
+  const loadDemo = async () => {
+    setBusy("demo");
+    try {
+      await fetch("/api/seed-demo", { method: "POST" });
+      window.location.href = "/";
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
     <main className="flex-1 bg-[#EEF5F6] flex flex-col overflow-y-auto">
       {/* Top Hero Pixel Art Banner */}
@@ -212,6 +238,38 @@ export default function SettingsPage() {
               ))}
             </div>
           </section>
+
+          {/* Workspace controls — reset to fresh onboarding / load demo data */}
+          <section className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3">
+            <div>
+              <h3 className="text-base font-bold text-[#003138]">Workspace</h3>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">
+                Start fresh (onboarding) or load the polished demo company.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2.5">
+              <button
+                type="button"
+                onClick={resetWorkspace}
+                disabled={busy !== null}
+                className="px-4 py-2.5 rounded-xl border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold shadow-sm transition disabled:opacity-60"
+              >
+                {busy === "reset" ? "Resetting…" : "Reset workspace"}
+              </button>
+              <button
+                type="button"
+                onClick={loadDemo}
+                disabled={busy !== null}
+                className="px-4 py-2.5 rounded-xl border border-teal-700 bg-[#006050] hover:bg-[#004d40] text-white text-xs font-bold shadow-sm transition disabled:opacity-60"
+              >
+                {busy === "demo" ? "Loading…" : "Load demo workspace"}
+              </button>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Reset deletes all companies, missions, payments and memory, then returns to the Welcome
+              screen — the exact first-run experience.
+            </p>
+          </section>
         </div>
 
         {/* Right Column: Integrations & Status (5 cols) */}
@@ -233,7 +291,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                 <div>
                   <div className="font-bold text-slate-800">OKX X Layer Testnet</div>
-                  <div className="text-[11px] text-slate-500">Chain ID 196 (Testnet)</div>
+                  <div className="text-[11px] text-slate-500">Chain ID 1952 (Testnet)</div>
                 </div>
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                   Active

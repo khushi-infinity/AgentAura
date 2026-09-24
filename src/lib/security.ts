@@ -58,6 +58,12 @@ const inflight: Map<string, Inflight> = (globalForIdem.__agentaura_idem ??= new 
 
 const IDEM_WINDOW = 5 * 60_000;
 
+/** Clear all in-flight idempotency keys (used by workspace reset so a
+ *  re-created company can immediately re-run its first mission). */
+export function clearIdempotency(): void {
+  inflight.clear();
+}
+
 export function checkAndSetIdempotency(key: string): boolean {
   const now = Date.now();
   const existing = inflight.get(key);
