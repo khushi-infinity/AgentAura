@@ -127,12 +127,19 @@ export async function PATCH(req: NextRequest) {
 }
 
 // GET /api/companies — newest company + missions (single-company demo UX).
+// Always revalidate server-side: a stale cached response showing company:null
+// after the founder just created one would bounce them back to onboarding.
 // Fresh workspace returns 200 with company:null (not 404) so client polls
 // don't spam the console with expected not-found noise during onboarding.
 export async function GET() {
   await bootstrap();
   const rows = db.select().from(companies).all();
-  if (rows.length === 0) return NextResponse.json({ company: null });
+  if (rows.length === 0) {
+    return NextResponse.json(
+      { company: null },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  }
   const newest = rows[rows.length - 1];
   const missionRows = db.select().from(missions).where(eq(missions.companyId, newest.id)).all();
   const agentRows = db.select().from(agents).where(eq(agents.companyId, newest.id)).all();
@@ -142,10 +149,13 @@ export async function GET() {
   const hiredProviders = new Set(
     taskRows.filter((t) => t.isOutsourced && t.externalProviderId).map((t) => t.externalProviderId as string),
   );
-  return NextResponse.json({
-    company: newest,
-    missions: missionRows,
-    agentCount: agentRows.filter((a) => a.type === "INTERNAL").length,
-    externalCount: hiredProviders.size,
-  });
+  return NextResponse.json(
+    {
+      company: newest,
+      missions: missionRows,
+      agentCount: agentRows.filter((a) => a.type === "INTERNAL").length,
+      externalCount: hiredProviders.size,
+    },
+    { headers: { "Cache-Control": "no-store" } },
+  );
 }

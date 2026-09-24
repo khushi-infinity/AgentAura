@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -65,42 +65,80 @@ const ROLE_ORDER = ["CEO", "STRATEGY", "RESEARCH", "PRODUCT", "MARKETING", "VERI
 
 function HomeInner() {
   const params = useSearchParams();
+  const router = useRouter();
   const [company, setCompany] = useState<CompanyData | null>(null);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [taskRows, setTaskRows] = useState<TaskRow[]>([]);
   const [balanceCents, setBalanceCents] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  // Arriving with ?fresh=1 means the founder JUST assembled their company —
+  // poll for it before any redirect; never bounce them back to onboarding.
+  const [assembling, setAssembling] = useState(params.get("fresh") === "1");
+
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch("/api/companies", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = (await res.json()) as CompanyData | { company: null };
+      if (!("company" in data) || !data.company) return;
+      setCompany(data);
+      const [w, a] = await Promise.all([
+        fetch(`/api/wallet?companyId=${data.company.id}`),
+        fetch(`/api/agents?companyId=${data.company.id}`),
+      ]);
+      if (w.ok) {
+        const wj = (await w.json()) as { wallet?: { availableCents?: number } };
+        setBalanceCents(wj.wallet?.availableCents ?? null);
+      }
+      if (a.ok) {
+        const aj = (await a.json()) as { agents?: Agent[] };
+        setAgents(aj.agents ?? []);
+      }
+      // Tasks drive the Executions counter and the mission checklist.
+      const t = await fetch(`/api/tasks?companyId=${data.company.id}`);
+      if (t.ok) {
+        const tj = (await t.json()) as { tasks?: TaskRow[] };
+        setTaskRows(tj.tasks ?? []);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Post-create arrival: poll until the new company is readable, then load
+  // the full dashboard. Only a genuine empty workspace redirects onboarding.
+  useEffect(() => {
+    if (!assembling) return;
+    let stop = false;
+    (async () => {
+      for (let i = 0; i < 20; i++) {
+        try {
+          const r = await fetch("/api/companies", { cache: "no-store" });
+          if (r.ok) {
+            const d = (await r.json()) as CompanyData | { company: null };
+            if ("company" in d && d.company) {
+              if (!stop) {
+                setCompany(d);
+                setAssembling(false);
+                setLoading(false);
+              }
+              return;
+            }
+          }
+        } catch {
+          /* transient — keep polling */
+        }
+        await new Promise((res) => setTimeout(res, 700));
+        if (stop) return;
+      }
+      router.replace("/onboarding");
+    })();
+    return () => {
+      stop = true;
+    };
+  }, [assembling, router]);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await fetch("/api/companies");
-        if (!res.ok) return;
-        const data = (await res.json()) as CompanyData | { company: null };
-        if (!("company" in data) || !data.company) return; // fresh → /onboarding
-        setCompany(data);
-        const [w, a] = await Promise.all([
-          fetch(`/api/wallet?companyId=${data.company.id}`),
-          fetch(`/api/agents?companyId=${data.company.id}`),
-        ]);
-        if (w.ok) {
-          const wj = (await w.json()) as { wallet?: { availableCents?: number } };
-          setBalanceCents(wj.wallet?.availableCents ?? null);
-        }
-        if (a.ok) {
-          const aj = (await a.json()) as { agents?: Agent[] };
-          setAgents(aj.agents ?? []);
-        }
-        // Tasks drive the Executions counter and the mission checklist.
-        const t = await fetch(`/api/tasks?companyId=${data.company.id}`);
-        if (t.ok) {
-          const tj = (await t.json()) as { tasks?: TaskRow[] };
-          setTaskRows(tj.tasks ?? []);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
     load();
     // Keep the treasury chip and dashboard counters live — a deposit made on
     // the Wallet page (or a payment settled by the engine) shows up here.
@@ -124,7 +162,7 @@ function HomeInner() {
       window.removeEventListener("agentaura:wallet-changed", onWallet);
       clearInterval(t);
     };
-  }, []);
+  }, [load]);
 
   // Poll treasury while running
   useEffect(() => {
@@ -158,6 +196,20 @@ function HomeInner() {
           <span className="text-3xl animate-bounce">🌲</span>
           <span className="text-xs font-bold text-slate-500 tracking-wider uppercase">
             Loading your company...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (assembling) {
+    // Straight from the create form — the company row may still be committing.
+    return (
+      <div className="h-[calc(100vh-72px)] grid place-items-center bg-[#fffdf6]">
+        <div className="flex flex-col items-center gap-3">
+          <span className="text-3xl animate-bounce">🌲</span>
+          <span className="text-xs font-bold text-slate-500 tracking-wider uppercase">
+            Assembling your company…
           </span>
         </div>
       </div>

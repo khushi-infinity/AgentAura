@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const AGENTS_PREVIEW = [
   { icon: "🤖", name: "CEO Agent", role: "Planning", desc: "Oversees strategy and decision making" },
@@ -12,7 +12,6 @@ const AGENTS_PREVIEW = [
 ];
 
 function CreateInner() {
-  const router = useRouter();
   const params = useSearchParams();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -47,7 +46,9 @@ function CreateInner() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ missionId: data.missionId }),
       });
-      router.push(`/?company=${data.companyId}&fresh=1`);
+      // Hard navigation: guarantees home re-mounts fresh (no client-side
+      // cache race with the just-created company) and lands on the dashboard.
+      window.location.assign(`/?company=${data.companyId}&fresh=1`);
     } finally {
       setBusy(false);
     }
