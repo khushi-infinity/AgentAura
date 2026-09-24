@@ -1,6 +1,6 @@
 # AgentAura — demo video script
 
-**Length:** 2:30 · **Format:** screen recording + voiceover (or burned-in
+**Length:** ~3 minutes · **Format:** screen recording + voiceover (or burned-in
 captions if you'd rather not record audio). Every shot is a real product
 action — nothing is staged — so one rehearsal is enough to record it in one
 take.
