@@ -119,6 +119,15 @@ function HomeInner() {
     return () => clearInterval(id);
   }, [company]);
 
+  // Honest demo/live rail label from the public config endpoint.
+  const [rail, setRail] = useState<{ demoMode: boolean; network: string } | null>(null);
+  useEffect(() => {
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then((d) => setRail(d))
+      .catch(() => setRail(null));
+  }, []);
+
   if (loading) {
     return (
       <div className="h-[calc(100vh-72px)] grid place-items-center bg-[#fffdf6]">
@@ -303,6 +312,35 @@ function HomeInner() {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* OKX AI rail strip — which settlement rail is actually active */}
+        <section
+          className="bg-[#022f30] rounded-2xl px-5 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm"
+          data-purpose="okx-rail-strip"
+        >
+          <div className="flex items-center gap-3">
+            <span className="w-9 h-9 rounded-xl bg-emerald-400/15 border border-emerald-300/30 flex items-center justify-center text-lg">
+              ⛓️
+            </span>
+            <div>
+              <div className="text-xs font-black text-white tracking-tight">
+                Powered by OKX AI — Agent Payments Protocol (x402)
+              </div>
+              <div className="text-[11px] text-emerald-200/90">
+                ASP discovery via A2A/A2MCP · settlements in USD₮0 on X Layer testnet
+              </div>
+            </div>
+          </div>
+          <span
+            className={`text-[10px] font-black px-3 py-1.5 rounded-full border shrink-0 ${
+              rail && !rail.demoMode
+                ? "bg-emerald-400 text-emerald-950 border-emerald-300"
+                : "bg-white/10 text-emerald-100 border-emerald-300/30"
+            }`}
+          >
+            {rail ? (rail.demoMode ? "DEMO RAIL · simulated txs, honestly labeled" : "LIVE RAIL · real onchain txs") : "OKX X LAYER TESTNET"}
+          </span>
         </section>
 
         {/* Split Section: Team + Activity vs Current Mission */}

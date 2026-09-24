@@ -781,3 +781,61 @@ audience, positioning… · just now"), zero page errors. Typecheck ✅ · build
 25/25 ✅ · screenshots regenerated ✅. During the same session the hire banner
 approved → payment SETTLED → 1 outsourced task (live proof the graph's external
 node + hire edge now appear from real rows).
+
+### Live OKX adapters wired (2026-09-23)
+The "not yet wired" stubs are gone — `src/lib/okx/live/` now implements the real
+integration path per the official docs (okxai/user-buy-service, payments/
+payment-use-buyer, payments/sdk-nodejs):
+- **onchainos.ts** — CLI bridge: `wallet status` / `wallet sign` (EIP-3009
+  authorization via the TEE-held Agentic Wallet); ENOENT → install step,
+  "not logged in" → login step.
+- **x402.ts** — x402 v2 buyer flow: GET priced resource → 402 challenge
+  (`x402Version 2`, `accepts[]`) → pick `exact` → sign → replay with
+  `PAYMENT-SIGNATURE` (base64 PaymentPayload) → receipt `{status:"success",
+  payer, txHash, network}`.
+- **liveAdapter.ts** — Discovery (wallet-gated; matching is task-time per
+  docs), Task (publish to `OKX_ASP_RESOURCE_URL`, pay the 402 quote, fetch the
+  deliverable), Settlement (x402-exact; honest FAILED with actionable error
+  when prerequisites are missing — verified by `scripts/live-gates-check.ts`).
+- **scripts/x402-smoke.mjs** — full mock-merchant round-trip test (402 parse →
+  sign → replay → real txHash → OKLink pointer).
+- Engine: a thrown settlement error degrades to PAYMENT_FAILED (mission
+  survives); demo re-verified end-to-end (mission COMPLETED, gap hire PENDING
+  → approve path intact). Build 25/25 ✅ · typecheck ✅.
+- Docs: README "Switching to a live OKX flow" rewritten as a runbook +
+  capability table updated; `.env.example` documents the live vars.
+
+### Hackathon-readiness pass — every OKX AI surface is real (2026-09-23)
+- **Marketplace Hire modal was theater** (setTimeout animation + scripted
+  chat + fake escrow). Replaced with the real engine: `POST
+  /api/marketplace/hire` → `directHire()` in the orchestrator runs the actual
+  task → OKX publish/deliver → Verification Agent → x402 settlement path
+  under a lightweight mission. The modal streams the company's real SSE
+  events (Engine/Provider log), shows the true payment state and the actual
+  txHash, and honest failures with the fix. Verified in browser: hire
+  SETTLED in ~8s, payment row + memory insight + wallet debit all landed.
+- **Wallet page de-fabricated**: removed 3 invented transactions (the
+  "empty state" was fake money), hardcoded address `0x3f9A…8b21`, and the
+  WRONG chain id (196 mainnet → 1952 X Layer testnet). Deposit button now
+  really works via `POST /api/wallet/deposit` (honest isDemo row). New rail
+  line: x402 · Agent Payments Protocol.
+- **OKX AI branding**: home got the "Powered by OKX AI" rail strip with an
+  honest DEMO RAIL / LIVE RAIL badge from the new public `GET /api/config`;
+  marketplace renamed to "OKX AI Marketplace", buttons "Hire on OKX AI",
+  provider inspector says "OKX AI ASP"; wallet names the protocol.
+- **E2E (clean DB, real browser)**: onboarding → create → rail strip →
+  marketplace hire → SETTLED ~8s → zero console errors; plus the autonomous
+  path (mission hire PENDING → approve → SETTLED) re-verified via API.
+  Build 27/27 ✅ · typecheck ✅. Workspace reset to pristine onboarding.
+
+### Deploy + demo-video kit (2026-09-23)
+- **Dockerfile** (3-stage: deps → build → minimal non-root runtime) and
+  `.dockerignore` (secrets + local data never ship). SQLite lives in
+  `/app/data` — volume mount keeps companies/wallets across deploys. Note:
+  image build not yet smoke-tested (Docker daemon wasn't running locally);
+  run `docker build -t agentaura .` once before relying on it.
+- **docs/DEPLOY.md** — Railway/Render/Fly.io/VPS step-by-steps, persistent-
+  volume setup, live-OKX-mode section, pre-flight checklist, and an explicit
+  "do not deploy to serverless" warning (in-process missions + SSE + file DB).
+- **docs/DEMO_VIDEO_SCRIPT.md** — shot-by-shot 2:30 script (8 shots, voiceover
+  lines, zoom-punch edit notes, mid-recording recovery), linked from README §21.

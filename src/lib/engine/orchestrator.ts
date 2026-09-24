@@ -387,6 +387,112 @@ async function discoverAndHire(
   await hireAndSettle(taskId, ctx, chosen, gap);
 }
 
+/**
+ * Direct hire from the Marketplace page ("Hire" button). Unlike the autonomous
+ * mission loop, the human picks the provider up front, so approval is implicit:
+ * this runs the REAL engine path — task row → OKX adapter publish/deliver →
+ * Verification Agent → settlement — under a lightweight mission so every event,
+ * payment row and memory write lands exactly as a mission-driven hire does.
+ */
+export async function directHire(input: {
+  companyId: string;
+  provider: ProviderOffer;
+  objective: string;
+}): Promise<{ taskId: string; missionId: string; hireId: string }> {
+  const company = db.select().from(companies).where(eq(companies.id, input.companyId)).get();
+  if (!company) throw new Error("Company not found");
+
+  // Lightweight mission container so the hire shows up in Missions/Analytics.
+  const missionId = newId("mis");
+  db.insert(missions)
+    .values({
+      id: missionId,
+      companyId: input.companyId,
+      objective: `Marketplace hire: ${input.provider.providerName} — ${input.objective.slice(0, 80)}`,
+      status: "ACTIVE",
+      priority: "MEDIUM",
+    })
+    .run();
+  const ctx: Ctx = { companyId: input.companyId, missionId };
+
+  const assignee = db
+    .select()
+    .from(agents)
+    .where(and(eq(agents.companyId, input.companyId), eq(agents.role, "RESEARCH")))
+    .get();
+  const ceo = db
+    .select()
+    .from(agents)
+    .where(and(eq(agents.companyId, input.companyId), eq(agents.role, "CEO")))
+    .get();
+
+  const taskId = newId("task");
+  db.insert(tasks)
+    .values({
+      id: taskId,
+      companyId: input.companyId,
+      missionId,
+      requesterAgentId: ceo?.id ?? null,
+      assigneeAgentId: assignee?.id ?? null,
+      role: "RESEARCH",
+      objective: input.objective,
+      status: "PLANNED",
+      budgetCents: input.provider.priceCents,
+    })
+    .run();
+
+  emitEvent({
+    ...ctx,
+    taskId,
+    type: "TASK_CREATED",
+    actorName: "Founder (Marketplace)",
+    title: `Direct hire requested from Marketplace`,
+    detail: `${input.provider.providerName} · ${(input.provider.priceCents / 100).toFixed(2)} USD₮0 · ${input.objective}`,
+  });
+
+  // Human picked the provider in the UI → approval is implicit; record it so
+  // the audit trail shows a user-decided hire (same shape as banner approvals).
+  const hrId = newId("hire");
+  db.insert(hireRequests)
+    .values({
+      id: hrId,
+      companyId: input.companyId,
+      taskId,
+      missionId,
+      providerId: input.provider.providerId,
+      providerName: input.provider.providerName,
+      serviceType: input.provider.serviceType,
+      priceCents: input.provider.priceCents,
+      reasons: JSON.stringify(input.provider.reasons ?? ["selected directly by the founder in the Marketplace"]),
+      status: "APPROVED",
+      decidedBy: "user",
+      decidedAt: new Date(),
+    })
+    .run();
+
+  const gap = detectGap(input.objective) ?? {
+    description: "Founder-directed outsourcing — specialized external execution.",
+    requiredCapability: input.provider.capabilities?.[0] ?? "external execution",
+    keywords: [],
+    suggestedBudgetCents: input.provider.priceCents,
+  };
+
+  emitEvent({
+    ...ctx,
+    taskId,
+    type: "CAPABILITY_GAP_DETECTED",
+    actorId: assignee?.id ?? null,
+    actorName: "Research Agent",
+    title: "Delegating to OKX AI marketplace",
+    detail: gap.description,
+    payload: { requiredCapability: gap.requiredCapability },
+  });
+
+  await hireAndSettle(taskId, ctx, input.provider, gap);
+  refreshMissionProgress(missionId);
+  return { taskId, missionId, hireId: hrId };
+}
+
 async function waitForApproval(hireId: string, timeoutMs: number): Promise<boolean> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -559,11 +665,26 @@ async function hireAndSettle(
     detail: `Replaying request with PAYMENT-SIGNATURE on ${handle.network}`,
   });
 
-  const settled = await settlement.settle({
-    taskId,
-    handle,
-    memo: `AgentAura task ${taskId} → ${chosen.providerName}`,
-  });
+  const settled = await settlement
+    .settle({
+      taskId,
+      handle,
+      memo: `AgentAura task ${taskId} → ${chosen.providerName}`,
+    })
+    .catch((err: unknown) => {
+      // A thrown adapter error (e.g. missing OnchainOS CLI / wallet session)
+      // must degrade to an honest FAILED payment, not kill the whole mission
+      // loop via runMission().catch.
+      console.error("[engine] settlement adapter threw:", (err as Error)?.message ?? err);
+      return {
+        status: "FAILED" as const,
+        txHash: undefined,
+        receipt: undefined,
+        network: handle.network,
+        isDemo: false,
+        error: (err as Error)?.message ?? "settlement adapter error",
+      };
+    });
 
   const payId = newId("pay");
   db.insert(payments)

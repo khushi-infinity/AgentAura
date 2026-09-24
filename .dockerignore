@@ -1,0 +1,14 @@
+# build context hygiene — images stay small and secrets never ship
+node_modules
+.next
+.git
+data
+.env
+.env.local
+.env.*.local
+*.pem
+npm-debug.log*
+.DS_Store
+docs/screenshots
+stitch-designs
+PROJECT_PROGRESS.md

@@ -30,6 +30,7 @@ export default function WalletPage() {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [txs, setTxs] = useState<Tx[]>([]);
   const [loading, setLoading] = useState(true);
+  const [depositing, setDepositing] = useState(false);
 
   const loadData = () => {
     fetch("/api/wallet")
@@ -44,6 +45,22 @@ export default function WalletPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Real treasury top-up through the API — writes a transaction row and
+  // credits the wallet (demo mode: honestly labeled, not an onchain tx).
+  const depositUsdt = async () => {
+    setDepositing(true);
+    try {
+      await fetch("/api/wallet/deposit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amountCents: 1000 }),
+      });
+      loadData();
+    } finally {
+      setDepositing(false);
+    }
+  };
 
   // No invented balances — an unfunded wallet shows 0.00, honestly.
   const total = wallet ? wallet.totalCents / 100 : 0;
@@ -145,10 +162,11 @@ export default function WalletPage() {
         {/* Action Buttons Row */}
         <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={() => alert("Simulated OKX Deposit: 10 USDT added to treasury!")}
-            className="px-4 py-2.5 bg-[#006050] hover:bg-[#004d40] text-white text-xs font-bold rounded-xl shadow transition"
+            onClick={depositUsdt}
+            disabled={depositing}
+            className="px-4 py-2.5 bg-[#006050] hover:bg-[#004d40] text-white text-xs font-bold rounded-xl shadow transition disabled:opacity-60"
           >
-            + Deposit USDT
+            {depositing ? "Processing…" : "+ Deposit 10 USDT"}
           </button>
           <button
             onClick={() => alert("Withdrawal: Transfer to external address.")}
@@ -177,39 +195,13 @@ export default function WalletPage() {
               {loading ? (
                 <div className="p-6 text-center text-xs text-slate-400">Loading ledger...</div>
               ) : txs.length === 0 ? (
-                <div className="space-y-3 text-xs">
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-slate-800">Payment to Market Intelligence Agent</div>
-                      <div className="text-[11px] text-slate-500">Milestone: Competitor Research · 25 min ago</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-emerald-700">-0.15 USDT</div>
-                      <span className="text-[10px] text-emerald-600">✓ Onchain</span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-slate-800">Escrow Lock for Technical Writer Bot</div>
-                      <div className="text-[11px] text-slate-500">Milestone: Landing Page Copy · 1 hour ago</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-amber-600">-0.10 USDT</div>
-                      <span className="text-[10px] text-amber-600">⏳ In Escrow</span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-slate-800">Initial Treasury Allocation</div>
-                      <div className="text-[11px] text-slate-500">Minted on OKX X Layer · 2 days ago</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-slate-900">+25.00 USDT</div>
-                      <span className="text-[10px] text-emerald-600">✓ Settled</span>
-                    </div>
-                  </div>
+                <div className="p-6 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                  <div className="text-2xl">🪙</div>
+                  <p className="text-xs font-bold text-slate-700 mt-2">No transactions yet</p>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    Every OKX AI hire settles here — run a mission that triggers a
+                    marketplace hire, or hire an ASP directly from the OKX AI Marketplace.
+                  </p>
                 </div>
               ) : (
                 txs.map((t) => (
@@ -243,16 +235,20 @@ export default function WalletPage() {
               </div>
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between text-slate-300">
-                  <span>Wallet Address:</span>
-                  <span className="font-mono text-emerald-300">0x3f9A...8b21</span>
+                  <span>Agentic Wallet:</span>
+                  <span className="font-mono text-emerald-300">{wallet ? `${wallet.address.slice(0, 6)}…${wallet.address.slice(-4)}` : "Onchain OS"}</span>
                 </div>
                 <div className="flex justify-between text-slate-300">
                   <span>Chain ID:</span>
-                  <span className="font-mono">196</span>
+                  <span className="font-mono">1952 (X Layer Testnet)</span>
                 </div>
                 <div className="flex justify-between text-slate-300">
                   <span>Settlement Asset:</span>
-                  <span className="font-mono text-amber-300">USDT (Tether USD)</span>
+                  <span className="font-mono text-amber-300">USD₮0 (Tether USD)</span>
+                </div>
+                <div className="flex justify-between text-slate-300">
+                  <span>Rail:</span>
+                  <span className="font-mono">x402 · Agent Payments Protocol</span>
                 </div>
               </div>
             </div>
