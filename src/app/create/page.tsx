@@ -22,6 +22,7 @@ function CreateInner() {
   // switch to auto-hire here or later in Settings.
   const [policy, setPolicy] = useState("ASK_BEFORE_HIRING");
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const assemble = async () => {
     // The goal is the whole point of the product — never invent one.
@@ -40,12 +41,19 @@ function CreateInner() {
         }),
       });
       const data = (await res.json()) as { companyId: string; missionId: string };
-      // Kick off the mission immediately.
+      if (!res.ok || !data?.companyId) {
+        // Never navigate on failure — show the real error instead of a bounce.
+        setError("Couldn't assemble your company. Please try again.");
+        setBusy(false);
+        return;
+      }
+      // Kick off the mission immediately. A failure here is not fatal —
+      // home re-dispatches, so land on the dashboard either way.
       await fetch(`/api/companies/${data.companyId}/goals/execute`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ missionId: data.missionId }),
-      });
+      }).catch(() => null);
       // Hard navigation: guarantees home re-mounts fresh (no client-side
       // cache race with the just-created company) and lands on the dashboard.
       window.location.assign(`/?company=${data.companyId}&fresh=1`);
@@ -201,6 +209,11 @@ function CreateInner() {
               >
                 <span>{busy ? "Assembling Team & Minting Wallet..." : goalOk ? "Assemble My Company →" : "Write your Primary Goal to continue"}</span>
               </button>
+              {error && (
+                <p className="mt-2 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-center" role="alert">
+                  {error}
+                </p>
+              )}
             </div>
           </div>
 
