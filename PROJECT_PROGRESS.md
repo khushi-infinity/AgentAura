@@ -839,3 +839,23 @@ payment-use-buyer, payments/sdk-nodejs):
   "do not deploy to serverless" warning (in-process missions + SSE + file DB).
 - **docs/DEMO_VIDEO_SCRIPT.md** — shot-by-shot 2:30 script (8 shots, voiceover
   lines, zoom-punch edit notes, mid-recording recovery), linked from README §21.
+
+### 2026-09-24 — Judge-hardening pass: business model in the protocol
+- **5% protocol fee on every settlement** (`PLATFORM_FEE_BPS=500`):
+  `fee_cents`/`net_amount_cents` on the payments table (idempotent column
+  migration), announced in `PAYMENT_SETTLED` events, written to the tx ledger
+  memo. Verified live: Polyglot hire — gross 10¢, fee 1¢, net 9¢.
+- **`GET /api/protocol` + Analytics "Protocol economics" section**: GMV, fee
+  revenue, live-vs-simulated split, avg ticket — the investor slide, live in
+  the product. Current totals: $3.80 GMV, $0.22 fees, 10 settlements.
+- **Verification Agent upgraded to LLM-judged rubric** (0–100, gate at 70,
+  deterministic fallback keeps the gate honest without an API key).
+- **Insufficient-funds guard** on hire approvals (409 with actionable hint;
+  decline still routes to the internal fallback). Wallet debit can no longer
+  drive the treasury negative.
+- **Mission-count honesty fix**: lazily-created step tasks now reopen a
+  falsely COMPLETED mission instead of leaving a wrong 1/1 on the dashboard.
+- **README §21 "Why this is a business (and how it scales)"** — wedge, moat
+  (verification-gated reputation), unit economics, SQLite→Postgres /
+  one-process→queue / multi-tenant / testnet→mainnet scale paths.
+

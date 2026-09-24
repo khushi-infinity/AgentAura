@@ -128,6 +128,8 @@ const STATEMENTS = [
     provider_name TEXT NOT NULL,
     provider_id TEXT,
     amount_cents INTEGER NOT NULL,
+    fee_cents INTEGER NOT NULL DEFAULT 0,
+    net_amount_cents INTEGER NOT NULL DEFAULT 0,
     currency TEXT NOT NULL DEFAULT 'USDT0',
     network TEXT NOT NULL DEFAULT 'xlayer-testnet',
     status TEXT NOT NULL DEFAULT 'PENDING',
@@ -190,6 +192,24 @@ const STATEMENTS = [
   `CREATE INDEX IF NOT EXISTS idx_tasks_mission ON tasks(mission_id)`,
 ];
 
+// Idempotent column migrations for DBs created before a column existed.
+const COLUMN_MIGRATIONS: Array<{ table: string; column: string; ddl: string }> = [
+  {
+    table: "payments",
+    column: "fee_cents",
+    ddl: `ALTER TABLE payments ADD COLUMN fee_cents INTEGER NOT NULL DEFAULT 0`,
+  },
+  {
+    table: "payments",
+    column: "net_amount_cents",
+    ddl: `ALTER TABLE payments ADD COLUMN net_amount_cents INTEGER NOT NULL DEFAULT 0`,
+  },
+];
+
 export function migrate() {
   for (const stmt of STATEMENTS) sqlite.exec(stmt);
+  for (const m of COLUMN_MIGRATIONS) {
+    const cols = sqlite.prepare(`PRAGMA table_info(${m.table})`).all() as Array<{ name: string }>;
+    if (!cols.some((c) => c.name === m.column)) sqlite.exec(m.ddl);
+  }
 }

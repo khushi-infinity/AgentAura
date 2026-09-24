@@ -73,8 +73,8 @@ export function refreshMissionProgress(missionId: string) {
     .where(eq(missions.id, missionId))
     .run();
 
+  const m = db.select().from(missions).where(eq(missions.id, missionId)).get();
   if (total > 0 && completed === total) {
-    const m = db.select().from(missions).where(eq(missions.id, missionId)).get();
     if (m && m.status === "ACTIVE") {
       db.update(missions)
         .set({ status: "COMPLETED", completedAt: new Date() })
@@ -90,6 +90,10 @@ export function refreshMissionProgress(missionId: string) {
         detail: `${completed}/${total} tasks completed · ${(spend / 100).toFixed(2)} USD₮0 spent`,
       });
     }
+  } else if (m && m.status === "COMPLETED") {
+    // Lazy step tasks (created mid-mission) reopen a falsely-final mission —
+    // the count must stay honest for anyone reading the dashboards.
+    db.update(missions).set({ status: "ACTIVE", completedAt: null }).where(eq(missions.id, missionId)).run();
   }
   return { total, completed, progress, spend };
 }

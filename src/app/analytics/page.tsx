@@ -28,19 +28,31 @@ export default function AnalyticsPage() {
   const [agentCount, setAgentCount] = useState(0);
   const [externalCount, setExternalCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [proto, setProto] = useState<{
+    gmvCents: number;
+    feeCents: number;
+    settlementCount: number;
+    failedCount: number;
+    liveSettlements: number;
+    liveGmvCents: number;
+    averageTicketCents: number;
+    feeBps: number;
+  } | null>(null);
 
   useEffect(() => {
     Promise.all([
       fetch("/api/missions").then((r) => r.json()),
       fetch("/api/agents").then((r) => r.json()),
       fetch("/api/tasks").then((r) => r.json()),
+      fetch("/api/protocol").then((r) => r.json()).catch(() => null),
     ])
-      .then(([m, a, t]) => {
+      .then(([m, a, t, t4]) => {
         setMissions(m.missions ?? []);
         const agents = a.agents ?? [];
         setAgentCount(agents.filter((x: { type: string }) => x.type === "INTERNAL").length);
         setExternalCount(agents.filter((x: { type: string }) => x.type === "EXTERNAL").length);
         setTasks(t.tasks ?? []);
+        if (t4) setProto(t4);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -189,6 +201,37 @@ export default function AnalyticsPage() {
                 OKX X Layer <span className="text-slate-400 font-normal">micro-settlements</span>
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Protocol economics — the business model, live from settled payments.
+            GMV grows with every agent-to-agent payment; the fee line is the
+            platform's take-rate revenue. */}
+        <section className="bg-gradient-to-r from-[#012b2b] via-[#03403c] to-[#01554a] rounded-2xl border border-emerald-900/40 p-5 shadow-sm" data-purpose="protocol-economics">
+          <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+            <div>
+              <h3 className="text-sm font-extrabold text-white">Protocol economics</h3>
+              <p className="text-[11px] text-emerald-200/80 font-medium mt-0.5">
+                AgentAura takes a {(proto?.feeBps ?? 500) / 100}% protocol fee on every settled agent-to-agent payment — revenue that scales with the network.
+              </p>
+            </div>
+            <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-300 bg-white/10 px-2.5 py-1 rounded-full border border-emerald-400/30">
+              x402 · OKX X Layer
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: "Gross settlement volume", value: `$${((proto?.gmvCents ?? 0) / 100).toFixed(2)}`, sub: `${proto?.settlementCount ?? 0} settled payments`, accent: "text-white" },
+              { label: "Protocol fee revenue", value: `$${((proto?.feeCents ?? 0) / 100).toFixed(2)}`, sub: `${(proto?.feeBps ?? 500) / 100}% take rate`, accent: "text-amber-300" },
+              { label: "Live onchain volume", value: `$${((proto?.liveGmvCents ?? 0) / 100).toFixed(2)}`, sub: `${proto?.liveSettlements ?? 0} onchain txs`, accent: "text-emerald-300" },
+              { label: "Avg ticket size", value: `$${((proto?.averageTicketCents ?? 0) / 100).toFixed(2)}`, sub: "per settled hire", accent: "text-sky-300" },
+            ].map((k) => (
+              <div key={k.label} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-3.5">
+                <div className={`text-lg font-black ${k.accent}`}>{k.value}</div>
+                <div className="text-[11px] font-semibold text-emerald-100/90 mt-0.5">{k.label}</div>
+                <div className="text-[10px] text-emerald-200/60 mt-0.5">{k.sub}</div>
+              </div>
+            ))}
           </div>
         </section>
 

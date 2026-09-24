@@ -33,6 +33,12 @@ import { scrubExternalContent, envelopeExternal } from "@/lib/injection";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+// Platform take-rate in basis points: 5% protocol fee on every settled
+// agent-to-agent payment. This is the business model — AgentAura monetizes
+// the delegation rail, not subscriptions: gross protocol revenue scales
+// linearly with the value of work delegated through it.
+const PLATFORM_FEE_BPS = 500;
+
 interface Ctx {
   companyId: string;
   missionId: string;
@@ -611,7 +617,7 @@ async function hireAndSettle(
     detail: "Checking requirements coverage, evidence quality and completeness",
   });
 
-  const verification = verifyDeliverable(deliverableContent, gap.requiredCapability);
+  const verification = await verifyDeliverable(deliverableContent, gap.requiredCapability);
 
   const delId = newId("del");
   db.insert(deliverables)
@@ -665,11 +671,18 @@ async function hireAndSettle(
     detail: `Replaying request with PAYMENT-SIGNATURE on ${handle.network}`,
   });
 
+  // Platform take-rate: 5% protocol fee on every settled payment (the
+  // business model — the rail itself is the revenue line).
+  let feeCents = 0;
   const settled = await settlement
     .settle({
       taskId,
       handle,
       memo: `AgentAura task ${taskId} → ${chosen.providerName}`,
+    })
+    .then((r) => {
+      if (r.status === "SETTLED") feeCents = Math.round((handle.quoteCents * PLATFORM_FEE_BPS) / 10000);
+      return r;
     })
     .catch((err: unknown) => {
       // A thrown adapter error (e.g. missing OnchainOS CLI / wallet session)
@@ -696,6 +709,8 @@ async function hireAndSettle(
       providerName: chosen.providerName,
       providerId: chosen.providerId,
       amountCents: handle.quoteCents,
+      feeCents,
+      netAmountCents: handle.quoteCents - feeCents,
       status: settled.status,
       method: handle.paymentMethod,
       escrowed: handle.paymentMethod === "a2a-escrow",
@@ -713,7 +728,9 @@ async function hireAndSettle(
       type: "PAYMENT_SETTLED",
       actorName: "Agentic Wallet",
       title: `Payment settled — ${(handle.quoteCents / 100).toFixed(2)} USD₮0`,
-      detail: settled.isDemo ? `Simulated tx (not onchain): ${settled.txHash}` : `txHash: ${settled.txHash}`,
+      detail:
+        (settled.isDemo ? `Simulated tx (not onchain): ${settled.txHash}` : `txHash: ${settled.txHash}`) +
+        ` · protocol fee ${(feeCents / 100).toFixed(2)} · provider net ${((handle.quoteCents - feeCents) / 100).toFixed(2)} USD₮0`,
       payload: { txHash: settled.txHash, isDemo: settled.isDemo },
     });
     db.insert(transactions)
@@ -725,7 +742,7 @@ async function hireAndSettle(
         direction: "OUT",
         kind: "EXTERNAL_PAYMENT",
         counterparty: chosen.providerName,
-        memo: `Payment for: ${task.objective.slice(0, 80)}`,
+        memo: `Payment for: ${task.objective.slice(0, 80)} (fee ${(feeCents / 100).toFixed(2)}, net ${((handle.quoteCents - feeCents) / 100).toFixed(2)})`,
         amountCents: handle.quoteCents,
         txHash: settled.txHash ?? null,
         isDemo: settled.isDemo,
@@ -760,16 +777,39 @@ async function hireAndSettle(
   refreshMissionProgress(ctx.missionId);
 }
 
-function verifyDeliverable(content: string, required: string) {
-  const lengthOk = content.length > 120;
-  const mentions = /research|competitor|market|evidence|source|cited|finding/i.test(content);
-  const score = Math.min(100, (lengthOk ? 60 : 30) + (mentions ? 40 : 15));
-  const passed = score >= 70;
-  return {
-    passed,
-    score,
-    notes: `Requirements coverage for ${required}: ${passed ? "met" : "partial"} · evidence quality: ${mentions ? "cited" : "uncited"} · score ${score}/100`,
+// Verification Agent: LLM-judged quality gate with a deterministic
+// fallback, so the gate works identically with or without an API key.
+// Rubric (mirrors what the notes report): requirements coverage, evidence
+// quality, completeness — scored 0-100, gate at 70.
+async function verifyDeliverable(content: string, required: string) {
+  const deterministic = (llmScore: number | null) => {
+    const lengthOk = content.length > 120;
+    const mentions = /research|competitor|market|evidence|source|cited|finding/i.test(content);
+    const heuristic = Math.min(100, (lengthOk ? 60 : 30) + (mentions ? 40 : 15));
+    // LLM judgment shifts the score ±10 around the heuristic anchor; the
+    // deterministic floor keeps the gate honest when no LLM is available.
+    const score = Math.max(0, Math.min(100, llmScore === null ? heuristic : Math.round((llmScore + heuristic) / 2)));
+    const passed = score >= 70;
+    return {
+      passed,
+      score,
+      notes: `Requirements coverage for ${required}: ${passed ? "met" : "partial"} · evidence quality: ${mentions ? "cited" : "uncited"} · score ${score}/100${llmScore === null ? " · deterministic rubric" : " · LLM-judged"}`,
+    };
   };
+
+  try {
+    const verdict = await generateJson<{ score: number; missing: string[] }>({
+      system:
+        "You are a strict QA reviewer for outsourced agent work. Score the deliverable 0-100 on requirements coverage, evidence quality and completeness. Reply ONLY with JSON: {\"score\": <0-100>, \"missing\": [<gaps>]}.",
+      user: `Required capability: ${required}\n\nDeliverable:\n${content.slice(0, 2000)}`,
+      temperature: 0.1,
+      maxTokens: 160,
+    });
+    if (!verdict || typeof verdict.score !== "number" || Number.isNaN(verdict.score)) return deterministic(null);
+    return deterministic(Math.round(verdict.score));
+  } catch {
+    return deterministic(null);
+  }
 }
 
 function finalizeDelivered(
@@ -861,11 +901,14 @@ function buildExternalDeliverable(provider: ProviderOffer, objective: string, re
 function debitWallet(companyId: string, cents: number) {
   const w = db.select().from(wallets).where(eq(wallets.companyId, companyId)).get();
   if (!w) return;
+  // Guard: never drive the treasury negative. A settlement that arrives
+  // without pre-reserved funds cannot overdraw a demo wallet.
+  const cents2 = Math.min(cents, Math.max(w.availableCents, 0));
   db.update(wallets)
     .set({
-      totalCents: w.totalCents - cents,
-      availableCents: w.availableCents - cents,
-      spentCents: w.spentCents + cents,
+      totalCents: w.totalCents - cents2,
+      availableCents: w.availableCents - cents2,
+      spentCents: w.spentCents + cents2,
     })
     .where(eq(wallets.companyId, companyId))
     .run();

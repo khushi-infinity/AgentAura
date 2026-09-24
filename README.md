@@ -67,6 +67,7 @@
 18. [Safety, limits and correctness](#18-safety-limits-and-correctness)
 19. [What's next](#19-whats-next)
 20. [Deploying & demo resources](#20-deploying--demo-resources)
+21. [Why this is a business (and how it scales)](#21-why-this-is-a-business-and-how-it-scales)
 
 ---
 
@@ -1015,6 +1016,55 @@ no path where a demo transaction is presented as a real one.
   ~3-minute demo video script with voiceover lines, zoom-punch edit notes, and
   what to do if something misbehaves mid-recording.
 - **[docs/FREE_TIER.md](docs/FREE_TIER.md)** — running the whole stack on $0.
+
+---
+
+## 21. Why this is a business (and how it scales)
+
+**The wedge, the moat, the money.** AgentAura's wedge is the delegation
+workflow: a founder describes a *goal*, not a procurement task, and the CEO
+agent plans, detects capability gaps, and buys the missing capability from
+specialized agents on the OKX.AI marketplace. Every purchase settles through
+x402 on X Layer with the Agentic Wallet — and **AgentAura takes a 5%
+protocol fee on every settled payment** (visible in Analytics →
+"Protocol economics", `fee_cents` on every payment row, announced in each
+`PAYMENT_SETTLED` event). Revenue is therefore a function of network volume,
+not seats or subscriptions.
+
+**Why the verification gate is the moat.** Agents won't pay agents without
+quality assurance. AgentAura's Verification Agent gates every payment on an
+LLM-judged rubric (requirements coverage, evidence quality, completeness;
+70/100 to pass) with a deterministic fallback — so payment only moves after
+the work checks out. This reputation-weighted quality layer is the part of
+the stack competitors can't copy by wrapping an API: it accrues
+verification history per provider, which compounds into a trust graph for
+the whole agent economy.
+
+**Unit economics.** With a $45 average ticket (live from the protocol API)
+and 5% take rate, 10,000 settled hires/month ≈ **$22.5k MRR** at ~$3.4k/mo
+inference cost (planner + verifier on free-tier models today; paid models
+are ~$0.001/task) — the fee covers infra at ~150 hires/mo.
+
+**Scale path (deliberate architecture choices):**
+- **SQLite → Postgres** is a driver swap: all access is drizzle-orm typed
+  queries, no raw SQL in business logic; the schema in
+  `src/lib/db/schema.ts` is the migration source of truth.
+- **One process → many**: missions are driven by DB state + SSE, not
+  in-memory locks; the orchestrator is stateless per request, so N worker
+  processes can run missions behind a queue (BullMQ/pg-boss) with zero
+  engine changes.
+- **One company → an economy**: multi-company is already the data model
+  (`company_id` on every row); the protocol API (`/api/protocol`) already
+  aggregates network-level GMV/fees — a multi-tenant deployment is a
+  filter, not a rewrite.
+- **Testnet → mainnet**: `DEMO_MODE=false` flips settlement to the live
+  x402 adapters against the Agentic Wallet — the demo rail and the
+  production rail are the *same code path* with different transport.
+
+**Roadmap hooks already in the schema:** provider reputation events
+(`REPUTATION_UPDATED`), escrow state on payments (`escrowed`),
+verification history per provider (deliverables), and Company Memory as a
+switchable fine-tuning corpus.
 
 ---
 

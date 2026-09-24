@@ -149,6 +149,11 @@ export const payments = sqliteTable("payments", {
   providerName: text("provider_name").notNull(),
   providerId: text("provider_id"),
   amountCents: integer("amount_cents").notNull(),
+  // Platform take-rate (the business model): 5% protocol fee collected on
+  // every settled agent-to-agent payment. Gross = amount, provider receives
+  // net = amount − fee; fee accrues to the platform treasury.
+  feeCents: integer("fee_cents").notNull().default(0),
+  netAmountCents: integer("net_amount_cents").notNull().default(0),
   currency: text("currency").notNull().default("USDT0"),
   network: text("network").notNull().default("xlayer-testnet"),
   status: text("status").notNull().default("PENDING"), // PENDING | SETTLED | FAILED
