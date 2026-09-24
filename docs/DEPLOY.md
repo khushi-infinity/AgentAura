@@ -9,9 +9,20 @@ all live in `data/agentaura.db`). Any container/VM host with a volume works.
 > `npx next start -p 3000` · mount `./data` somewhere persistent.
 > The included `Dockerfile` does all four for you.
 
-> ⚠️ **Do not deploy to Vercel or any serverless platform.** The engine runs
-> background missions in-process, streams SSE, and writes to a local SQLite
-> file — none of which survive serverless. Pick a long-running host.
+> ⚠️ **Do not deploy to Vercel, Netlify, or any serverless platform.** The
+> engine runs background missions in-process, streams SSE, and writes to a
+> local SQLite file — none of which survive serverless. Pick a long-running
+> host.
+>
+> Concretely (why Netlify specifically fails, verified against their docs):
+> serverless functions cap at **~10s execution** (the mission engine needs
+> minutes for LLM planning + hire-approval windows), function filesystems are
+> **ephemeral** (the SQLite ledger would vanish between invocations), and SSE
+> activity feeds need long-lived connections serverless isn't designed for.
+> Netlify Background Functions (15 min, Pro plan) would fix timeouts only —
+> the disk and SSE problems remain. Re-architecting for serverless would
+> mean Postgres + a queue + polling; the single `DEMO_MODE`-labeled container
+> on Railway/Render/Fly is the honest deployment for this architecture.
 
 ---
 
