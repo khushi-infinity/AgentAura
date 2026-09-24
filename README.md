@@ -1012,7 +1012,7 @@ no path where a demo transaction is presented as a real one.
   SQLite data on a persistent volume, going live with real OKX settlements,
   and a 2-minute pre-flight checklist.
 - **[docs/DEMO_VIDEO_SCRIPT.md](docs/DEMO_VIDEO_SCRIPT.md)** — a shot-by-shot
-  2:30 demo video script with voiceover lines, zoom-punch edit notes, and
+  ~3-minute demo video script with voiceover lines, zoom-punch edit notes, and
   what to do if something misbehaves mid-recording.
 - **[docs/FREE_TIER.md](docs/FREE_TIER.md)** — running the whole stack on $0.
 
